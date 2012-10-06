@@ -1,19 +1,49 @@
 #!/usr/bin/python
+#
+# MakeMKV Auto Ripper
+#
+# Uses MakeMKV to watch for movies inserted into DVD/BD Drives
+# Looks up movie title on IMDb for saving into seperate directory
+#
+# Automaticly checks for existing directory/movie and will NOT overwrite
+#   existing files or folders
+# Checks minimum length of video to ensure movie is ripped not previews or other
+#   junk that happens to be on the DVD
+#
+#
+# Required for use
+#
+#   Python (Obviously)
+#       * Created using 2.7.3 but should work with similar versions
+#
+#   MakeMKV
+#       * http://makemkv.com/
+#
+#   IMDbPy
+#       * sudo apt-get install python-imdbpy
+#
+# Released under the MIT license
+#
+# @copyright  2012 jCode
+# @category   misc
+# @version    $Id$
+# @author     Jason Millward <jason@jcode.me>
+# @license    http://opensource.org/licenses/MIT
+#
 
 # Import libs
 import commands
 import os.path
-import httplib, urllib
-import sys
 import datetime
 import imdb
-import time
+import sys
 
-# Define path
-# Define minlength of movie
-
-
-# sudo apt-get install python-imdbpy
+#
+MKV_SAVE_PATH = "/Movies/"
+#
+MKV_MIN_LENGTH = 4800
+#
+MKV_CACHE = 1024
 
 i = imdb.IMDb()
 
@@ -63,7 +93,11 @@ os.makedirs('/Movies/%s' % movieName)
 
 a = datetime.datetime.now()
 
-commands.getstatusoutput('makemkvcon mkv disc:%s 0 "/Movies/%s" --cache=1024 --noscan --minlength=4800 > ~/derp' % (discIndex, movieName))
+commands.getstatusoutput(
+    'makemkvcon mkv disc:%s 0 "/Movies/%s" ',
+    '--cache=1024 --noscan --minlength=4800'
+    %
+    (discIndex, movieName))
 
 b = datetime.datetime.now()
 c = b - a
