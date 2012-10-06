@@ -7,8 +7,8 @@
 #
 # Automaticly checks for existing directory/movie and will NOT overwrite
 #   existing files or folders
-# Checks minimum length of video to ensure movie is ripped not previews or other
-#   junk that happens to be on the DVD
+# Checks minimum length of video to ensure movie is ripped not previews or
+#   other junk that happens to be on the DVD
 #
 #
 # Required for use
@@ -29,7 +29,8 @@
 # @version    $Id$
 # @author     Jason Millward <jason@jcode.me>
 # @license    http://opensource.org/licenses/MIT
-
+#
+# Enough with these comments, on to the code
 
 #
 #   CONSTANTS
@@ -44,7 +45,7 @@ MKV_MIN_LENGTH = 4800
 # MakeMKV Cache
 MKV_CACHE = 1024
 
-
+MKV_TEMP_OUTPUT = "/tmp/makemkv_output"
 #
 #   IMPORTS
 #
@@ -66,10 +67,10 @@ movieName = ""
 
 # Execute the info gathering
 # Save output into /tmp/ for interpreting 3 or 4 lines later
-commands.getstatusoutput('makemkvcon -r info > /tmp/makemkv_output')
+commands.getstatusoutput('makemkvcon -r info > %s' % MKV_TEMP_OUTPUT)
 
 # Open the info file from /tmp/
-tempFile = open('/tmp/makemkv_output', 'r')
+tempFile = open(MKV_TEMP_OUTPUT, 'r')
 
 # Check to see if there is a disc in the system
 #
@@ -85,24 +86,24 @@ for line in tempFile.readlines():
             movieName = drive[5].title().replace("Extended_Edition", "")
 
 
-
 # If there was no disc, exit
 if len(discIndex) == 0:
     print "No disc"
     sys.exit()
 
+# Clean up the disc title so IMDb can identify it easier
 movieName = movieName.replace("\"", "").replace("_", " ")
 
-sm = imdbScaper.search_movie(movieName, results=5)
+# Get the closest 5 results, do nothing with the other 4
+result = imdbScaper.search_movie(movieName, results=5)
 
-
-if len(sm) > 0:
-    movieName = sm[0]
+# If the returned result is not empty, save it, otherwise IMDb can't
+#   identify the DVD
+if len(result) > 0:
+    movieName = result[0]
 else:
     print "No matching movie"
     sys.exit()
-
-# We have a movie
 
 
 if os.path.exists('/Movies/%s' % movieName):
