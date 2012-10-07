@@ -4,6 +4,7 @@ makeMKV-Autoripper
 This script uses [MakeMKV](http://makemkv.com/) to watch for and rip DVDs or BDs that you own automagically into their own directory.
 It also looks up your discs title on IMDb to get the correct title before storing.
 
+<br><br>
 
 #### Required for use
 
