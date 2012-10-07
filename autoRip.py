@@ -22,11 +22,15 @@
 #   IMDbPy
 #       * sudo apt-get install python-imdbpy
 #
+# Can be run with a simple cron, every 5 minutes or so.
+# DVD goes in, MakeMKV checks, gets proper DVD name, MakeMKV Rips
+# DVD does not get ejected, maybe it will get added to later versions
+#
 # Released under the MIT license
 #
 # @copyright  2012 jCode
 # @category   misc
-# @version    $Id$
+# @version    $Id: 1.0, 2012-10-07 12:02:33 CST $;
 # @author     Jason Millward <jason@jcode.me>
 # @license    http://opensource.org/licenses/MIT
 #
@@ -120,16 +124,30 @@ if os.path.exists('%s/%s' % MKV_SAVE_PATH, movieName):
 # Create directory
 os.makedirs('%s/%s' % MKV_SAVE_PATH, movieName)
 
+# Display some status text for the user
+print " "
+print "Starting MakeMKV ripping process"
+
+# Get the time MakeMKV started
 startTime = datetime.datetime.now()
 
+# Start the making of the mkv
 commands.getstatusoutput(
-    'makemkvcon mkv disc:%s 0 "/Movies/%s" ',
-    '--cache=1024 --noscan --minlength=4800'
+    'makemkvcon mkv disc:%s 0 "%s/%s" ',
+    '--cache=%d --noscan --minlength=%d'
     %
-    (discIndex, movieName))
+    (discIndex, MKV_SAVE_PATH, movieName, MKV_CACHE, MKV_MIN_LENGTH))
 
+# Get the time MakeMKV finished
 endTime = datetime.datetime.now()
+
+# Do some maths here
 totalTime = endTime - startTime
+
+# Convert the time into seconds, then turn it into minutes
 minutes = totalTime.seconds / 60
 
+# And... we're done. Show some final status messages
+print "MakeMKV ripping process completed"
+print " "
 print "It took %s minutes to complete the ripping of %s" % (minutes, movieName)
