@@ -27,8 +27,8 @@
 # DVD does not get ejected, maybe it will get added to later versions
 #
 # Released under the MIT license
+# Copyright (c) 2012, Jason Millward
 #
-# @copyright  2012 jCode
 # @category   misc
 # @version    $Id: 1.0, 2012-10-07 12:02:33 CST $;
 # @author     Jason Millward <jason@jcode.me>
