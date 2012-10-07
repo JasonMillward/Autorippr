@@ -42,10 +42,12 @@ MKV_SAVE_PATH = "/Movies/"
 # Minimum Length of video stream in minutes
 MKV_MIN_LENGTH = 4800
 
-# MakeMKV Cache
+# MakeMKV Cache in megabytes
 MKV_CACHE = 1024
 
+# Temp file for info gathering
 MKV_TEMP_OUTPUT = "/tmp/makemkv_output"
+
 #
 #   IMPORTS
 #
@@ -83,13 +85,16 @@ for line in tempFile.readlines():
         if "/dev/" in line:
             drive = line.split(',')
             discIndex = drive[0].replace("DRV:", "")
-            movieName = drive[5].title().replace("Extended_Edition", "")
+            movieName = drive[5]
 
 
 # If there was no disc, exit
 if len(discIndex) == 0:
-    print "No disc"
+    print "No disc detected"
     sys.exit()
+
+# A little fix for extended editions (eg; Die Hard 4)
+movieName = movieName.title().replace("Extended_Edition", "")
 
 # Clean up the disc title so IMDb can identify it easier
 movieName = movieName.replace("\"", "").replace("_", " ")
@@ -102,17 +107,20 @@ result = imdbScaper.search_movie(movieName, results=5)
 if len(result) > 0:
     movieName = result[0]
 else:
-    print "No matching movie"
+    print "Can not match movie title with IMDb"
     sys.exit()
 
-
-if os.path.exists('/Movies/%s' % movieName):
-    print "Path exists"
+# Check to see if the movie is already save in the movie directory
+if os.path.exists('%s/%s' % MKV_SAVE_PATH, movieName):
+    print "Movie folder already exists, will not overwrite."
     sys.exit()
 
-os.makedirs('/Movies/%s' % movieName)
+# The movie directory doesn't exist.
 
-a = datetime.datetime.now()
+# Create directory
+os.makedirs('%s/%s' % MKV_SAVE_PATH, movieName)
+
+startTime = datetime.datetime.now()
 
 commands.getstatusoutput(
     'makemkvcon mkv disc:%s 0 "/Movies/%s" ',
@@ -120,8 +128,8 @@ commands.getstatusoutput(
     %
     (discIndex, movieName))
 
-b = datetime.datetime.now()
-c = b - a
+endTime = datetime.datetime.now()
+totalTime = endTime - startTime
+minutes = totalTime.seconds / 60
 
-minutes = c.seconds / 60
 print "It took %s minutes to complete the ripping of %s" % (minutes, movieName)
