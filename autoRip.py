@@ -136,7 +136,7 @@ startTime = datetime.datetime.now()
 
 # Start the making of the mkv
 commands.getstatusoutput(
-    'makemkvcon mkv disc:%s 0 "%s/%s" --cache=%s --noscan --minlength=%s'
+    'makemkvcon mkv disc:%s 0 "%s/%s" --cache=%d --noscan --minlength=%d'
     %
     (discIndex, MKV_SAVE_PATH, movieName, MKV_CACHE, MKV_MIN_LENGTH))
 
