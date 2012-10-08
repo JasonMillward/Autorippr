@@ -41,7 +41,7 @@
 #
 
 # Path where the movies are stored
-MKV_SAVE_PATH = "/Movies/"
+MKV_SAVE_PATH = "/tmp/"
 
 # Minimum Length of video stream in minutes
 MKV_MIN_LENGTH = 4800
@@ -91,12 +91,12 @@ for line in tempFile.readlines():
             discIndex = drive[0].replace("DRV:", "")
             movieName = drive[5]
 
-
 # If there was no disc, exit
 if len(discIndex) == 0:
     print "No disc detected"
     sys.exit()
 
+print "Disc detected in drive %s" % discIndex
 # A little fix for extended editions (eg; Die Hard 4)
 movieName = movieName.title().replace("Extended_Edition", "")
 
@@ -114,15 +114,18 @@ else:
     print "Can not match movie title with IMDb"
     sys.exit()
 
+# Show the movie name that the scraper detected
+# So the user can follow events
+print "IMDb scraper detected movie as: %s" % movieName
+
 # Check to see if the movie is already save in the movie directory
-if os.path.exists('%s/%s' % MKV_SAVE_PATH, movieName):
+if os.path.exists('%s/%s' % (MKV_SAVE_PATH, movieName)):
     print "Movie folder already exists, will not overwrite."
     sys.exit()
 
 # The movie directory doesn't exist.
-
-# Create directory
-os.makedirs('%s/%s' % MKV_SAVE_PATH, movieName)
+# Create a new directory for the movie
+os.makedirs('%s/%s' % (MKV_SAVE_PATH, movieName))
 
 # Display some status text for the user
 print " "
@@ -133,8 +136,7 @@ startTime = datetime.datetime.now()
 
 # Start the making of the mkv
 commands.getstatusoutput(
-    'makemkvcon mkv disc:%s 0 "%s/%s" ',
-    '--cache=%d --noscan --minlength=%d'
+    'makemkvcon mkv disc:%s 0 "%s/%s" --cache=%s --noscan --minlength=%s'
     %
     (discIndex, MKV_SAVE_PATH, movieName, MKV_CACHE, MKV_MIN_LENGTH))
 
