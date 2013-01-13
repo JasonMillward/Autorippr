@@ -63,10 +63,10 @@ MKV_TEMP_OUTPUT = config.get('MKV_RIP', 'temp_output')
 #   CODE
 #
 
-MKVapi = makeMKV(MKV_TEMP_OUTPUT)
+MKVapi = makeMKV()
 
 # Find the disc or exit
-if (MKVapi.findDisc() == False):
+if (MKVapi.findDisc(MKV_TEMP_OUTPUT) == False):
     # No disc
     sys.exit()
 

@@ -4,7 +4,7 @@ import commands
 import imdb
 
 
-class makeMKV():
+class makeMKV(object):
     api_url = 'https://api.bitbucket.org/1.0/'
 
     def __init__(self):
@@ -49,7 +49,7 @@ class makeMKV():
             print "Disc detected in drive %s" % self.discIndex
             return True
 
-    def getTitle(self, forceIMDB):
+    def getTitle(self):
         # A little fix for extended editions (eg; Die Hard 4)
         self.movieName = self.movieName.title().replace("Extended_Edition", "")
 
