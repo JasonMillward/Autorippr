@@ -23,7 +23,9 @@ class makeMKV(object):
                 movie = files
 
         with open("%s/.makemkvautoripper/queue" % home, "a+") as myfile:
-            myfile.write("%s/%s/%s|%s/%s" % (self.path, self.movieName, movie, self.path, self.movieName))
+            myfile.write("%s/%s/%s|%s/%s/%s.mkv\n"
+                %
+                (self.path, self.movieName, movie, self.path, self.movieName, self.movieName))
 
                 #print files
                 #os.rename(files, "%s.mkv" % movieName)
