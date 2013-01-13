@@ -23,5 +23,5 @@ IMDbPy
 
 Handbrake - For converting and compressing
 * http://handbrake.fr/
-    1 sudo add-apt-repository ppa:stebbins/handbrake-releases
-    2 sudo apt-get update && sudo apt-get install handbrake-cli
+    * sudo add-apt-repository ppa:stebbins/handbrake-releases
+    * sudo apt-get update && sudo apt-get install handbrake-cli
