@@ -3,7 +3,9 @@
 # Author:   mechevar
 # URL:      http://www.makemkv.com/forum2/viewtopic.php?f=3&t=5266
 
-sudo apt-get install build-essential libc6-dev libssl-dev libexpat1-dev libgl1-mesa-dev libqt4-dev g++ python-imdbpy
+sudo add-apt-repository ppa:stebbins/handbrake-releases
+sudo apt-get update
+sudo apt-get python install build-essential libc6-dev libssl-dev libexpat1-dev libgl1-mesa-dev libqt4-dev g++ python-imdbpy handbrake-cli
 
 cd /tmp/
 wget "http://www.makemkv.com/download/"
