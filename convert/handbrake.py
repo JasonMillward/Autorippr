@@ -1,25 +1,36 @@
 #!/usr/bin/env python
 
 import os
+import commands
 
 
 class handbrake(object):
 
     def findProcess(self):
-        processname = 'sleep'
+        processname = 'HandBrakeCLI'
         for line in os.popen("ps xa"):
             fields = line.split()
-            pid = fields[0]
             process = fields[4]
             if process.find(processname) >= 0:
-                print pid
+                return True
+                break
+
+        return False
 
     def loadMovie(self):
         self.home = os.path.expanduser("~")
-        f = open("%s/.makemkvautoripper/queue" % self.home, "r")
-        self.lines = f.readlines()
-        f.close()
-        self.movie = self.lines[0].replace("\n", "")
+        if os.path.isfile("%s/.makemkvautoripper/queue" % self.home):
+            f = open("%s/.makemkvautoripper/queue" % self.home, "r")
+            self.lines = f.readlines()
+            f.close()
+            movie = self.lines[0].replace("\n", "")
+            movie.split('|')
+            self.inputFile = movie[0]
+            self.outputFile = movie[1]
+
+            return True
+        else:
+            return False
 
     def updateQueue(self):
         f = open("%s/.makemkvautoripper/queue" % self.home, "w")
@@ -28,6 +39,11 @@ class handbrake(object):
                 f.write(line)
         f.close()
 
-    def convert():
-        #HandBrakeCLI --verbose 1 --input "title00.mkv" --output "q21_ac3.mkv"
+    def convert(self, args):
+        commands.getstatusoutput(
+            'HandBrakeCLI --verbose 1 --input "%s" --output "%s" %s'
+            %
+            (self.inputFile, self.outputFile, args))
+
         print "Converting..."
+
