@@ -24,7 +24,7 @@ class handbrake(object):
             self.lines = f.readlines()
             f.close()
             movie = self.lines[0].replace("\n", "")
-            movie.split('|')
+            movie = movie.split('|')
             self.inputFile = movie[0]
             self.outputFile = movie[1]
 
@@ -39,11 +39,9 @@ class handbrake(object):
                 f.write(line)
         f.close()
 
-    def convert(self, args):
-        commands.getstatusoutput(
-            'HandBrakeCLI --verbose 1 --input "%s" --output "%s" %s'
-            %
-            (self.inputFile, self.outputFile, args))
-
+    def convert(self, nice, args):
         print "Converting..."
-
+        commands.getstatusoutput(
+            'nice -n %d HandBrakeCLI --verbose 1 --input "%s" --output "%s" %s'
+            %
+            (nice, self.inputFile, self.outputFile, args))
