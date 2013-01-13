@@ -27,5 +27,5 @@ Handbrake - For converting and compressing
     * sudo add-apt-repository ppa:stebbins/handbrake-releases
     * sudo apt-get update && sudo apt-get install handbrake-cli
 
-*Note:* For Ubuntu (and possibly other Debian based distros) a nice setup script has been included in the **setup** folder.
+**Note:** For Ubuntu (and possibly other Debian based distros) a nice setup script has been included in the *setup* folder.
     Originally created by [mechevar](http://www.makemkv.com/forum2/viewtopic.php?f=3&t=5266) but modified by me for easy install of all the required components.
