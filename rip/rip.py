@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #
 # MakeMKV Auto Ripper
 #
@@ -44,10 +44,12 @@ import os
 import datetime
 import sys
 import ConfigParser
-from ripper import makeMKV
+from makeMKV import makeMKV
+
 #
 #   CONFIG VARIABLES
 #
+
 REAL_PATH = os.path.dirname(os.path.realpath(__file__))
 
 config = ConfigParser.RawConfigParser()
