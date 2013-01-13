@@ -58,6 +58,7 @@ MKV_SAVE_PATH = config.get('MKV_RIP', 'save_path')
 MKV_MIN_LENGTH = config.getint('MKV_RIP', 'min_length')
 MKV_CACHE_SIZE = config.getint('MKV_RIP', 'cache_MB')
 MKV_TEMP_OUTPUT = config.get('MKV_RIP', 'temp_output')
+USE_HANDBRAKE = config.getboolean('MKV_RIP', 'handbrake')
 
 #
 #   CODE
@@ -89,7 +90,7 @@ print "Starting MakeMKV ripping process"
 # Get the time MakeMKV started
 startTime = datetime.datetime.now()
 
-MKVapi.ripDisc(path=MKV_SAVE_PATH, length=MKV_MIN_LENGTH, cache=MKV_CACHE_SIZE)
+MKVapi.ripDisc(path=MKV_SAVE_PATH, length=MKV_MIN_LENGTH, cache=MKV_CACHE_SIZE, queue=USE_HANDBRAKE)
 
 # Get the time MakeMKV finished
 endTime = datetime.datetime.now()

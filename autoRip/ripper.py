@@ -2,6 +2,7 @@
 
 import commands
 import imdb
+import os
 
 
 class makeMKV(object):
@@ -11,12 +12,32 @@ class makeMKV(object):
         self.movieName = ""
         self.imdbScaper = imdb.IMDb()
 
-    def ripDisc(self, path, length, cache):
+    def _queueMovie(self):
+        home = os.path.expanduser("~")
+        if os.path.exists('%s/.makemkvautoripper' % home) == False:
+            os.makedirs('%s/.makemkvautoripper' % home)
+
+        os.chdir('%s/%s' % (self.path, self.movieName))
+        for files in os.listdir("."):
+            if files.endswith(".mkv"):
+                movie = files
+
+        with open("%s/.makemkvautoripper/queue" % home, "a+") as myfile:
+            myfile.write("%s/%s/%s|%s/%s" % (self.path, self.movieName, movie, self.path, self.movieName))
+
+                #print files
+                #os.rename(files, "%s.mkv" % movieName)
+
+    def ripDisc(self, path, length, cache, queue):
+        self.path = path
         # Start the making of the mkv
         commands.getstatusoutput(
             'makemkvcon mkv disc:%s 0 "%s/%s" --cache=%d --noscan --minlength=%d'
             %
-            (self.discIndex, path, self.movieName, cache, length))
+            (self.discIndex, self.path, self.movieName, cache, length))
+
+        if queue:
+            self._queueMovie()
         return True
 
     def findDisc(self, output):
