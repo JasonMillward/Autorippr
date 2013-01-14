@@ -15,13 +15,14 @@ config.read('%s/../settings.cfg' % REAL_PATH)
 
 HB_NICE = config.getint('HANDBRAKE', 'nice')
 HB_CLI = config.get('HANDBRAKE', 'com')
+HB_OUT = config.get('HANDBRAKE', 'temp_output')
 
 hb = handbrake()
 
 if hb.findProcess() == False:
     if hb.loadMovie():
-        hb.convert(args=HB_CLI, nice=HB_NICE)
+        hb.convert(args=HB_CLI, nice=HB_NICE, out=HB_OUT)
     else:
-        print "queue does not exist"
+        print "Queue does not exist"
 else:
     print "Process already running skipper"

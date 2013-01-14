@@ -32,16 +32,23 @@ class handbrake(object):
         else:
             return False
 
-    def updateQueue(self):
+    def _updateQueue(self):
+        os.remove(self.inputFile)
+
+    def _removeOld(self):
         f = open("%s/.makemkvautoripper/queue" % self.home, "w")
         for line in self.lines:
             if line != self.movie + "\n":
                 f.write(line)
         f.close()
 
-    def convert(self, nice, args):
+    def convert(self, nice, args, out):
         print "Converting..."
+        #print 'nice -n %d HandBrakeCLI --verbose 1 -i "%s" -o "%s" %s 2> %s' % (nice, self.inputFile, self.outputFile, args, out)
+
         commands.getstatusoutput(
-            'nice -n %d HandBrakeCLI --verbose 1 --input "%s" --output "%s" %s'
+            'nice -n %d HandBrakeCLI --verbose 1 -i "%s" -o "%s" %s 2> %s'
             %
-            (nice, self.inputFile, self.outputFile, args))
+            (nice, self.inputFile, self.outputFile, args, out))
+        #self._updateQueue()
+        #self._removeOld()
