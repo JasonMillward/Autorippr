@@ -41,6 +41,7 @@ class handbrake(object):
         f.close()
 
     """ Function:   _cleanQueue
+            Removes blank lines and excess new lines
 
         Inputs:
             None
@@ -66,13 +67,15 @@ class handbrake(object):
         f.close()
 
     """ Function:   findProcess
-
+            Goes through all of the running proccess and tries to find the
+                HandBrake proccess.
+            If it is running return true
 
         Inputs:
             None
 
         Outputs:
-            None
+            Boolean (True/False)
     """
     def findProcess(self):
         processname = 'HandBrakeCLI'
@@ -86,7 +89,8 @@ class handbrake(object):
         return False
 
     """ Function:   loadMovie
-
+            Check to see if the queue file exists, if it does load the first
+                line and proccess it for the rest of the script to use
 
         Inputs:
             None
