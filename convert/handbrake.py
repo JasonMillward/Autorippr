@@ -1,7 +1,35 @@
 """
+HandBrake CLI Wrapper + Queue Handler
+
+This class reads the queue created by the makeMKV ripper
+
+
+This script can be run with a simple cron, every hour should be enough
+
+After makeMKV ripper has proccessed a movie it saves it to the queue
+This script then reads the queue and passes the information to HandBrake
+Which encodes the movie with a proper name and removes the old, unneeded files
+
+Released under the MIT license
+Copyright (c) 2012, Jason Millward
+
+@category   misc
+@version    $Id: 1.1, 2013-01-15 17:52:00 CST $;
+@author     Jason Millward <jason@jcode.me>
+@license    http://opensource.org/licenses/MIT
+
 """
+
+#
+#   IMPORTS
+#
+
 import os
 import commands
+
+#
+#   CODE
+#
 
 
 class handbrake(object):
@@ -60,7 +88,7 @@ class handbrake(object):
         f = open("%s/.makemkvautoripper/queue" % self.home, "w")
 
         for line in lines:
-            if (line != "\n"):
+            if (line.strip() != ""):
                 f.write(line)
 
         f.write("\n")
@@ -161,6 +189,6 @@ class handbrake(object):
         except:
             print "Could not read output file, no cleanup will be done"
 
-        if checks == 0:
+        if checks == 2:
             self._updateQueue()
             self._cleanUp(log=output, oldMovie=inMovie)
