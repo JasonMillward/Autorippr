@@ -1,8 +1,30 @@
-#!/usr/bin/env python
+"""
+MakeMKV CLI Wrapper
+
+This class acts as a python wrapper to the MakeMKV CLI.
+
+
+Released under the MIT license
+Copyright (c) 2012, Jason Millward
+
+@category   misc
+@version    $Id: 1.1, 2013-01-15 17:52:00 CST $;
+@author     Jason Millward <jason@jcode.me>
+@license    http://opensource.org/licenses/MITT
+"""
+
+#
+#   IMPORTS
+#
 
 import commands
 import imdb
 import os
+import re
+
+#
+#   CODE
+#
 
 
 class makeMKV(object):
@@ -21,14 +43,29 @@ class makeMKV(object):
         for files in os.listdir("."):
             if files.endswith(".mkv"):
                 movie = files
+                break
 
         with open("%s/.makemkvautoripper/queue" % home, "a+") as myfile:
-            myfile.write("%s/%s/%s|%s/%s/%s.mkv\n"
+            myfile.write("%s|%s|%s|%s.mkv\n"
                 %
-                (self.path, self.movieName, movie, self.path, self.movieName, self.movieName))
+                (self.path, self.movieName, movie, self.movieName))
 
-                #print files
-                #os.rename(files, "%s.mkv" % movieName)
+    def _cleanTitle(self):
+        tmpName = self.movieName
+        # A little fix for extended editions (eg; Die Hard 4)
+        tmpName = tmpName.title().replace("Extended_Edition", "")
+
+        # Remove Special Edition
+        tmpName = tmpName.replace("Special_Edition", "")
+
+        # Remove Disc X from the title
+        tmpName = re.sub(r"Disc_(\d)", "", tmpName)
+
+        # Clean up the disc title so IMDb can identify it easier
+        tmpName = tmpName.replace("\"", "").replace("_", " ")
+
+        # Clean up the edges and remove whitespace
+        self.movieName = tmpName.strip()
 
     def ripDisc(self, path, length, cache, queue):
         self.path = path
@@ -49,22 +86,14 @@ class makeMKV(object):
 
         # Open the info file from /tmp/
         tempFile = open(output, 'r')
-
-        # Check to see if there is a disc in the system
-        #
-        # For every line in the output
-        # If the first 4 characters are DRV:
-        #   Check to see if a device is specified
-        #       If so, get the 1st and 6th element of the array
-
         for line in tempFile.readlines():
             if line[:4] == "DRV:":
                 if "/dev/" in line:
                     drive = line.split(',')
                     self.discIndex = drive[0].replace("DRV:", "")
                     self.movieName = drive[5]
+                    break
 
-        # If there was no disc, exit
         if len(self.discIndex) == 0:
             print "No disc detected"
             return False
@@ -73,17 +102,10 @@ class makeMKV(object):
             return True
 
     def getTitle(self):
-        # A little fix for extended editions (eg; Die Hard 4)
-        self.movieName = self.movieName.title().replace("Extended_Edition", "")
+        self._cleanTitle()
 
-        # Clean up the disc title so IMDb can identify it easier
-        self.movieName = self.movieName.replace("\"", "").replace("_", " ")
+        result = self.imdbScaper.search_movie(self.movieName, results=1)
 
-        # Get the closest 2 results, do nothing with the other 1
-        result = self.imdbScaper.search_movie(self.movieName, results=2)
-
-        # If the returned result is not empty, save it, otherwise IMDb can't
-        #   identify the DVD
         if len(result) > 0:
             self.movieName = result[0]
 
