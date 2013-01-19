@@ -1,40 +1,30 @@
-#!/usr/bin/env python
-#
-# MakeMKV Auto Ripper
-#
-# Uses MakeMKV to watch for movies inserted into DVD/BD Drives
-# Looks up movie title on IMDb for saving into seperate directory
-#
-# Automaticly checks for existing directory/movie and will NOT overwrite
-#   existing files or folders
-# Checks minimum length of video to ensure movie is ripped not previews or
-#   other junk that happens to be on the DVD
-#
-#
-# Required for use
-#
-#   Python (Obviously)
-#       * Created using 2.7.3 but should work with similar versions
-#
-#   MakeMKV
-#       * http://makemkv.com/
-#
-#   IMDbPy
-#       * sudo apt-get install python-imdbpy
-#
-# Can be run with a simple cron, every 5 minutes or so.
-# DVD goes in, MakeMKV checks, gets proper DVD name, MakeMKV Rips
-# DVD does not get ejected, maybe it will get added to later versions
-#
-# Released under the MIT license
-# Copyright (c) 2012, Jason Millward
-#
-# @category   misc
-# @version    $Id: 1.0, 2012-10-07 12:02:33 CST $;
-# @author     Jason Millward <jason@jcode.me>
-# @license    http://opensource.org/licenses/MIT
-#
-# Enough with these comments, on to the code
+"""
+MakeMKV Auto Ripper
+
+Uses MakeMKV to watch for movies inserted into DVD/BD Drives
+Looks up movie title on IMDb for saving into seperate directory
+
+Automaticly checks for existing directory/movie and will NOT overwrite existing
+files or folders
+Checks minimum length of video to ensure movie is ripped not previews or other
+junk that happens to be on the DVD
+
+
+This script can be run with a simple cron, every 5 minutes or so
+
+DVD goes in > MakeMKV checks IMDb and gets a proper DVD name > MakeMKV Rips
+DVD does not get ejected, maybe it will get added to later versions
+
+Released under the MIT license
+Copyright (c) 2012, Jason Millward
+
+@category   misc
+@version    $Id: 1.1, 2013-01-15 17:52:00 CST $;
+@author     Jason Millward <jason@jcode.me>
+@license    http://opensource.org/licenses/MIT
+
+Enough with these comments, on to the code
+"""
 
 #
 #   IMPORTS
@@ -56,11 +46,11 @@ config = ConfigParser.RawConfigParser()
 config.read('%s/../settings.cfg' % REAL_PATH)
 
 
-MKV_SAVE_PATH = config.get('MKV_RIP', 'save_path')
-MKV_MIN_LENGTH = config.getint('MKV_RIP', 'min_length')
-MKV_CACHE_SIZE = config.getint('MKV_RIP', 'cache_MB')
-MKV_TEMP_OUTPUT = config.get('MKV_RIP', 'temp_output')
-USE_HANDBRAKE = config.getboolean('MKV_RIP', 'handbrake')
+MKV_SAVE_PATH = config.get('MAKEMKV', 'save_path')
+MKV_MIN_LENGTH = config.getint('MAKEMKV', 'min_length')
+MKV_CACHE_SIZE = config.getint('MAKEMKV', 'cache_MB')
+MKV_TEMP_OUTPUT = config.get('MAKEMKV', 'temp_output')
+USE_HANDBRAKE = config.getboolean('MAKEMKV', 'handbrake')
 
 #
 #   CODE
@@ -92,7 +82,10 @@ print "Starting MakeMKV ripping process"
 # Get the time MakeMKV started
 startTime = datetime.datetime.now()
 
-MKVapi.ripDisc(path=MKV_SAVE_PATH, length=MKV_MIN_LENGTH, cache=MKV_CACHE_SIZE, queue=USE_HANDBRAKE)
+MKVapi.ripDisc(path=MKV_SAVE_PATH,
+               length=MKV_MIN_LENGTH,
+               cache=MKV_CACHE_SIZE,
+               queue=USE_HANDBRAKE)
 
 # Get the time MakeMKV finished
 endTime = datetime.datetime.now()
