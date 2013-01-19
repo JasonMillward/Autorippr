@@ -1,14 +1,8 @@
 """
 HandBrake CLI Wrapper + Queue Handler
 
-This class reads the queue created by the makeMKV ripper
+This class acts as a python wrapper to the HandBrake CLI.
 
-
-This script can be run with a simple cron, every hour should be enough
-
-After makeMKV ripper has proccessed a movie it saves it to the queue
-This script then reads the queue and passes the information to HandBrake
-Which encodes the movie with a proper name and removes the old, unneeded files
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward
@@ -17,7 +11,6 @@ Copyright (c) 2012, Jason Millward
 @version    $Id: 1.1, 2013-01-15 17:52:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
-
 """
 
 #
