@@ -29,14 +29,31 @@ Handbrake - For converting and compressing
 
 1. Install the above prerequisites manually or if you're using Ubuntu (and possibly other Debian based distros) a nice [setup script](https://github.com/JasonMillward/makeMKV-Autoripper/blob/v1.1/setup/install.sh) has been included in the *setup* folder.
     * Originally created by [mechevar](http://www.makemkv.com/forum2/viewtopic.php?f=3&t=5266) but modified by me for easy install of all the required components.
+
 2. Clone this repo into a directory of your chosing
     * ```git clone https://github.com/JasonMillward/makeMKV-Autoripper.git```
+
 3. Check out a tagged *stable* release
     * To find available tags: ```git tag -l```
     * eg: ```git checkout v1.1```
+
 4. Copy settings.blank.cfg to settings.cfg
+
 5. Edit settings.cfg
     * You should only need to edit *save_path* unless you really want to play with the settings
-6. Set up a crontab
-```*/5     *       *       *       *       python ~/makeMKV-Autoripper/rip/rip.py
-0       *       *       *       *       python ~/makeMKV-Autoripper/encode/encode.py```
+
+### Running
+1. Insert a DVD
+
+2. Test script
+    1. ```python ~/makeMKV-Autoripper/rip/rip.py```
+    2. ```python ~/makeMKV-Autoripper/encode/encode.py```
+
+3. Upon successful testing, set up a crontab and insert a new DVD
+    * ```*/5     *       *       *       *       python ~/makeMKV-Autoripper/rip/rip.py```
+    * ```0       *       *       *       *       python ~/makeMKV-Autoripper/encode/encode.py```
+
+4. Procceed with whatever else you wanted to do today while casually changing discs
+
+
+**NB**: If you have any issues with the script, head over to the [issues page](https://github.com/JasonMillward/makeMKV-Autoripper/issues), create a new issue with some information and hopefully a copy/paste of the error received.
