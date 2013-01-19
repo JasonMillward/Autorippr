@@ -1,22 +1,20 @@
 """
 HandBrake queue parser
 
-Uses MakeMKV to watch for movies inserted into DVD/BD Drives
-Looks up movie title on IMDb for saving into seperate directory
+Uses HandBrake to encode movies ripped by makeMKV
 
-Automaticly checks for existing directory/movie and will NOT overwrite existing
-files or folders
-Checks minimum length of video to ensure movie is ripped not previews or other
-junk that happens to be on the DVD
 
-Required for use
-* Python
-* MakeMKV
-* IMDbPy
+This script can be run with a simple cron, every hour should be fine
 
-This script can be run with a simple cron, every 5 minutes or so.
-DVD goes in > MakeMKV checks IMDb and gets a proper DVD name > MakeMKV Rips
-DVD does not get ejected, maybe it will get added to later versions
+An optional script used to rename and compress movies to an acceptable standard
+which still delivers quallity audio and video but reduces the file size
+dramatly.
+Using a nice value of 20 by default, it runs HandBrake as a background task
+that allows other critical tasks to complete first.
+
+Using this script with the auto ripper allows for multiple movies to be ripped
+and encoded with very little effot.
+
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward
@@ -25,8 +23,6 @@ Copyright (c) 2012, Jason Millward
 @version    $Id: 1.1, 2013-01-15 17:52:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
-
-Enough with these comments, on to the code
 """
 
 #
