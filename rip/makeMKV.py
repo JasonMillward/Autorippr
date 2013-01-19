@@ -8,9 +8,9 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.1, 2013-01-15 17:52:00 CST $;
+@version    $Id: 1.1, 2013-01-19 19:45:00 CST $;
 @author     Jason Millward <jason@jcode.me>
-@license    http://opensource.org/licenses/MITT
+@license    http://opensource.org/licenses/MIT
 """
 
 #
