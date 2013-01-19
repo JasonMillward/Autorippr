@@ -4,7 +4,7 @@ MakeMKV and HandBrake Automater
 
 This script uses [MakeMKV](http://makemkv.com/) to watch for DVDs or BDs that you own, grab the correct title from IMDb and rip it into your chosen movie directory and use [HandBrake](http://handbrake.fr/) to compress the video. All automagically.
 
-
+***
 
 ### Prerequisites
 
