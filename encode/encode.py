@@ -9,7 +9,7 @@ This script can be run with a simple cron, every hour should be fine
 An optional script used to rename and compress movies to an acceptable standard
 which still delivers quallity audio and video but reduces the file size
 dramatly.
-Using a nice value of 20 by default, it runs HandBrake as a background task
+Using a nice value of 15 by default, it runs HandBrake as a background task
 that allows other critical tasks to complete first.
 
 Using this script with the auto ripper allows for multiple movies to be ripped
