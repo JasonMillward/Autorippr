@@ -20,7 +20,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.1, 2013-01-19 19:45:00 CST $;
+@version    $Id: 1.2, 2013-01-20 11:08:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
@@ -54,7 +54,11 @@ hb = handbrake()
 
 if hb.findProcess() == False:
     if hb.loadMovie():
-        hb.convert(args=HB_CLI, nice=HB_NICE, output=HB_OUT)
+        print "Encoding..."
+        if hb.convert(args=HB_CLI, nice=HB_NICE, output=HB_OUT):
+            print "Movie was compressed and encoded successfully"
+            print "Removing movie from queue"
+            hb.updateQueue()
     else:
         print "Queue does not exist or is empty"
 else:
