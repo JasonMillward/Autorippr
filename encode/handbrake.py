@@ -8,7 +8,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.1, 2013-01-19 19:45:00 CST $;
+@version    $Id: 1.2, 2013-01-20 11:08:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
@@ -38,9 +38,11 @@ class handbrake(object):
         Outputs:
             None
     """
-    def _cleanUp(log, oldMovie):
-        os.remove(log)
-        os.remove(oldMovie)
+    def _cleanUp(self, cFile):
+        try:
+            os.remove(cFile)
+        except:
+            print "Could not remove %s" % cFile
 
     """ Function:   _updateQueue
             Removes the recently processed movie from the queue so it's not
@@ -60,6 +62,7 @@ class handbrake(object):
 
         f.write("\n")
         f.close()
+        self._cleanQueue()
 
     """ Function:   _cleanQueue
             Removes blank lines and excess new lines
@@ -165,7 +168,10 @@ class handbrake(object):
         inMovie = "%s/%s" % (path, self.inputMovie)
         outMovie = "%s/%s" % (path, self.outputMovie)
 
-        print "Converting..."
+        if not os.path.isfile(inMovie):
+            print "Input file no longer exists"
+            return False
+
         commands.getstatusoutput(
             'nice -n %d HandBrakeCLI --verbose 1 -i "%s" -o "%s" %s 2> %s'
             %
@@ -183,5 +189,8 @@ class handbrake(object):
             print "Could not read output file, no cleanup will be done"
 
         if checks == 2:
-            self._updateQueue()
-            self._cleanUp(log=output, oldMovie=inMovie)
+            return True
+            self._cleanUp(cFile=inMovie)
+            self._cleanUp(cFile=output)
+        else:
+            return False
