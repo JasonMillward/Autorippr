@@ -74,6 +74,8 @@ class makeMKV(object):
             %
             (self.discIndex, self.path, self.movieName, cache, length))
 
+        # Add some checking here
+        # Seriously, check to see if makemkv worked like it should :(
         if queue:
             self._queueMovie()
         return True
