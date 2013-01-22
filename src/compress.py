@@ -31,7 +31,7 @@ Copyright (c) 2012, Jason Millward
 
 import os
 import ConfigParser
-from handbrake import handbrake
+from handbrake import HandBrake
 
 #
 #   CONFIG VARIABLES
@@ -50,7 +50,7 @@ HB_OUT = config.get('HANDBRAKE', 'temp_output')
 #   CODE
 #
 
-hb = handbrake()
+hb = HandBrake()
 
 if hb.findProcess() == False:
     if hb.loadMovie():

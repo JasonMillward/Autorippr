@@ -24,17 +24,17 @@ import datetime
 #
 
 
-class makeMKV(object):
+class Timer(object):
 
-    def __init__():
-        startTime = datetime.datetime.now()
+    def __init__(self):
+        self.startTime = datetime.datetime.now()
 
-    def stop():
+    def stop(self):
         endTime = datetime.datetime.now()
 
-        totalTime = endTime - startTime
+        totalTime = endTime - self.startTime
 
-        minutes = totalTime.seconds / 60
+        self.minutes = totalTime.seconds / 60
 
-    def getTime():
-        return minutes
+    def getTime(self):
+        return self.minutes

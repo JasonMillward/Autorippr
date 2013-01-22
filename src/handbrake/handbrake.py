@@ -25,7 +25,7 @@ import commands
 #
 
 
-class handbrake(object):
+class HandBrake(object):
 
     """ Function:   _cleanUp
             Removes the log file and the input movie because these files are

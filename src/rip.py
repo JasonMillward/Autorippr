@@ -32,7 +32,7 @@ Enough with these comments, on to the code
 
 import os
 import ConfigParser
-from classes import makeMKV
+from makemkv import makeMKV
 
 #
 #   CONFIG VARIABLES
@@ -41,7 +41,7 @@ from classes import makeMKV
 REAL_PATH = os.path.dirname(os.path.realpath(__file__))
 
 config = ConfigParser.RawConfigParser()
-config.read('%s/settings.cfg' % REAL_PATH)
+config.read('%s/../settings.cfg' % REAL_PATH)
 
 MKV_SAVE_PATH = config.get('MAKEMKV', 'save_path')
 MKV_MIN_LENGTH = config.getint('MAKEMKV', 'min_length')
