@@ -58,45 +58,16 @@ USE_HANDBRAKE = config.getboolean('MAKEMKV', 'handbrake')
 
 MKVapi = makeMKV()
 
-# Find the disc or exit
-if (MKVapi.findDisc(MKV_TEMP_OUTPUT) == False):
-    # No disc
-    sys.exit()
+if (MKVapi.findDisc(MKV_TEMP_OUTPUT)):
+    movieTitle = MKVapi.getTitle()
 
-# Get the title
-movieTitle = MKVapi.getTitle()
+    if not os.path.exists('%s/%s' % (MKV_SAVE_PATH, movieTitle)):
+        os.makedirs('%s/%s' % (MKV_SAVE_PATH, movieTitle))
 
-# Check to see if the movie is already save in the movie directory
-if os.path.exists('%s/%s' % (MKV_SAVE_PATH, movieTitle)):
-    print "Movie folder already exists, will not overwrite."
-    sys.exit()
-
-# The movie directory doesn't exist.
-# Create a new directory for the movie
-os.makedirs('%s/%s' % (MKV_SAVE_PATH, movieTitle))
-
-# Display some status text for the user
-print " "
-print "Starting MakeMKV ripping process"
-
-# Get the time MakeMKV started
-startTime = datetime.datetime.now()
-
-MKVapi.ripDisc(path=MKV_SAVE_PATH,
-               length=MKV_MIN_LENGTH,
-               cache=MKV_CACHE_SIZE,
-               queue=USE_HANDBRAKE)
-
-# Get the time MakeMKV finished
-endTime = datetime.datetime.now()
-
-# Do some maths here
-totalTime = endTime - startTime
-
-# Convert the time into seconds, then turn it into minutes
-minutes = totalTime.seconds / 60
-
-# And... we're done. Show some final status messages
-print "MakeMKV ripping process completed"
-print " "
-print "It took %s minutes to complete the ripping of %s" % (minutes, movieTitle)
+        MKVapi.ripDisc(path=MKV_SAVE_PATH,
+                       length=MKV_MIN_LENGTH,
+                       cache=MKV_CACHE_SIZE,
+                       queue=USE_HANDBRAKE)
+    else:
+        print "Movie folder already exists, will not overwrite."
+        sys.exit()
