@@ -29,10 +29,32 @@ import re
 
 class makeMKV(object):
 
+    """ Function:   __init__
+            Removes the log file and the input movie because these files are
+                no longer needed by this script
+
+        Inputs:
+            log         (Str): File path of the log to remove
+            oldMovie    (Str): File path of the movie to remove
+
+        Outputs:
+            None
+    """
     def __init__(self):
         self.movieName = ""
         self.imdbScaper = imdb.IMDb()
 
+    """ Function:   _queueMovie
+            Removes the log file and the input movie because these files are
+                no longer needed by this script
+
+        Inputs:
+            log         (Str): File path of the log to remove
+            oldMovie    (Str): File path of the movie to remove
+
+        Outputs:
+            None
+    """
     def _queueMovie(self):
         home = os.path.expanduser("~")
         if os.path.exists('%s/.makemkvautoripper' % home) == False:
@@ -49,6 +71,17 @@ class makeMKV(object):
                 %
                 (self.path, self.movieName, movie, self.movieName))
 
+    """ Function:   _cleanTitle
+            Removes the log file and the input movie because these files are
+                no longer needed by this script
+
+        Inputs:
+            log         (Str): File path of the log to remove
+            oldMovie    (Str): File path of the movie to remove
+
+        Outputs:
+            None
+    """
     def _cleanTitle(self):
         tmpName = self.movieName
         # A little fix for extended editions (eg; Die Hard 4)
@@ -66,6 +99,17 @@ class makeMKV(object):
         # Clean up the edges and remove whitespace
         self.movieName = tmpName.strip()
 
+    """ Function:   ripDisc
+            Removes the log file and the input movie because these files are
+                no longer needed by this script
+
+        Inputs:
+            log         (Str): File path of the log to remove
+            oldMovie    (Str): File path of the movie to remove
+
+        Outputs:
+            None
+    """
     def ripDisc(self, path, length, cache, queue):
         self.path = path
         # Start the making of the mkv
@@ -80,6 +124,17 @@ class makeMKV(object):
             self._queueMovie()
         return True
 
+    """ Function:   findDisc
+            Removes the log file and the input movie because these files are
+                no longer needed by this script
+
+        Inputs:
+            log         (Str): File path of the log to remove
+            oldMovie    (Str): File path of the movie to remove
+
+        Outputs:
+            None
+    """
     def findDisc(self, output):
         # Execute the info gathering
         # Save output into /tmp/ for interpreting 3 or 4 lines later
@@ -102,6 +157,17 @@ class makeMKV(object):
             print "Disc detected in drive %s" % self.discIndex
             return True
 
+    """ Function:   getTitle
+            Removes the log file and the input movie because these files are
+                no longer needed by this script
+
+        Inputs:
+            log         (Str): File path of the log to remove
+            oldMovie    (Str): File path of the movie to remove
+
+        Outputs:
+            None
+    """
     def getTitle(self):
         self._cleanTitle()
 
