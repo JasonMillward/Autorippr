@@ -1,7 +1,7 @@
 """
-MakeMKV CLI Wrapper
+Simple timer class
 
-This class acts as a python wrapper to the MakeMKV CLI.
+This class provides simple functions for timing operations
 
 
 Released under the MIT license
@@ -31,9 +31,7 @@ class Timer(object):
 
     def stop(self):
         endTime = datetime.datetime.now()
-
         totalTime = endTime - self.startTime
-
         self.minutes = totalTime.seconds / 60
 
     def getTime(self):
