@@ -151,10 +151,8 @@ class makeMKV(object):
                     break
 
         if len(self.discIndex) == 0:
-            print "No disc detected"
             return False
         else:
-            print "Disc detected in drive %s" % self.discIndex
             return True
 
     """ Function:   getTitle
