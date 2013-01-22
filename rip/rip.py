@@ -31,8 +31,6 @@ Enough with these comments, on to the code
 #
 
 import os
-import datetime
-import sys
 import ConfigParser
 from makeMKV import makeMKV
 
@@ -44,7 +42,6 @@ REAL_PATH = os.path.dirname(os.path.realpath(__file__))
 
 config = ConfigParser.RawConfigParser()
 config.read('%s/../settings.cfg' % REAL_PATH)
-
 
 MKV_SAVE_PATH = config.get('MAKEMKV', 'save_path')
 MKV_MIN_LENGTH = config.getint('MAKEMKV', 'min_length')
@@ -70,4 +67,5 @@ if (MKVapi.findDisc(MKV_TEMP_OUTPUT)):
                        queue=USE_HANDBRAKE)
     else:
         print "Movie folder already exists, will not overwrite."
-        sys.exit()
+else:
+    print "Could not find valid DVD in drive list"
