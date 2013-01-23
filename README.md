@@ -1,6 +1,6 @@
 MakeMKV and HandBrake Automater
 ===============================
-
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/00d3ea266eebd4aa375bb7d1019a9a0e "githalytics.com")](http://githalytics.com/JasonMillward/makeMKV-Autoripper)
 
 This script uses [MakeMKV](http://makemkv.com/) to watch for DVDs or BDs that you own, grab the correct title from IMDb and rip it into your chosen movie directory and use [HandBrake](http://handbrake.fr/) to compress the video. All automagically.
 
@@ -27,7 +27,7 @@ Handbrake - For converting and compressing
 
 ### Installation
 
-1. Install the above prerequisites manually or if you're using Ubuntu (and possibly other Debian based distros) a nice [setup script](https://github.com/JasonMillward/makeMKV-Autoripper/blob/v1.1/setup/install.sh) has been included in the *setup* folder.
+1. Install the above prerequisites manually or if you're using Ubuntu (and possibly other Debian based distros) a nice [setup script](https://github.com/JasonMillward/makeMKV-Autoripper/blob/v1.2/setup/install.sh) has been included in the *setup* folder.
     * Originally created by [mechevar](http://www.makemkv.com/forum2/viewtopic.php?f=3&t=5266) but modified by me for easy install of all the required components.
 
 2. Clone this repo into a directory of your chosing
