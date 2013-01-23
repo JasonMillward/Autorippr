@@ -189,6 +189,7 @@ class HandBrake(object):
             print "Could not read output file, no cleanup will be done"
 
         if checks == 2:
+            self._updateQueue()
             self._cleanUp(cFile=inMovie)
             self._cleanUp(cFile=output)
             return True

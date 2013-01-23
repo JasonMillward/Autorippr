@@ -60,8 +60,6 @@ if not hb.findProcess():
 
         if hb.convert(args=HB_CLI, nice=HB_NICE, output=HB_OUT):
             print "Movie was compressed and encoded successfully"
-            print "Removing movie from queue"
-            hb.updateQueue()
 
             stopwatch.stop()
             print ("It took %s minutes to compress %s"
