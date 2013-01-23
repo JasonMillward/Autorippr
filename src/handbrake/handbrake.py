@@ -189,8 +189,20 @@ class HandBrake(object):
             print "Could not read output file, no cleanup will be done"
 
         if checks == 2:
-            return True
             self._cleanUp(cFile=inMovie)
             self._cleanUp(cFile=output)
+            return True
         else:
             return False
+
+    """ Function:   getMovieTitle
+            Returns the currently loaded movie title
+
+        Inputs:
+            None
+
+        Outputs:
+            self.movie  (Str): Movie title parsed from queue
+    """
+    def getMovieTitle(self):
+        return self.movie
