@@ -1,7 +1,7 @@
 """
 HandBrake queue parser
 
-Uses HandBrake to encode movies ripped by makeMKV
+Uses HandBrake to compress movies ripped by makeMKV
 
 
 This script can be run with a simple cron, every hour should be fine
@@ -32,6 +32,7 @@ Copyright (c) 2012, Jason Millward
 import os
 import ConfigParser
 from handbrake import HandBrake
+from timer import Timer
 
 #
 #   CONFIG VARIABLES
@@ -52,13 +53,23 @@ HB_OUT = config.get('HANDBRAKE', 'temp_output')
 
 hb = HandBrake()
 
-if hb.findProcess() == False:
+if not hb.findProcess():
     if hb.loadMovie():
-        print "Encoding..."
+        print "Encoding and compressing %s" % hb.getMovieTitle()
+        stopwatch = Timer()
+
         if hb.convert(args=HB_CLI, nice=HB_NICE, output=HB_OUT):
             print "Movie was compressed and encoded successfully"
             print "Removing movie from queue"
             hb.updateQueue()
+
+            stopwatch.stop()
+            print ("It took %s minutes to compress %s"
+                %
+                (stopwatch.getTime(), hb.getMovieTitle()))
+        else:
+            stopwatch.stop()
+            print "HandBrake did not complete successfully"
     else:
         print "Queue does not exist or is empty"
 else:
