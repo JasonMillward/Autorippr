@@ -35,7 +35,7 @@ Handbrake - For converting and compressing
 
 3. Check out a tagged *stable* release
     * To find available tags: ```git tag -l```
-    * eg: ```git checkout v1.1```
+    * eg: ```git checkout v1.2```
 
 4. Copy settings.blank.cfg to settings.cfg
 
@@ -46,12 +46,12 @@ Handbrake - For converting and compressing
 1. Insert a DVD
 
 2. Test script
-    1. ```python ~/makeMKV-Autoripper/rip/rip.py```
-    2. ```python ~/makeMKV-Autoripper/encode/encode.py```
+    1. ```python ~/makeMKV-Autoripper/src/rip.py```
+    2. ```python ~/makeMKV-Autoripper/src/encode.py```
 
 3. Upon successful testing, set up a crontab and insert a new DVD
-    * ```*/5     *       *       *       *       python ~/makeMKV-Autoripper/rip/rip.py```
-    * ```0       *       *       *       *       python ~/makeMKV-Autoripper/encode/encode.py```
+    * ```*/5     *       *       *       *       python ~/makeMKV-Autoripper/src/rip.py```
+    * ```0       *       *       *       *       python ~/makeMKV-Autoripper/src/encode.py```
 
 4. Procceed with whatever else you wanted to do today while casually changing discs
 
