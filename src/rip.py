@@ -33,6 +33,7 @@ Enough with these comments, on to the code
 import os
 import ConfigParser
 from makemkv import makeMKV
+from timer import Timer
 
 #
 #   CONFIG VARIABLES
@@ -61,11 +62,26 @@ if (MKVapi.findDisc(MKV_TEMP_OUTPUT)):
     if not os.path.exists('%s/%s' % (MKV_SAVE_PATH, movieTitle)):
         os.makedirs('%s/%s' % (MKV_SAVE_PATH, movieTitle))
 
-        MKVapi.ripDisc(path=MKV_SAVE_PATH,
+        stopwatch = Timer()
+
+        if MKVapi.ripDisc(path=MKV_SAVE_PATH,
                        length=MKV_MIN_LENGTH,
                        cache=MKV_CACHE_SIZE,
-                       queue=USE_HANDBRAKE)
+                       queue=USE_HANDBRAKE,
+                       output=MKV_TEMP_OUTPUT):
+
+            stopwatch.stop()
+
+            print ("It took %s minutes to complete the ripping of %s"
+                %
+                (stopwatch.getTime(), movieTitle))
+
+        else:
+            stopwatch.stop()
+            print "MakeMKV did not did not complete successfully"
+
     else:
         print "Movie folder already exists, will not overwrite."
+
 else:
     print "Could not find valid DVD in drive list"
