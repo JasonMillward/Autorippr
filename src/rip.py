@@ -65,10 +65,10 @@ if (MKVapi.findDisc(MKV_TEMP_OUTPUT)):
         stopwatch = Timer()
 
         if MKVapi.ripDisc(path=MKV_SAVE_PATH,
-                       length=MKV_MIN_LENGTH,
-                       cache=MKV_CACHE_SIZE,
-                       queue=USE_HANDBRAKE,
-                       output=MKV_TEMP_OUTPUT):
+                length=MKV_MIN_LENGTH,
+                cache=MKV_CACHE_SIZE,
+                queue=USE_HANDBRAKE,
+                output=MKV_TEMP_OUTPUT):
 
             stopwatch.stop()
 
