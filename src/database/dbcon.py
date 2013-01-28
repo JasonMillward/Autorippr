@@ -54,7 +54,7 @@ class dbCon(object):
 
     def _createStructure(self):
         with self.con:
-            print "Creating things"
+            #print "Creating things"
             cur = self.con.cursor()
             uSql = ("CREATE TABLE movies ("
                     "ID         INTEGER PRIMARY KEY AUTOINCREMENT, ",
@@ -68,7 +68,7 @@ class dbCon(object):
 
     def insert(self, path, inMovie, outMovie):
         with self.con:
-            print "Inserting things"
+            #print "Inserting things"
             cur = self.con.cursor()
             uSql = ("INSERT INTO movies ",
                     "(path, inMovie, outMovie, status, statusText) ",
@@ -79,7 +79,7 @@ class dbCon(object):
 
     def update(self, uid, status, text):
         with self.con:
-            print "Updating things"
+            #print "Updating things"
             cur = self.con.cursor()
             uSql = ("UPDATE  movies ",
                    "SET     status=?, ",
