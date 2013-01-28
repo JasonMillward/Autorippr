@@ -19,6 +19,7 @@ Copyright (c) 2012, Jason Millward
 
 import os
 import commands
+from database import dbCon
 
 #
 #   CODE
@@ -26,6 +27,9 @@ import commands
 
 
 class HandBrake(object):
+
+    def __init__(self):
+        self.db = dbCon()
 
     """ Function:   _cleanUp
             Removes the log file and the input movie because these files are
@@ -54,41 +58,8 @@ class HandBrake(object):
         Outputs:
             None
     """
-    def _updateQueue(self):
-        f = open("%s/.makemkvautoripper/queue" % self.home, "w")
-        for line in self.lines:
-            if (self.movie not in line):
-                f.write(line)
-
-        f.write("\n")
-        f.close()
-        self._cleanQueue()
-
-    """ Function:   _cleanQueue
-            Removes blank lines and excess new lines
-
-        Inputs:
-            None
-
-        Outputs:
-            None
-    """
-    def _cleanQueue(self):
-        try:
-            f = open("%s/.makemkvautoripper/queue" % self.home, "r")
-            lines = f.readlines()
-            f.close()
-        except:
-            print "Could not read queue file"
-
-        f = open("%s/.makemkvautoripper/queue" % self.home, "w")
-
-        for line in lines:
-            if (line.strip() != ""):
-                f.write(line)
-
-        f.write("\n")
-        f.close()
+    def _updateQueue(self, uStatus, uAdditional):
+        self.db.update(uid=self.ID, status=uStatus, text=uAdditional)
 
     """ Function:   findProcess
             Goes through all of the running proccess and tries to find the
@@ -123,27 +94,14 @@ class HandBrake(object):
             None
     """
     def loadMovie(self):
-        try:
-            self.home = os.path.expanduser("~")
-            self._cleanQueue()
-
-            if os.path.isfile("%s/.makemkvautoripper/queue" % self.home):
-                f = open("%s/.makemkvautoripper/queue" % self.home, "r")
-                self.lines = f.readlines()
-                f.close()
-
-                movie = self.lines[0].replace("\n", "")
-                movie = movie.split('|')
-
-                self.path = movie[0]
-                self.movie = movie[1]
-                self.inputMovie = movie[2]
-                self.outputMovie = movie[3]
-
-                return True
-            else:
-                return False
-        except:
+        movie = self.db.getNextMovie()
+        if isinstance(movie, tuple):
+            self.ID = movie[0]
+            self.path = movie[1]
+            self.inputMovie = movie[2]
+            self.outputMovie = movie[3]
+            return True
+        else:
             return False
 
     """ Function:   convert
@@ -164,9 +122,8 @@ class HandBrake(object):
             None
     """
     def convert(self, nice, args, output):
-        path = "%s/%s" % (self.path, self.movie)
-        inMovie = "%s/%s" % (path, self.inputMovie)
-        outMovie = "%s/%s" % (path, self.outputMovie)
+        inMovie = "%s/%s" % (self.path, self.inputMovie)
+        outMovie = "%s/%s" % (self.path, self.outputMovie)
 
         if not os.path.isfile(inMovie):
             print "Input file no longer exists"
@@ -189,11 +146,12 @@ class HandBrake(object):
             print "Could not read output file, no cleanup will be done"
 
         if checks == 2:
-            self._updateQueue()
+            self._updateQueue(uStatus="Complete", uAdditional="Job Done")
             self._cleanUp(cFile=inMovie)
             self._cleanUp(cFile=output)
             return True
         else:
+            self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
             return False
 
     """ Function:   getMovieTitle
@@ -206,4 +164,4 @@ class HandBrake(object):
             self.movie  (Str): Movie title parsed from queue
     """
     def getMovieTitle(self):
-        return self.movie
+        return self.outputMovie
