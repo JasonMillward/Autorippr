@@ -1,4 +1,5 @@
 *.py[co]
+test.py
 
 # Packages
 *.egg
@@ -28,3 +29,6 @@ pip-log.txt
 
 # Settings
 settings.cfg
+
+# SQLite database
+*.db

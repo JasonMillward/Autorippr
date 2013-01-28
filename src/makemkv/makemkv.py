@@ -21,6 +21,7 @@ import commands
 import imdb
 import os
 import re
+from database import dbCon
 
 #
 #   CODE
@@ -46,7 +47,7 @@ class makeMKV(object):
         self.imdbScaper = imdb.IMDb()
 
     """ Function:   _queueMovie
-            Adds the recently ripped movie to the queue file for the compress
+            Adds the recently ripped movie to the queue db for the compression
                 script to handle later on
 
         Inputs:
@@ -56,9 +57,8 @@ class makeMKV(object):
             None
     """
     def _queueMovie(self):
-        home = os.path.expanduser("~")
-        if os.path.exists('%s/.makemkvautoripper' % home) == False:
-            os.makedirs('%s/.makemkvautoripper' % home)
+        db = dbCon()
+        movie = ""
 
         os.chdir('%s/%s' % (self.path, self.movieName))
         for files in os.listdir("."):
@@ -66,10 +66,9 @@ class makeMKV(object):
                 movie = files
                 break
 
-        with open("%s/.makemkvautoripper/queue" % home, "a+") as myfile:
-            myfile.write("%s|%s|%s|%s.mkv\n"
-                %
-                (self.path, self.movieName, movie, self.movieName))
+        path = "%s/%s" % (self.path, self.movieName)
+        outMovie = "%s.mkv" % self.movieName
+        db.insert(path, inMovie=movie, outMovie=outMovie)
 
     """ Function:   _cleanTitle
             Removes the extra bits in the title and removes whitespace
@@ -163,7 +162,7 @@ class makeMKV(object):
                     self.movieName = drive[5]
                     break
 
-        if len(self.discIndex) == 0:
+        if len(self.discIndex) is 0 or len(self.movieName) < 4:
             return False
         else:
             return True
