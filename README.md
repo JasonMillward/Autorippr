@@ -27,7 +27,7 @@ Handbrake - For converting and compressing
 
 ### Installation
 
-1. Install the above prerequisites manually or if you're using Ubuntu (and possibly other Debian based distros) a nice [setup script](https://github.com/JasonMillward/makeMKV-Autoripper/blob/v1.2/setup/install.sh) has been included in the *setup* folder.
+1. Install the above prerequisites manually or if you're using Ubuntu (and possibly other Debian based distros) a nice [setup script](https://github.com/JasonMillward/makeMKV-Autoripper/blob/master/setup/install.sh) has been included in the *setup* folder.
     * Originally created by [mechevar](http://www.makemkv.com/forum2/viewtopic.php?f=3&t=5266) but modified by me for easy install of all the required components.
 
 2. Clone this repo into a directory of your chosing
