@@ -5,7 +5,7 @@
 
 sudo add-apt-repository ppa:stebbins/handbrake-releases
 sudo apt-get update
-sudo apt-get python install build-essential libc6-dev libssl-dev libexpat1-dev libgl1-mesa-dev libqt4-dev g++ python-imdbpy handbrake-cli
+sudo apt-get install python build-essential libc6-dev libssl-dev libexpat1-dev libgl1-mesa-dev libqt4-dev g++ python-imdbpy handbrake-cli
 
 cd /tmp/
 wget "http://www.makemkv.com/download/"
