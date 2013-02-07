@@ -17,6 +17,7 @@ Copyright (c) 2012, Jason Millward
 #   IMPORTS
 #
 
+import os
 import sqlite3
 
 #
@@ -28,8 +29,9 @@ class dbCon(object):
 
     def __init__(self):
         DATABASE = 'auto-ripper.db'
-        self.con = sqlite3.connect(DATABASE)
-        #   lid = cur.lastrowid
+        REAL_PATH = os.path.dirname(os.path.realpath(__file__))
+
+        self.con = sqlite3.connect('%s/../%s' % (REAL_PATH, DATABASE))
 
         if not self._tableExists():
             self._createStructure()
@@ -54,7 +56,6 @@ class dbCon(object):
 
     def _createStructure(self):
         with self.con:
-            #print "Creating things"
             cur = self.con.cursor()
             uSql = ("CREATE TABLE movies ("
                     "ID         INTEGER PRIMARY KEY AUTOINCREMENT, ",
@@ -68,7 +69,6 @@ class dbCon(object):
 
     def insert(self, path, inMovie, outMovie):
         with self.con:
-            #print "Inserting things"
             cur = self.con.cursor()
             uSql = ("INSERT INTO movies ",
                     "(path, inMovie, outMovie, status, statusText) ",
@@ -79,7 +79,6 @@ class dbCon(object):
 
     def update(self, uid, status, text):
         with self.con:
-            #print "Updating things"
             cur = self.con.cursor()
             uSql = ("UPDATE  movies ",
                    "SET     status=?, ",
@@ -97,3 +96,4 @@ class dbCon(object):
             cur.execute(''.join(uSql))
 
             return cur.fetchone()
+
