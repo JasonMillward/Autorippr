@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-command -v makemkvcon >/dev/null 2>&1 || { echo >&2 "I require makemkvcon but it's not installed.  Aborting."; exit 1; }
-command -v HandBrakeCLI >/dev/null 2>&1 || { echo >&2 "I require HandBrakeCLI but it's not installed.  Aborting."; exit 1; }
