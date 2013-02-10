@@ -9,7 +9,7 @@ install:
     - "./install.sh"
 
 script:
-    - python ./.travisTests.py
+    - ./.travisTests.py
 
 #notifications:
 #    email: false
