@@ -37,7 +37,7 @@ Handbrake - For converting and compressing
 
 3. Check out a tagged *stable* release
     * To find available tags: ```git tag -l```
-    * eg: ```git checkout v1.2```
+    * eg: ```git checkout v1.3```
 
 
 4. Copy settings.blank.cfg to settings.cfg
