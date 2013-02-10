@@ -20,7 +20,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.2, 2013-01-23 18:40:18 CST $;
+@version    $Id: 1.3, 2013-02-11 09:27:38 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
