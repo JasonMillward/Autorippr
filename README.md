@@ -54,12 +54,12 @@ Handbrake - For converting and compressing
 
 2. Test script
     1. ```python ~/makeMKV-Autoripper/src/rip.py```
-    2. ```python ~/makeMKV-Autoripper/src/encode.py```
+    2. ```python ~/makeMKV-Autoripper/src/compress.py```
 
 
 3. Upon successful testing, set up a crontab and insert a new DVD
     * ```*/5     *       *       *       *       python ~/makeMKV-Autoripper/src/rip.py```
-    * ```0       *       *       *       *       python ~/makeMKV-Autoripper/src/encode.py```
+    * ```0       *       *       *       *       python ~/makeMKV-Autoripper/src/compress.py```
 
 
 4. Procceed with whatever else you wanted to do today while casually changing discs
