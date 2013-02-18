@@ -10,7 +10,7 @@ This script uses [MakeMKV](http://makemkv.com/) to watch for DVDs or BDs that yo
 
 ### Prerequisites
 
-Python (Obviously)
+Python
 * Created using 2.7.3 but should work with similar versions
 
 MakeMKV
