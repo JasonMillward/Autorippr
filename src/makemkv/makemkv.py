@@ -162,7 +162,7 @@ class makeMKV(object):
                     self.movieName = drive[5]
                     break
 
-        if len(self.discIndex) is 0 or len(self.movieName) < 4:
+        if len(str(self.discIndex)) is 0 or len(str(self.movieName)) < 4:
             return False
         else:
             return True
