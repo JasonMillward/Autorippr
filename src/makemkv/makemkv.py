@@ -17,7 +17,7 @@ Copyright (c) 2012, Jason Millward
 #   IMPORTS
 #
 
-import commands
+import subprocess
 import imdb
 import os
 import re
@@ -113,24 +113,34 @@ class makeMKV(object):
     def ripDisc(self, path, length, cache, queue, output):
         self.path = path
 
-        args = (" --cache=%d --noscan --minlength=%d > %s"
-            % (cache, length, output))
+        fullPath = '%s/%s' % (self.path, self.movieName)
+        command = ['makemkvcon', 'mkv', 'disc:%s' % self.discIndex, '0', fullPath, '--cache=%d' % cache, '--noscan', '--minlength=%d' % length]
 
-        commands.getstatusoutput(
-            'makemkvcon mkv disc:%s 0 "%s/%s" %s'
-            %
-            (self.discIndex, self.path, self.movieName, args))
+        proc = subprocess.Popen(command, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        if proc.stderr is not None:
+            output = proc.stderr.read()
+            if len(output) is not 0:
+                print "MakeMKV encountered the following error: "
+                print output
+                print ""
+                return False
 
         checks = 0
-        try:
-            tempFile = open(output, 'r')
-            for line in tempFile.readlines():
-                if "Copy complete" in line:
-                    checks += 1
-                if "titles saved" in line:
-                    checks += 1
-        except:
-            print "Could not read output file"
+        output = proc.stdout.read()
+        lines = output.split("\n")
+        for line in lines:
+            if "skipped" in line:
+                continue
+
+            if "failed" in line.lower() or "Fail" in line.lower() or "error" in line.lower():
+                print line
+                return False
+
+            if "Copy complete" in line:
+                checks += 1
+
+            if "titles saved" in line:
+                checks += 1
 
         if checks >= 2:
             if queue:
@@ -150,11 +160,25 @@ class makeMKV(object):
             Success (Bool)
     """
     def findDisc(self, output):
-        commands.getstatusoutput('makemkvcon -r info > %s' % output)
+        proc = subprocess.Popen(['makemkvcon', '-r', 'info'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
-        # Open the info file from /tmp/
-        tempFile = open(output, 'r')
-        for line in tempFile.readlines():
+        output = proc.stderr.read()
+        if proc.stderr is not None:
+            if len(output) is not 0:
+                print "MakeMKV encountered the following error: "
+                print output
+                print ""
+                return False
+
+        output = proc.stdout.read()
+        if "This application version is too old." in output:
+            print "Your MakeMKV version is too old."
+            print "Please download the latest version at http://www.makemkv.com or enter a registration key to continue using the current version. \n"
+            return False
+
+        # Passed the simple tests, now check for disk drives
+        lines = output.split("\n")
+        for line in lines:
             if line[:4] == "DRV:":
                 if "/dev/" in line:
                     drive = line.split(',')
@@ -162,6 +186,7 @@ class makeMKV(object):
                     self.movieName = drive[5]
                     break
 
+        # Python :(
         if len(str(self.discIndex)) is 0 or len(str(self.movieName)) < 4:
             return False
         else:
