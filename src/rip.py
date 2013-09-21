@@ -31,6 +31,7 @@ Enough with these comments, on to the code
 #
 
 import os
+import sys
 import ConfigParser
 from makemkv import makeMKV
 from timer import Timer
@@ -58,6 +59,9 @@ MKVapi = makeMKV()
 
 if (MKVapi.findDisc(MKV_TEMP_OUTPUT)):
     movieTitle = MKVapi.getTitle()
+
+    print movieTitle
+    sys.exit()
 
     if not os.path.exists('%s/%s' % (MKV_SAVE_PATH, movieTitle)):
         os.makedirs('%s/%s' % (MKV_SAVE_PATH, movieTitle))
