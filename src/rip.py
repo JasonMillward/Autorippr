@@ -35,38 +35,45 @@ from timer import Timer
 DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "%s/../settings.cfg" % DIR
 
-def readValue(key):
+
+"""
+    read_value temp doc string
+"""
+def read_value(key):
     config = ConfigParser.RawConfigParser()
     config.read(CONFIG_FILE)
     toReturn = config.get('MAKEMKV', key)
     config = None
     return toReturn
 
+"""
+    rip temp doc string
+"""
 def rip():
-    MKV_SAVE_PATH = readValue('save_path')
-    MKV_MIN_LENGTH = readValue('min_length')
-    MKV_CACHE_SIZE = readValue('cache_MB')
-    MKV_TEMP_OUTPUT = readValue('temp_output')
-    USE_HANDBRAKE = readValue('handbrake')
+    mkv_save_path = read_value('save_path')
+    mkv_min_length = read_value('min_length')
+    mkv_cache_size = read_value('cache_MB')
+    mkv_tmp_output = read_value('temp_output')
+    use_handbrake = read_value('handbrake')
 
-    MKVAPI = makeMKV()
+    mkv_api = makeMKV()
 
-    if (MKVAPI.findDisc(MKV_TEMP_OUTPUT)):
-        movieTitle = MKVAPI.getTitle()
+    if (mkv_api.findDisc(mkv_tmp_output)):
+        movieTitle = mkv_api.getTitle()
 
         print movieTitle
         sys.exit()
 
-        if not os.path.exists('%s/%s' % (MKV_SAVE_PATH, movieTitle)):
-            os.makedirs('%s/%s' % (MKV_SAVE_PATH, movieTitle))
+        if not os.path.exists('%s/%s' % (mkv_save_path, movieTitle)):
+            os.makedirs('%s/%s' % (mkv_save_path, movieTitle))
 
             stopwatch = Timer()
 
-            if MKVAPI.ripDisc(path=MKV_SAVE_PATH,
-                    length=MKV_MIN_LENGTH,
-                    cache=MKV_CACHE_SIZE,
-                    queue=USE_HANDBRAKE,
-                    output=MKV_TEMP_OUTPUT):
+            if mkv_api.ripDisc(path=mkv_save_path,
+                    length=mkv_min_length,
+                    cache=mkv_cache_size,
+                    queue=use_handbrake,
+                    output=mkv_tmp_output):
 
                 stopwatch.stop()
 
