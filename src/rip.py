@@ -46,6 +46,7 @@ def read_value(key):
     config = None
     return to_return
 
+
 def rip():
     """
     rip temp docstring

@@ -25,50 +25,55 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-#
-#   IMPORTS
-#
-
 import os
 import ConfigParser
 from handbrake import HandBrake
 from timer import Timer
 
-#
-#   CONFIG VARIABLES
-#
 
-REAL_PATH = os.path.dirname(os.path.realpath(__file__))
+DIR = os.path.dirname(os.path.realpath(__file__))
+CONFIG_FILE = "%s/../settings.cfg" % DIR
 
-config = ConfigParser.RawConfigParser()
-config.read('%s/../settings.cfg' % REAL_PATH)
+def read_value(key):
+    """
+    read_value temp docstring
+    """
+    config = ConfigParser.RawConfigParser()
+    config.read(CONFIG_FILE)
+    to_return = config.get('HANDBRAKE', key)
+    config = None
+    return to_return
 
-HB_NICE = config.getint('HANDBRAKE', 'nice')
-HB_CLI = config.get('HANDBRAKE', 'com')
-HB_OUT = config.get('HANDBRAKE', 'temp_output')
 
-#
-#   CODE
-#
+def compress():
+    """
+    compress temp docstring
+    """
+    hb_nice = read_value('nice')
+    hb_cli = read_value('com')
+    hb_out = read_value('temp_output')
 
-hb = HandBrake()
+    hb_api = HandBrake()
 
-if not hb.findProcess():
-    if hb.loadMovie():
-        print "Encoding and compressing %s" % hb.getMovieTitle()
-        stopwatch = Timer()
+    if not hb_api.findProcess():
+        if hb_api.loadMovie():
+            print "Encoding and compressing %s" % hb_api.getMovieTitle()
+            stopwatch = Timer()
 
-        if hb.convert(args=HB_CLI, nice=HB_NICE, output=HB_OUT):
-            print "Movie was compressed and encoded successfully"
+            if hb_api.convert(args=hb_cli, nice=hb_nice, output=hb_out):
+                print "Movie was compressed and encoded successfully"
 
-            stopwatch.stop()
-            print ("It took %s minutes to compress %s"
-                %
-                (stopwatch.getTime(), hb.getMovieTitle()))
+                stopwatch.stop()
+                print ("It took %s minutes to compress %s"
+                    %
+                    (stopwatch.getTime(), hb_api.getMovieTitle()))
+            else:
+                stopwatch.stop()
+                print "HandBrake did not complete successfully"
         else:
-            stopwatch.stop()
-            print "HandBrake did not complete successfully"
+            print "Queue does not exist or is empty"
     else:
-        print "Queue does not exist or is empty"
-else:
-    print "Process already running skipper"
+        print "Process already running skipper"
+
+if __name__ == '__main__':
+    compress()
