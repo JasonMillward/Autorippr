@@ -26,66 +26,63 @@ Copyright (c) 2012, Jason Millward
 Enough with these comments, on to the code
 """
 
-#
-#   IMPORTS
-#
-
 import os
 import sys
 import ConfigParser
 from makemkv import makeMKV
 from timer import Timer
 
-#
-#   CONFIG VARIABLES
-#
+DIR = os.path.dirname(os.path.realpath(__file__))
+CONFIG_FILE = "%s/../settings.cfg" % DIR
 
-REAL_PATH = os.path.dirname(os.path.realpath(__file__))
+def readValue(key):
+    config = ConfigParser.RawConfigParser()
+    config.read(CONFIG_FILE)
+    toReturn = config.get('MAKEMKV', key)
+    config = None
+    return toReturn
 
-config = ConfigParser.RawConfigParser()
-config.read('%s/../settings.cfg' % REAL_PATH)
+def rip():
+    MKV_SAVE_PATH = readValue('save_path')
+    MKV_MIN_LENGTH = readValue('min_length')
+    MKV_CACHE_SIZE = readValue('cache_MB')
+    MKV_TEMP_OUTPUT = readValue('temp_output')
+    USE_HANDBRAKE = readValue('handbrake')
 
-MKV_SAVE_PATH = config.get('MAKEMKV', 'save_path')
-MKV_MIN_LENGTH = config.getint('MAKEMKV', 'min_length')
-MKV_CACHE_SIZE = config.getint('MAKEMKV', 'cache_MB')
-MKV_TEMP_OUTPUT = config.get('MAKEMKV', 'temp_output')
-USE_HANDBRAKE = config.getboolean('MAKEMKV', 'handbrake')
+    MKVAPI = makeMKV()
 
-#
-#   CODE
-#
+    if (MKVAPI.findDisc(MKV_TEMP_OUTPUT)):
+        movieTitle = MKVAPI.getTitle()
 
-MKVapi = makeMKV()
+        print movieTitle
+        sys.exit()
 
-if (MKVapi.findDisc(MKV_TEMP_OUTPUT)):
-    movieTitle = MKVapi.getTitle()
+        if not os.path.exists('%s/%s' % (MKV_SAVE_PATH, movieTitle)):
+            os.makedirs('%s/%s' % (MKV_SAVE_PATH, movieTitle))
 
-    print movieTitle
-    sys.exit()
+            stopwatch = Timer()
 
-    if not os.path.exists('%s/%s' % (MKV_SAVE_PATH, movieTitle)):
-        os.makedirs('%s/%s' % (MKV_SAVE_PATH, movieTitle))
+            if MKVAPI.ripDisc(path=MKV_SAVE_PATH,
+                    length=MKV_MIN_LENGTH,
+                    cache=MKV_CACHE_SIZE,
+                    queue=USE_HANDBRAKE,
+                    output=MKV_TEMP_OUTPUT):
 
-        stopwatch = Timer()
+                stopwatch.stop()
 
-        if MKVapi.ripDisc(path=MKV_SAVE_PATH,
-                length=MKV_MIN_LENGTH,
-                cache=MKV_CACHE_SIZE,
-                queue=USE_HANDBRAKE,
-                output=MKV_TEMP_OUTPUT):
+                print ("It took %s minutes to complete the ripping of %s"
+                    %
+                    (stopwatch.getTime(), movieTitle))
 
-            stopwatch.stop()
-
-            print ("It took %s minutes to complete the ripping of %s"
-                %
-                (stopwatch.getTime(), movieTitle))
+            else:
+                stopwatch.stop()
+                print "MakeMKV did not did not complete successfully"
 
         else:
-            stopwatch.stop()
-            print "MakeMKV did not did not complete successfully"
+            print "Movie folder already exists, will not overwrite."
 
     else:
-        print "Movie folder already exists, will not overwrite."
+        print "Could not find valid DVD in drive list"
 
-else:
-    print "Could not find valid DVD in drive list"
+if __name__ == '__main__':
+    rip()
