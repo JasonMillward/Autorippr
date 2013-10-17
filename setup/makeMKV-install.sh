@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# MakeMKV Install script
+#
+# Snippets used from Dan Kelly and mechevar
+# Modified by Jason Millward
+#
+# Script should be OS independant, removed a lot of ubuntu specific code
+#
+# Requirements:
+#   build-essential
+#   libc6-dev
+#   libssl-dev
+#   libexpat1-dev
+#   libgl1-mesa-dev
+#   libqt4-dev
+#   g++
+
+
 key=""
 makemkv_dir="$HOME/.MakeMKV"
 settings_file="$makemkv_dir/settings.conf"
