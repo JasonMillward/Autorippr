@@ -5,7 +5,7 @@
 # Snippets used from Dan Kelly and mechevar
 # Modified by Jason Millward
 #
-# Script should be OS independant, removed a lot of ubuntu specific code
+# Script should be OS independent, removed a lot of ubuntu specific code
 #
 # Requirements:
 #   build-essential
