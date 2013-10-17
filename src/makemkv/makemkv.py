@@ -30,33 +30,33 @@ from database import dbCon
 
 class makeMKV(object):
 
-    """ Function:   __init__
-            Initialises the variables that will be used in this class
-
-        Inputs:
-            None
-
-        Outputs:
-            None
-    """
     def __init__(self):
+        """ Function:   __init__
+                Initialises the variables that will be used in this class
+
+            Inputs:
+                None
+
+            Outputs:
+                None
+        """
         self.discIndex = 0
         self.movieName = ""
         self.path = ""
         self.movieName = ""
         self.imdbScaper = imdb.IMDb()
 
-    """ Function:   _queueMovie
-            Adds the recently ripped movie to the queue db for the compression
-                script to handle later on
-
-        Inputs:
-            None
-
-        Outputs:
-            None
-    """
     def _queueMovie(self):
+        """ Function:   _queueMovie
+                Adds the recently ripped movie to the queue db for the compression
+                    script to handle later on
+
+            Inputs:
+                None
+
+            Outputs:
+                None
+        """
         db = dbCon()
         movie = ""
 
@@ -70,16 +70,17 @@ class makeMKV(object):
         outMovie = "%s.mkv" % self.movieName
         db.insert(path, inMovie=movie, outMovie=outMovie)
 
-    """ Function:   _cleanTitle
-            Removes the extra bits in the title and removes whitespace
 
-        Inputs:
-            None
-
-        Outputs:
-            None
-    """
     def _cleanTitle(self):
+        """ Function:   _cleanTitle
+                Removes the extra bits in the title and removes whitespace
+
+            Inputs:
+                None
+
+            Outputs:
+                None
+        """
         tmpName = self.movieName
         # A little fix for extended editions (eg; Die Hard 4)
         tmpName = tmpName.title().replace("Extended_Edition", "")
@@ -96,21 +97,22 @@ class makeMKV(object):
         # Clean up the edges and remove whitespace
         self.movieName = tmpName.strip()
 
-    """ Function:   ripDisc
-            Passes in all of the arguments to makemkvcon to start the ripping
-                of the currently inserted DVD or BD
 
-        Inputs:
-            path    (Str):  Where the movie will be saved to
-            length  (Int):  Minimum length of the main movie
-            cache   (Int):  Cache in MB
-            queue   (Bool): Save movie into queue for compressing later
-            output  (Str):  Temp file to save output to
-
-        Outputs:
-            Success (Bool)
-    """
     def ripDisc(self, path, length, cache, queue, output):
+        """ Function:   ripDisc
+                Passes in all of the arguments to makemkvcon to start the ripping
+                    of the currently inserted DVD or BD
+
+            Inputs:
+                path    (Str):  Where the movie will be saved to
+                length  (Int):  Minimum length of the main movie
+                cache   (Int):  Cache in MB
+                queue   (Bool): Save movie into queue for compressing later
+                output  (Str):  Temp file to save output to
+
+            Outputs:
+                Success (Bool)
+        """
         self.path = path
 
         fullPath = '%s/%s' % (self.path, self.movieName)
@@ -149,17 +151,17 @@ class makeMKV(object):
         else:
             return False
 
-    """ Function:   findDisc
-            Use makemkvcon to list all DVDs or BDs inserted
-            If more then one disc is inserted, use the first result
-
-        Inputs:
-            output  (Str): Temp file to save output to
-
-        Outputs:
-            Success (Bool)
-    """
     def findDisc(self, output):
+        """ Function:   findDisc
+                Use makemkvcon to list all DVDs or BDs inserted
+                If more then one disc is inserted, use the first result
+
+            Inputs:
+                output  (Str): Temp file to save output to
+
+            Outputs:
+                Success (Bool)
+        """
         proc = subprocess.Popen(['makemkvcon', '-r', 'info'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
         output = proc.stderr.read()
@@ -192,16 +194,16 @@ class makeMKV(object):
         else:
             return True
 
-    """ Function:   getTitle
-            Returns the current movies title
-
-        Inputs:
-            None
-
-        Outputs:
-            movieName   (Str)
-    """
     def getTitle(self):
+        """ Function:   getTitle
+                Returns the current movies title
+
+            Inputs:
+                None
+
+            Outputs:
+                movieName   (Str)
+        """
         self._cleanTitle()
 
         result = self.imdbScaper.search_movie(self.movieName, results=1)
