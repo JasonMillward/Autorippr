@@ -46,6 +46,9 @@ def read_value(key):
 
 
 def compress():
+    """
+    compress temp docstring
+    """
     hb_nice = read_value('nice')
     hb_cli = read_value('com')
     hb_out = read_value('temp_output')
