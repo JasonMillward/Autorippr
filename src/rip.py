@@ -36,20 +36,20 @@ DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "%s/../settings.cfg" % DIR
 
 
-"""
-    read_value temp doc
-"""
 def read_value(key):
+    """
+    read_value temp docstring
+    """
     config = ConfigParser.RawConfigParser()
     config.read(CONFIG_FILE)
     to_return = config.get('MAKEMKV', key)
     config = None
     return to_return
 
-"""
-    rip temp doc string
-"""
 def rip():
+    """
+    rip temp docstring
+    """
     mkv_save_path = read_value('save_path')
     mkv_min_length = read_value('min_length')
     mkv_cache_size = read_value('cache_MB')
