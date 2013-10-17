@@ -198,14 +198,19 @@ class makeMKV(object):
             return False
 
         # Passed the simple tests, now check for disk drives
+        drives = []
         lines = output.split("\n")
         for line in lines:
             if line[:4] == "DRV:":
                 if "/dev/" in line:
-                    drive = line.split(',')
-                    self.discIndex = drive[0].replace("DRV:", "")
-                    self.movieName = drive[5]
-                    break
+                    out = line.split(',')
+                    drives.push(
+                        {
+                            "discIndex": out[0].replace("DRV:", ""),
+                            "movieName": out[5]
+                        }
+                    )
+
 
         # Python :(
         if len(str(self.discIndex)) is 0 or len(str(self.movieName)) < 4:
