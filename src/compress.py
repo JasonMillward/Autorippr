@@ -53,20 +53,20 @@ def compress():
     hb_cli = read_value('com')
     hb_out = read_value('temp_output')
 
-    hb = HandBrake()
+    hb_api = HandBrake()
 
-    if not hb.findProcess():
-        if hb.loadMovie():
-            print "Encoding and compressing %s" % hb.getMovieTitle()
+    if not hb_api.findProcess():
+        if hb_api.loadMovie():
+            print "Encoding and compressing %s" % hb_api.getMovieTitle()
             stopwatch = Timer()
 
-            if hb.convert(args=hb_cli, nice=hb_nice, output=hb_out):
+            if hb_api.convert(args=hb_cli, nice=hb_nice, output=hb_out):
                 print "Movie was compressed and encoded successfully"
 
                 stopwatch.stop()
                 print ("It took %s minutes to compress %s"
                     %
-                    (stopwatch.getTime(), hb.getMovieTitle()))
+                    (stopwatch.getTime(), hb_api.getMovieTitle()))
             else:
                 stopwatch.stop()
                 print "HandBrake did not complete successfully"
