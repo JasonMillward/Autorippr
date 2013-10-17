@@ -1,8 +1,6 @@
 """
 MakeMKV CLI Wrapper
 
-This class acts as a python wrapper to the MakeMKV CLI.
-
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward
@@ -13,22 +11,17 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-#
-#   IMPORTS
-#
-
 import subprocess
 import imdb
 import os
 import re
 from database import dbCon
 
-#
-#   CODE
-#
-
 
 class makeMKV(object):
+    """
+        This class acts as a python wrapper to the MakeMKV CLI.
+    """
 
     def __init__(self):
         """
