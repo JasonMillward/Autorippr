@@ -46,9 +46,9 @@ def read_value(key):
 
 
 def compress():
-    hb_nice = config.getint('HANDBRAKE', 'nice')
-    hb_cli = config.get('HANDBRAKE', 'com')
-    hb_out = config.get('HANDBRAKE', 'temp_output')
+    hb_nice = read_value('nice')
+    hb_cli = read_value('com')
+    hb_out = read_value('temp_output')
 
     hb = HandBrake()
 
