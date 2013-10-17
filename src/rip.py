@@ -37,14 +37,14 @@ CONFIG_FILE = "%s/../settings.cfg" % DIR
 
 
 """
-    read_value temp doc string
+    read_value temp doc
 """
 def read_value(key):
     config = ConfigParser.RawConfigParser()
     config.read(CONFIG_FILE)
-    toReturn = config.get('MAKEMKV', key)
+    to_return = config.get('MAKEMKV', key)
     config = None
-    return toReturn
+    return to_return
 
 """
     rip temp doc string
@@ -59,13 +59,13 @@ def rip():
     mkv_api = makeMKV()
 
     if (mkv_api.findDisc(mkv_tmp_output)):
-        movieTitle = mkv_api.getTitle()
+        movie_title = mkv_api.getTitle()
 
-        print movieTitle
+        print movie_title
         sys.exit()
 
-        if not os.path.exists('%s/%s' % (mkv_save_path, movieTitle)):
-            os.makedirs('%s/%s' % (mkv_save_path, movieTitle))
+        if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
+            os.makedirs('%s/%s' % (mkv_save_path, movie_title))
 
             stopwatch = Timer()
 
@@ -79,7 +79,7 @@ def rip():
 
                 print ("It took %s minutes to complete the ripping of %s"
                     %
-                    (stopwatch.getTime(), movieTitle))
+                    (stopwatch.getTime(), movie_title))
 
             else:
                 stopwatch.stop()
