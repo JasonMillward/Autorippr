@@ -59,38 +59,21 @@ def rip():
 
     mkv_api = makeMKV()
 
-    if (mkv_api.findDisc(mkv_tmp_output)):
-        movie_title = mkv_api.getTitle()
+    dvds = mkv_api.findDisc(mkv_tmp_output)
 
-        print movie_title
-        sys.exit()
+    if (len(dvds) > 0):
+        # Best naming convention ever
+        for dvd in dvds:
+            disc_index = dvd["discIndex"]
+            disc_title = dvd["discTitle"]
 
-        if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
-            os.makedirs('%s/%s' % (mkv_save_path, movie_title))
+            movie_title = mkv_api.getTitle(disc_title)
 
-            stopwatch = Timer()
+            print movie_title
 
-            if mkv_api.ripDisc(path=mkv_save_path,
-                    length=mkv_min_length,
-                    cache=mkv_cache_size,
-                    queue=use_handbrake,
-                    output=mkv_tmp_output):
-
-                stopwatch.stop()
-
-                print ("It took %s minutes to complete the ripping of %s"
-                    %
-                    (stopwatch.getTime(), movie_title))
-
-            else:
-                stopwatch.stop()
-                print "MakeMKV did not did not complete successfully"
-
-        else:
-            print "Movie folder already exists, will not overwrite."
 
     else:
-        print "Could not find valid DVD in drive list"
+        print "Could not find any DVDs in drive list"
 
 if __name__ == '__main__':
     rip()
