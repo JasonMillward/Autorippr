@@ -27,7 +27,6 @@ Enough with these comments, on to the code
 """
 
 import os
-import sys
 import ConfigParser
 from makemkv import makeMKV
 from timer import Timer
@@ -52,45 +51,50 @@ def rip():
     rip temp docstring
     """
     mkv_save_path = read_value('save_path')
-    mkv_min_length = read_value('min_length')
-    mkv_cache_size = read_value('cache_MB')
+    mkv_min_length = int(read_value('min_length'))
+    mkv_cache_size = int(read_value('cache_MB'))
     mkv_tmp_output = read_value('temp_output')
-    use_handbrake = read_value('handbrake')
+    use_handbrake = bool(read_value('handbrake'))
 
     mkv_api = makeMKV()
 
-    if (mkv_api.findDisc(mkv_tmp_output)):
-        movie_title = mkv_api.getTitle()
+    dvds = mkv_api.findDisc(mkv_tmp_output)
 
-        print movie_title
-        sys.exit()
+    if (len(dvds) > 0):
+        # Best naming convention ever
+        for dvd in dvds:
+            mkv_api.setTitle(dvd["discTitle"])
+            mkv_api.setIndex(dvd["discIndex"])
 
-        if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
-            os.makedirs('%s/%s' % (mkv_save_path, movie_title))
+            movie_title = mkv_api.getTitle()
 
-            stopwatch = Timer()
+            if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
+                os.makedirs('%s/%s' % (mkv_save_path, movie_title))
 
-            if mkv_api.ripDisc(path=mkv_save_path,
-                    length=mkv_min_length,
-                    cache=mkv_cache_size,
-                    queue=use_handbrake,
-                    output=mkv_tmp_output):
+                stopwatch = Timer()
 
-                stopwatch.stop()
+                if mkv_api.ripDisc(path=mkv_save_path,
+                        length=mkv_min_length,
+                        cache=mkv_cache_size,
+                        queue=use_handbrake,
+                        output=mkv_tmp_output):
 
-                print ("It took %s minutes to complete the ripping of %s"
-                    %
-                    (stopwatch.getTime(), movie_title))
+                    stopwatch.stop()
+
+                    print ("It took %s minutes to complete the ripping of %s"
+                        %
+                        (stopwatch.getTime(), movie_title))
+
+                else:
+                    stopwatch.stop()
+                    print "MakeMKV did not did not complete successfully"
+                    print "Movie title: %s" % movie_title
 
             else:
-                stopwatch.stop()
-                print "MakeMKV did not did not complete successfully"
-
-        else:
-            print "Movie folder already exists, will not overwrite."
+                print "Movie folder %s already exists" % movie_title
 
     else:
-        print "Could not find valid DVD in drive list"
+        print "Could not find any DVDs in drive list"
 
 if __name__ == '__main__':
     rip()

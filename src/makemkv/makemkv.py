@@ -91,6 +91,14 @@ class makeMKV(object):
         self.movieName = tmpName.strip()
 
 
+    def setTitle(self, movieName):
+        self.movieName = movieName
+
+
+    def setIndex(self, index):
+        self.discIndex = index
+
+
     def ripDisc(self, path, length, cache, queue, output):
         """
             Passes in all of the arguments to makemkvcon to start the ripping
@@ -198,20 +206,24 @@ class makeMKV(object):
             return False
 
         # Passed the simple tests, now check for disk drives
+        drives = []
         lines = output.split("\n")
         for line in lines:
             if line[:4] == "DRV:":
                 if "/dev/" in line:
-                    drive = line.split(',')
-                    self.discIndex = drive[0].replace("DRV:", "")
-                    self.movieName = drive[5]
-                    break
+                    out = line.split(',')
 
-        # Python :(
-        if len(str(self.discIndex)) is 0 or len(str(self.movieName)) < 4:
-            return False
-        else:
-            return True
+                    if len(str(out[5])) > 3:
+
+                        drives.append(
+                            {
+                                "discIndex": out[0].replace("DRV:", ""),
+                                "discTitle": out[5]
+                            }
+                        )
+
+        return drives
+
 
     def getTitle(self):
         """
@@ -225,9 +237,16 @@ class makeMKV(object):
         """
         self._cleanTitle()
 
-        result = self.imdbScaper.search_movie(self.movieName, results=1)
+        print self.movieName
 
-        if len(result) > 0:
-            self.movieName = result[0]
+        # Socket or connection errors
+        try:
+            result = self.imdbScaper.search_movie(self.movieName, results=1)
+
+            if len(result) > 0:
+                self.movieName = result[0]
+
+        except:
+            pass
 
         return self.movieName
