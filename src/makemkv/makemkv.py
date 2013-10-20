@@ -204,19 +204,18 @@ class makeMKV(object):
             if line[:4] == "DRV:":
                 if "/dev/" in line:
                     out = line.split(',')
-                    drives.push(
-                        {
-                            "discIndex": out[0].replace("DRV:", ""),
-                            "movieName": out[5]
-                        }
-                    )
 
+                    if len(str(out[5])) > 3:
 
-        # Python :(
-        if len(str(self.discIndex)) is 0 or len(str(self.movieName)) < 4:
-            return False
-        else:
-            return True
+                        drives.append(
+                            {
+                                "discIndex": out[0].replace("DRV:", ""),
+                                "discTitle": out[5]
+                            }
+                        )
+
+        return drives
+
 
     def getTitle(self, discTitle):
         """
