@@ -237,8 +237,6 @@ class makeMKV(object):
         """
         self._cleanTitle()
 
-        print self.movieName
-
         # Socket or connection errors
         try:
             result = self.imdbScaper.search_movie(self.movieName, results=1)
