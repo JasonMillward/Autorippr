@@ -64,7 +64,7 @@ class makeMKV(object):
         db.insert(path, inMovie=movie, outMovie=outMovie)
 
 
-    def _cleanTitle(self):
+    def _cleanTitle(self, discTitle):
         """
             Removes the extra bits in the title and removes whitespace
 
@@ -74,7 +74,7 @@ class makeMKV(object):
             Outputs:
                 None
         """
-        tmpName = self.movieName
+        tmpName = discTitle
         # A little fix for extended editions (eg; Die Hard 4)
         tmpName = tmpName.title().replace("Extended_Edition", "")
 
@@ -88,7 +88,7 @@ class makeMKV(object):
         tmpName = tmpName.replace("\"", "").replace("_", " ")
 
         # Clean up the edges and remove whitespace
-        self.movieName = tmpName.strip()
+        return tmpName.strip()
 
 
     def ripDisc(self, path, length, cache, queue, output):
@@ -218,7 +218,7 @@ class makeMKV(object):
         else:
             return True
 
-    def getTitle(self):
+    def getTitle(self, discTitle):
         """
             Returns the current movies title
 
@@ -228,11 +228,11 @@ class makeMKV(object):
             Outputs:
                 movieName   (Str)
         """
-        self._cleanTitle()
+        movieName = self._cleanTitle(discTitle)
 
-        result = self.imdbScaper.search_movie(self.movieName, results=1)
+        result = self.imdbScaper.search_movie(discTitle, results=1)
 
         if len(result) > 0:
-            self.movieName = result[0]
+            movieName = result[0]
 
-        return self.movieName
+        return movieName
