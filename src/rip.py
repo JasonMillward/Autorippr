@@ -27,7 +27,6 @@ Enough with these comments, on to the code
 """
 
 import os
-import sys
 import ConfigParser
 from makemkv import makeMKV
 from timer import Timer
@@ -92,7 +91,9 @@ def rip():
                     print "Movie title: %s" % movie_title
 
             else:
-                print "Movie folder %s already exists, will not overwrite." % movie_title
+                print "Movie folder %s already exists, will not overwrite." 
+                % 
+                movie_title
 
     else:
         print "Could not find any DVDs in drive list"
