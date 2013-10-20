@@ -64,10 +64,10 @@ def rip():
     if (len(dvds) > 0):
         # Best naming convention ever
         for dvd in dvds:
-            disc_index = dvd["discIndex"]
-            disc_title = dvd["discTitle"]
+            mkv_api.setTitle(dvd["discTitle"])
+            mkv_api.setIndex(dvd["discIndex"])
 
-            movie_title = mkv_api.getTitle(disc_title)
+            movie_title = mkv_api.getTitle()
 
             print movie_title
 
