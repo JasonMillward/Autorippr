@@ -91,9 +91,7 @@ def rip():
                     print "Movie title: %s" % movie_title
 
             else:
-                print "Movie folder %s already exists, will not overwrite." 
-                % 
-                movie_title
+                print "Movie folder %s already exists" % movie_title
 
     else:
         print "Could not find any DVDs in drive list"
