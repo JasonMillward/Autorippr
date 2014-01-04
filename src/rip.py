@@ -74,10 +74,10 @@ def rip():
             mkv_api.setTitle(dvd["discTitle"])
             mkv_api.setIndex(dvd["discIndex"])
 
-            movie_title = mkv_api.getTitle()
+            if not os.path.exists('%s/%s' % (mkv_save_path, dvd["discTitle"])):
+                os.makedirs('%s/%s' % (mkv_save_path, dvd["discTitle"]))
 
-            if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
-                os.makedirs('%s/%s' % (mkv_save_path, movie_title))
+                movie_title = mkv_api.getTitle()
 
                 stopwatch = Timer()
 
