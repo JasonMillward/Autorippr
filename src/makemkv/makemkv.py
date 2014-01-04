@@ -99,7 +99,7 @@ class makeMKV(object):
 
 
     def setIndex(self, index):
-        self.discIndex = index
+        self.discIndex = int(index)
 
 
     def ripDisc(self, path, length, cache, queue, output):
