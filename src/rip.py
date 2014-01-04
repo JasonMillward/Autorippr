@@ -59,12 +59,12 @@ def rip():
         Returns nothing
     """
     mkv_save_path = read_value('save_path')
-    mkv_min_length = int(read_value('min_length'))
-    mkv_cache_size = int(read_value('cache_MB'))
     mkv_tmp_output = read_value('temp_output')
-    use_handbrake = bool(read_value('handbrake'))
 
-    mkv_api = makeMKV()
+
+    mkv_api = makeMKV(read_value('min_length'),
+        read_value('cache_MB'),
+        read_value('handbrake'))
 
     dvds = mkv_api.findDisc(mkv_tmp_output)
 

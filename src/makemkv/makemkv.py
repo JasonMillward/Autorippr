@@ -23,7 +23,7 @@ class makeMKV(object):
         This class acts as a python wrapper to the MakeMKV CLI.
     """
 
-    def __init__(self):
+    def __init__(self, minLength, cacheSize, useHandbrake):
         """
             Initialises the variables that will be used in this class
 
@@ -38,6 +38,9 @@ class makeMKV(object):
         self.path = ""
         self.movieName = ""
         self.imdbScaper = imdb.IMDb()
+        self.minLength = int(minLength)
+        self.cacheSize = int(cacheSize)
+        self.useHandbrake = bool(useHandbrake)
 
     def _queueMovie(self):
         """
