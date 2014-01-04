@@ -225,7 +225,7 @@ class makeMKV(object):
         return drives
 
 
-    def getDiscInfo(self, discID):
+    def getDiscInfo(self):
         """
             Returns information about the selected disc
 
@@ -237,13 +237,19 @@ class makeMKV(object):
         """
 
         proc = subprocess.Popen(
-            ['makemkvcon', '-r', 'info', 'disc:%d' % discID],
+            [
+                'makemkvcon',
+                '-r',
+                'info',
+                'disc:%d' % self.discIndex,
+                '--minlength=%d' % self.minLength
+            ],
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
 
-        output = proc.stdout.read()
-
+        for line in proc.stdout:
+            print line.strip()
 
     def getTitle(self):
         """
