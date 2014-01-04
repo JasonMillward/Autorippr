@@ -225,6 +225,26 @@ class makeMKV(object):
         return drives
 
 
+    def getDiscInfo(self, discID):
+        """
+            Returns information about the selected disc
+
+            Inputs:
+                None
+
+            Outputs:
+                None
+        """
+
+        proc = subprocess.Popen(
+            ['makemkvcon', '-r', 'info', 'disc:%d' % discID],
+            stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE
+        )
+
+        output = proc.stdout.read()
+
+
     def getTitle(self):
         """
             Returns the current movies title
