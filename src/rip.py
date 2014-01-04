@@ -37,7 +37,13 @@ CONFIG_FILE = "%s/../settings.cfg" % DIR
 
 def read_value(key):
     """
-    read_value temp docstring
+        Reads the config file and returns the values
+
+        Inputs:
+            key         (Str)
+
+        Outputs:
+            to_return   (Str)
     """
     config = ConfigParser.RawConfigParser()
     config.read(CONFIG_FILE)
@@ -48,7 +54,9 @@ def read_value(key):
 
 def rip():
     """
-    rip temp docstring
+        Main function for ripping
+        Does everything
+        Returns nothing
     """
     mkv_save_path = read_value('save_path')
     mkv_min_length = int(read_value('min_length'))
