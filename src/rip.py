@@ -82,11 +82,7 @@ def rip():
                 """
                 stopwatch = Timer()
 
-                if mkv_api.ripDisc(path=mkv_save_path,
-                        length=mkv_min_length,
-                        cache=mkv_cache_size,
-                        queue=use_handbrake,
-                        output=mkv_tmp_output):
+                if mkv_api.ripDisc(mkv_save_path, mkv_tmp_output):
 
                     stopwatch.stop()
 

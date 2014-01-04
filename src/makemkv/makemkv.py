@@ -102,16 +102,13 @@ class makeMKV(object):
         self.discIndex = int(index)
 
 
-    def ripDisc(self, path, length, cache, queue, output):
+    def ripDisc(self, path, output):
         """
             Passes in all of the arguments to makemkvcon to start the ripping
                 of the currently inserted DVD or BD
 
             Inputs:
                 path    (Str):  Where the movie will be saved to
-                length  (Int):  Minimum length of the main movie
-                cache   (Int):  Cache in MB
-                queue   (Bool): Save movie into queue for compressing later
                 output  (Str):  Temp file to save output to
 
             Outputs:
@@ -123,12 +120,12 @@ class makeMKV(object):
         command = [
             'makemkvcon',
             'mkv',
-            'disc:%s' % self.discIndex,
+            'disc:%d' % self.discIndex,
             '0',
             fullPath,
-            '--cache=%d' % cache,
+            '--cache=%d' % self.cacheSize,
             '--noscan',
-            '--minlength=%d' % length
+            '--minlength=%d' % self.minLength
         ]
 
         proc = subprocess.Popen(
@@ -169,7 +166,7 @@ class makeMKV(object):
                 checks += 1
 
         if checks >= 2:
-            if queue:
+            if self.useHandbrake:
                 self._queueMovie()
             return True
         else:
