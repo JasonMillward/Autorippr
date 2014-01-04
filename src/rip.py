@@ -79,6 +79,7 @@ def rip():
 
                 movie_title = mkv_api.getTitle()
 
+                """
                 stopwatch = Timer()
 
                 if mkv_api.ripDisc(path=mkv_save_path,
@@ -97,7 +98,7 @@ def rip():
                     stopwatch.stop()
                     print "MakeMKV did not did not complete successfully"
                     print "Movie title: %s" % movie_title
-
+                """
             else:
                 print "Movie folder %s already exists" % movie_title
 
