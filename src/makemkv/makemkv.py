@@ -258,8 +258,9 @@ class makeMKV(object):
                 print ""
                 return False
 
-        print self.readMKVMessages("TCOUNT")
-        print self.readMKVMessages("TINFO", 0)
+        #self.readMKVMessages("TCOUNT")
+        #for titleNo in set(self.readMKVMessages("TINFO")):
+        #    print titleNo
 
 
     def readMKVMessages(self, search, searchIndex = None):
