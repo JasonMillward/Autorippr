@@ -244,14 +244,53 @@ class makeMKV(object):
                 '-r',
                 'info',
                 'disc:%d' % self.discIndex,
-                '--minlength=%d' % self.minLength
+                '--minlength=%d' % self.minLength,
+                '--messages=/tmp/makemkvMessages'
             ],
-            stderr=subprocess.PIPE,
-            stdout=subprocess.PIPE
+            stderr=subprocess.PIPE
         )
 
-        for line in proc.stdout:
-            print line.strip()
+        output = proc.stderr.read()
+        if proc.stderr is not None:
+            if len(output) is not 0:
+                print "MakeMKV encountered the following error: "
+                print output
+                print ""
+                return False
+
+        print self.readMKVMessages("TCOUNT")
+        print self.readMKVMessages("TINFO", 0)
+
+
+    def readMKVMessages(self, search, searchIndex = None):
+        """
+            Returns a list of messages that match the search string
+
+            Inputs:
+                search      (Str)
+                searchIndex (Str)
+
+            Outputs:
+                toReturn    (List)
+        """
+        toReturn = []
+        with open('/tmp/makemkvMessages', 'r') as messages:
+            for line in messages:
+                if line[:len(search)] == search:
+                    values = line.replace("%s:" % search, "").strip()
+
+                    cr = csv.reader([values])
+
+                    if searchIndex is not None:
+                        for row in cr:
+                            if int(row[0]) == int(searchIndex):
+                                print row
+                                toReturn.append(row[3])
+                    else:
+                        for row in cr:
+                            toReturn.append(row[0])
+
+        return toReturn
 
     def getTitle(self):
         """
