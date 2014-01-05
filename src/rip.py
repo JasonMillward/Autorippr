@@ -75,13 +75,12 @@ def rip():
             mkv_api.setIndex(dvd["discIndex"])
 
             if not os.path.exists('%s/%s' % (mkv_save_path, dvd["discTitle"])):
-                #os.makedirs('%s/%s' % (mkv_save_path, dvd["discTitle"]))
+                os.makedirs('%s/%s' % (mkv_save_path, dvd["discTitle"]))
 
                 mkv_api.getDiscInfo()
 
-                #movie_title = mkv_api.getTitle()
+                movie_title = mkv_api.getTitle()
 
-                """
                 stopwatch = Timer()
 
                 if mkv_api.ripDisc(mkv_save_path, mkv_tmp_output):
@@ -96,7 +95,6 @@ def rip():
                     stopwatch.stop()
                     print "MakeMKV did not did not complete successfully"
                     print "Movie title: %s" % movie_title
-                """
             else:
                 print "Movie folder %s already exists" % movie_title
 
