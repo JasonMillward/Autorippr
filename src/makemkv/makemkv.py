@@ -15,6 +15,7 @@ import subprocess
 import imdb
 import os
 import re
+import csv
 from database import dbCon
 
 
@@ -183,6 +184,7 @@ class makeMKV(object):
             Outputs:
                 Success (Bool)
         """
+        drives = []
         proc = subprocess.Popen(
             ['makemkvcon', '-r', 'info'],
             stderr=subprocess.PIPE,
@@ -195,7 +197,7 @@ class makeMKV(object):
                 print "MakeMKV encountered the following error: "
                 print output
                 print ""
-                return False
+                return []
 
         output = proc.stdout.read()
         if "This application version is too old." in output:
@@ -203,10 +205,10 @@ class makeMKV(object):
                 "Please download the latest version at http://www.makemkv.com" \
                 " or enter a registration key to continue using MakeMKV."
 
-            return False
+            return []
 
         # Passed the simple tests, now check for disk drives
-        drives = []
+
         lines = output.split("\n")
         for line in lines:
             if line[:4] == "DRV:":
