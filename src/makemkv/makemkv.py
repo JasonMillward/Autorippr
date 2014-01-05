@@ -15,6 +15,7 @@ import subprocess
 import imdb
 import os
 import re
+import csv
 from database import dbCon
 
 
@@ -23,7 +24,7 @@ class makeMKV(object):
         This class acts as a python wrapper to the MakeMKV CLI.
     """
 
-    def __init__(self):
+    def __init__(self, minLength, cacheSize, useHandbrake):
         """
             Initialises the variables that will be used in this class
 
@@ -38,6 +39,9 @@ class makeMKV(object):
         self.path = ""
         self.movieName = ""
         self.imdbScaper = imdb.IMDb()
+        self.minLength = int(minLength)
+        self.cacheSize = int(cacheSize)
+        self.useHandbrake = bool(useHandbrake)
 
     def _queueMovie(self):
         """
@@ -96,19 +100,16 @@ class makeMKV(object):
 
 
     def setIndex(self, index):
-        self.discIndex = index
+        self.discIndex = int(index)
 
 
-    def ripDisc(self, path, length, cache, queue, output):
+    def ripDisc(self, path, output):
         """
             Passes in all of the arguments to makemkvcon to start the ripping
                 of the currently inserted DVD or BD
 
             Inputs:
                 path    (Str):  Where the movie will be saved to
-                length  (Int):  Minimum length of the main movie
-                cache   (Int):  Cache in MB
-                queue   (Bool): Save movie into queue for compressing later
                 output  (Str):  Temp file to save output to
 
             Outputs:
@@ -120,12 +121,12 @@ class makeMKV(object):
         command = [
             'makemkvcon',
             'mkv',
-            'disc:%s' % self.discIndex,
+            'disc:%d' % self.discIndex,
             '0',
             fullPath,
-            '--cache=%d' % cache,
+            '--cache=%d' % self.cacheSize,
             '--noscan',
-            '--minlength=%d' % length
+            '--minlength=%d' % self.minLength
         ]
 
         proc = subprocess.Popen(
@@ -166,7 +167,7 @@ class makeMKV(object):
                 checks += 1
 
         if checks >= 2:
-            if queue:
+            if self.useHandbrake:
                 self._queueMovie()
             return True
         else:
@@ -183,6 +184,7 @@ class makeMKV(object):
             Outputs:
                 Success (Bool)
         """
+        drives = []
         proc = subprocess.Popen(
             ['makemkvcon', '-r', 'info'],
             stderr=subprocess.PIPE,
@@ -195,7 +197,7 @@ class makeMKV(object):
                 print "MakeMKV encountered the following error: "
                 print output
                 print ""
-                return False
+                return []
 
         output = proc.stdout.read()
         if "This application version is too old." in output:
@@ -203,10 +205,10 @@ class makeMKV(object):
                 "Please download the latest version at http://www.makemkv.com" \
                 " or enter a registration key to continue using MakeMKV."
 
-            return False
+            return []
 
         # Passed the simple tests, now check for disk drives
-        drives = []
+
         lines = output.split("\n")
         for line in lines:
             if line[:4] == "DRV:":
@@ -224,6 +226,72 @@ class makeMKV(object):
 
         return drives
 
+
+    def getDiscInfo(self):
+        """
+            Returns information about the selected disc
+
+            Inputs:
+                None
+
+            Outputs:
+                None
+        """
+
+        proc = subprocess.Popen(
+            [
+                'makemkvcon',
+                '-r',
+                'info',
+                'disc:%d' % self.discIndex,
+                '--minlength=%d' % self.minLength,
+                '--messages=/tmp/makemkvMessages'
+            ],
+            stderr=subprocess.PIPE
+        )
+
+        output = proc.stderr.read()
+        if proc.stderr is not None:
+            if len(output) is not 0:
+                print "MakeMKV encountered the following error: "
+                print output
+                print ""
+                return False
+
+        #self.readMKVMessages("TCOUNT")
+        #for titleNo in set(self.readMKVMessages("TINFO")):
+        #    print titleNo
+
+
+    def readMKVMessages(self, search, searchIndex = None):
+        """
+            Returns a list of messages that match the search string
+
+            Inputs:
+                search      (Str)
+                searchIndex (Str)
+
+            Outputs:
+                toReturn    (List)
+        """
+        toReturn = []
+        with open('/tmp/makemkvMessages', 'r') as messages:
+            for line in messages:
+                if line[:len(search)] == search:
+                    values = line.replace("%s:" % search, "").strip()
+
+                    cr = csv.reader([values])
+
+                    if searchIndex is not None:
+                        for row in cr:
+                            if int(row[0]) == int(searchIndex):
+                                print row
+                                toReturn.append(row[3])
+                    else:
+                        for row in cr:
+                            toReturn.append(row[0])
+
+        return toReturn
 
     def getTitle(self):
         """

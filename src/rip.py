@@ -37,7 +37,13 @@ CONFIG_FILE = "%s/../settings.cfg" % DIR
 
 def read_value(key):
     """
-    read_value temp docstring
+        Reads the config file and returns the values
+
+        Inputs:
+            key         (Str)
+
+        Outputs:
+            to_return   (Str)
     """
     config = ConfigParser.RawConfigParser()
     config.read(CONFIG_FILE)
@@ -48,15 +54,17 @@ def read_value(key):
 
 def rip():
     """
-    rip temp docstring
+        Main function for ripping
+        Does everything
+        Returns nothing
     """
     mkv_save_path = read_value('save_path')
-    mkv_min_length = int(read_value('min_length'))
-    mkv_cache_size = int(read_value('cache_MB'))
     mkv_tmp_output = read_value('temp_output')
-    use_handbrake = bool(read_value('handbrake'))
 
-    mkv_api = makeMKV()
+
+    mkv_api = makeMKV(read_value('min_length'),
+        read_value('cache_MB'),
+        read_value('handbrake'))
 
     dvds = mkv_api.findDisc(mkv_tmp_output)
 
@@ -66,18 +74,16 @@ def rip():
             mkv_api.setTitle(dvd["discTitle"])
             mkv_api.setIndex(dvd["discIndex"])
 
-            movie_title = mkv_api.getTitle()
+            if not os.path.exists('%s/%s' % (mkv_save_path, dvd["discTitle"])):
+                os.makedirs('%s/%s' % (mkv_save_path, dvd["discTitle"]))
 
-            if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
-                os.makedirs('%s/%s' % (mkv_save_path, movie_title))
+                mkv_api.getDiscInfo()
+
+                movie_title = mkv_api.getTitle()
 
                 stopwatch = Timer()
 
-                if mkv_api.ripDisc(path=mkv_save_path,
-                        length=mkv_min_length,
-                        cache=mkv_cache_size,
-                        queue=use_handbrake,
-                        output=mkv_tmp_output):
+                if mkv_api.ripDisc(mkv_save_path, mkv_tmp_output):
 
                     stopwatch.stop()
 
@@ -89,7 +95,6 @@ def rip():
                     stopwatch.stop()
                     print "MakeMKV did not did not complete successfully"
                     print "Movie title: %s" % movie_title
-
             else:
                 print "Movie folder %s already exists" % movie_title
 
