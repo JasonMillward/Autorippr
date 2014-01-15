@@ -32,3 +32,6 @@ settings.cfg
 
 # SQLite database
 *.db
+
+# Log files
+makeMKV-Autoripper.log
