@@ -29,6 +29,7 @@ Enough with these comments, on to the code
 import os
 import ConfigParser
 from makemkv import makeMKV
+from logger import Logger
 from timer import Timer
 
 DIR = os.path.dirname(os.path.realpath(__file__))
@@ -58,15 +59,24 @@ def rip():
         Does everything
         Returns nothing
     """
+    log = Logger("rip", read_value('debug'))
+ 
     mkv_save_path = read_value('save_path')
     mkv_tmp_output = read_value('temp_output')
 
-
-    mkv_api = makeMKV(read_value('min_length'),
+    mkv_api = makeMKV(
+        read_value('min_length'),
         read_value('cache_MB'),
-        read_value('handbrake'))
+        read_value('handbrake')
+    )
+
+
+    log.debug("Autoripper started successfully")
+    log.debug("Checking for DVDs")
 
     dvds = mkv_api.findDisc(mkv_tmp_output)
+
+    log.debug("%d DVDs found" % len(dvds))
 
     if (len(dvds) > 0):
         # Best naming convention ever
@@ -81,17 +91,15 @@ def rip():
 
                 mkv_api.getDiscInfo()
 
-                #movie_title = mkv_api.getTitle()
-
                 stopwatch = Timer()
 
                 if mkv_api.ripDisc(mkv_save_path, mkv_tmp_output):
 
                     stopwatch.stop()
 
-                    print ("It took %s minutes to complete the ripping of %s"
-                        %
-                        (stopwatch.getTime(), movie_title))
+                    log.info("It took %s minutes to complete the ripping of %s" %
+                        (stopwatch.getTime(), movie_title)
+                    )
 
                 else:
                     stopwatch.stop()
