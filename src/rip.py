@@ -59,8 +59,8 @@ def rip():
         Does everything
         Returns nothing
     """
-    log = Logger("rip", read_value('debug'))
- 
+    log = Logger(__name__, read_value('debug'))
+
     mkv_save_path = read_value('save_path')
     mkv_tmp_output = read_value('temp_output')
 
@@ -109,7 +109,7 @@ def rip():
                 print "Movie folder %s already exists" % movie_title
 
     else:
-        print "Could not find any DVDs in drive list"
+        log.info("Could not find any DVDs in drive list")
 
 if __name__ == '__main__':
     rip()

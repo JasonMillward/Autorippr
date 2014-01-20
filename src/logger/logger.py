@@ -18,6 +18,7 @@ Copyright (c) 2012, Jason Millward
 #
 
 import logging
+import sys
 
 #
 #   CODE
@@ -27,21 +28,25 @@ import logging
 class Logger(object):
 
     def __init__(self, name, debug):
-        self.log = logging.getLogger('rip')
-        self.log.setLevel(logging.DEBUG)
-
-        logfile = logging.FileHandler('makeMKV-Autoripper.log')
-        logfile.setLevel(logging.DEBUG)
-
         frmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        logfile.setFormatter(frmt)
-        
-        self.log.addHandler(logfile)
+
+        sh = logging.StreamHandler(sys.stdout)
+        sh.setLevel(logging.DEBUG)
+        sh.setFormatter(frmt)
+
+        fh = logging.FileHandler('makeMKV-Autoripper.log')
+        fh.setLevel(logging.DEBUG)
+        fh.setFormatter(frmt)
+
+        self.log = logging.getLogger(name)
+        self.log.setLevel(logging.DEBUG)
+        self.log.addHandler(sh)
+        self.log.addHandler(fh)
 
     def debug(self, msg):
         self.log.debug(msg)
 
-    def info(self, msg):        
+    def info(self, msg):
         self.log.info(msg)
 
     def warn(self, msg):
