@@ -65,4 +65,18 @@ Handbrake - For converting and compressing
 4. Procceed with whatever else you wanted to do today while casually changing discs
 
 
-**NB**: If you have any issues with the script, head over to the [issues page](https://github.com/JasonMillward/makeMKV-Autoripper/issues), create a new issue with some information and hopefully a copy/paste of the error received.
+### Issues
+
+
+If you have any issues with the script, head over to the [issues page](https://github.com/JasonMillward/makeMKV-Autoripper/issues), create a new issue.
+
+Please try to supply as much detail as possible about the issue you are having, including but not limited to:
+* If you are ripping a DVD or Blu-ray 
+* If you are using handbrake and/or makemkv
+* The error received 
+* A copy (or relevant section) of autoripper.log 
+* Your operating system
+
+An easy way to get some of the information required:  
+```curl https://raw.github.com/KittyKatt/screenFetch/master/screenfetch-dev | bash```
+
