@@ -61,25 +61,23 @@ def compress():
         read_value('debug')
     )
 
-    if not hb_api.findProcess():
-        if hb_api.loadMovie():
-            log.info( "Encoding and compressing %s" % hb_api.getMovieTitle()
-            stopwatch = Timer()
+    if hb_api.loadMovie():
+        log.info( "Encoding and compressing %s" % hb_api.getMovieTitle()
+        stopwatch = Timer()
 
-            if hb_api.convert(args=hb_cli, nice=hb_nice, output=hb_out):
-                log.info( "Movie was compressed and encoded successfully")
+        if hb_api.convert(args=hb_cli, nice=hb_nice, output=hb_out):
+            log.info( "Movie was compressed and encoded successfully")
 
-                stopwatch.stop()
-                log.info( ("It took %s minutes to compress %s"
-                    %
-                    (stopwatch.getTime(), hb_api.getMovieTitle())))
-            else:
-                stopwatch.stop()
-                log.info( "HandBrake did not complete successfully")
+            stopwatch.stop()
+            log.info( ("It took %s minutes to compress %s"
+                %
+                (stopwatch.getTime(), hb_api.getMovieTitle())))
         else:
-            log.info( "Queue does not exist or is empty")
+            stopwatch.stop()
+            log.info( "HandBrake did not complete successfully")
     else:
-        log.info( "Process already running skipper")
+        log.info( "Queue does not exist or is empty")
+
 
 if __name__ == '__main__':
     compress()
