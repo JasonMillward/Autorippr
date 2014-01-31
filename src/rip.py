@@ -59,7 +59,7 @@ def rip():
         Does everything
         Returns nothing
     """
-    log = Logger(__name__, read_value('debug'))
+    log = Logger("rip.py", read_value('debug'))
 
     mkv_save_path = read_value('save_path')
     mkv_tmp_output = read_value('temp_output')
@@ -69,7 +69,6 @@ def rip():
         read_value('cache_MB'),
         read_value('handbrake')
     )
-
 
     log.debug("Autoripper started successfully")
     log.debug("Checking for DVDs")
@@ -103,10 +102,10 @@ def rip():
 
                 else:
                     stopwatch.stop()
-                    print "MakeMKV did not did not complete successfully"
-                    print "Movie title: %s" % movie_title
+                    log.info("MakeMKV did not did not complete successfully")
+                    log.info("Movie title: %s" % movie_title)
             else:
-                print "Movie folder %s already exists" % movie_title
+                log.info("Movie folder %s already exists" % movie_title)
 
     else:
         log.info("Could not find any DVDs in drive list")
