@@ -30,12 +30,17 @@ class Logger(object):
     def __init__(self, name, debug):
         frmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
+        logLevel = logging.INFO
+
+        if debug == True:
+            logLevel = logging.DEBUG
+
         sh = logging.StreamHandler(sys.stdout)
-        sh.setLevel(logging.DEBUG)
+        sh.setLevel(logLevel)
         sh.setFormatter(frmt)
 
         fh = logging.FileHandler('makeMKV-Autoripper.log')
-        fh.setLevel(logging.DEBUG)
+        fh.setLevel(logLevel)
         fh.setFormatter(frmt)
 
         self.log = logging.getLogger(name)
