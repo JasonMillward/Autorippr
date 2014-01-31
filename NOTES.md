@@ -1,5 +1,9 @@
 # Misc notes for future me / developers
 
+## Single instance requires pip & tendo
+	sudo apt-get install python-pip
+	pip install tendo
+
 ## TV Shows (and maybe proper movie titles)
 
 Disc info can be obtained, it returns a lot more information about each disc instead of just the 'is disc inserted'

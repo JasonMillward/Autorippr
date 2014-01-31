@@ -63,28 +63,6 @@ class HandBrake(object):
     def _updateQueue(self, uStatus, uAdditional):
         self.db.update(uid=self.ID, status=uStatus, text=uAdditional)
 
-    """ Function:   findProcess
-            Goes through all of the running proccess and tries to find the
-                HandBrake proccess.
-            If it is running return true
-
-        Inputs:
-            None
-
-        Outputs:
-            Boolean (True/False)
-    """
-    def findProcess(self):
-        processname = 'HandBrakeCLI'
-        for line in os.popen("ps xa"):
-            fields = line.split()
-            process = fields[4]
-            if process.find(processname) >= 0:
-                return True
-                break
-
-        return False
-
     """ Function:   loadMovie
             Check to see if the queue file exists, if it does load the first
                 line and proccess it for the rest of the script to use
