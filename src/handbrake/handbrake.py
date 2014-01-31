@@ -20,6 +20,7 @@ Copyright (c) 2012, Jason Millward
 import os
 import commands
 from database import dbCon
+from logger import Logger
 
 #
 #   CODE
@@ -30,6 +31,7 @@ class HandBrake(object):
 
     def __init__(self):
         self.db = dbCon()
+        self.log = Logger("handbrake", True)
 
     """ Function:   _cleanUp
             Removes the log file and the input movie because these files are
@@ -46,7 +48,7 @@ class HandBrake(object):
         try:
             os.remove(cFile)
         except:
-            print "Could not remove %s" % cFile
+            self.log.error("Could not remove %s" % cFile)
 
     """ Function:   _updateQueue
             Removes the recently processed movie from the queue so it's not
@@ -126,7 +128,7 @@ class HandBrake(object):
         outMovie = "%s/%s" % (self.path, self.outputMovie)
 
         if not os.path.isfile(inMovie):
-            print "Input file no longer exists"
+            self.log.error("Input file no longer exists")
             return False
 
         commands.getstatusoutput(
@@ -143,7 +145,7 @@ class HandBrake(object):
                 if "Encode done!" in line:
                     checks += 1
         except:
-            print "Could not read output file, no cleanup will be done"
+            self.log.info("Could not read output file, no cleanup will be done")
 
         if checks == 2:
             self._updateQueue(uStatus="Complete", uAdditional="Job Done")

@@ -39,7 +39,7 @@ class Logger(object):
         fh.setFormatter(frmt)
 
         self.log = logging.getLogger(name)
-        self.log.setLevel(logging.DEBUG)
+        self.log.setLevel(logging.INFO)
         self.log.addHandler(sh)
         self.log.addHandler(fh)
 

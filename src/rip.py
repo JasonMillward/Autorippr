@@ -59,7 +59,7 @@ def rip():
         Does everything
         Returns nothing
     """
-    log = Logger("rip.py", read_value('debug'))
+    log = Logger("rip", read_value('debug'))
 
     mkv_save_path = read_value('save_path')
     mkv_tmp_output = read_value('temp_output')
@@ -103,7 +103,8 @@ def rip():
                 else:
                     stopwatch.stop()
                     log.info("MakeMKV did not did not complete successfully")
-                    log.info("Movie title: %s" % movie_title)
+                    log.info("See log for more details")
+                    log.debug("Movie title: %s" % movie_title)
             else:
                 log.info("Movie folder %s already exists" % movie_title)
 

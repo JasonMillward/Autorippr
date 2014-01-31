@@ -42,7 +42,7 @@ class makeMKV(object):
         self.minLength = int(minLength)
         self.cacheSize = int(cacheSize)
         self.useHandbrake = bool(useHandbrake)
-        self.log = Logger(__name__, True)
+        self.log = Logger("makemkv", True)
 
     def _queueMovie(self):
         """
