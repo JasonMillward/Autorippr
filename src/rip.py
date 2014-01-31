@@ -31,7 +31,9 @@ import ConfigParser
 from makemkv import makeMKV
 from logger import Logger
 from timer import Timer
+from tendo import singleton
 
+me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "%s/../settings.cfg" % DIR
 
