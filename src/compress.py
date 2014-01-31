@@ -49,31 +49,36 @@ def compress():
     """
     compress temp docstring
     """
+
+    log = Logger("compress", read_value('debug'))
+
     hb_nice = int(read_value('nice'))
     hb_cli = read_value('com')
     hb_out = read_value('temp_output')
 
-    hb_api = HandBrake()
+    hb_api = HandBrake(
+        read_value('debug')
+    )
 
     if not hb_api.findProcess():
         if hb_api.loadMovie():
-            print "Encoding and compressing %s" % hb_api.getMovieTitle()
+            log.info( "Encoding and compressing %s" % hb_api.getMovieTitle()
             stopwatch = Timer()
 
             if hb_api.convert(args=hb_cli, nice=hb_nice, output=hb_out):
-                print "Movie was compressed and encoded successfully"
+                log.info( "Movie was compressed and encoded successfully")
 
                 stopwatch.stop()
-                print ("It took %s minutes to compress %s"
+                log.info( ("It took %s minutes to compress %s"
                     %
-                    (stopwatch.getTime(), hb_api.getMovieTitle()))
+                    (stopwatch.getTime(), hb_api.getMovieTitle())))
             else:
                 stopwatch.stop()
-                print "HandBrake did not complete successfully"
+                log.info( "HandBrake did not complete successfully")
         else:
-            print "Queue does not exist or is empty"
+            log.info( "Queue does not exist or is empty")
     else:
-        print "Process already running skipper"
+        log.info( "Process already running skipper")
 
 if __name__ == '__main__':
     compress()
