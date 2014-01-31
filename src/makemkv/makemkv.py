@@ -17,14 +17,14 @@ import os
 import re
 import csv
 from database import dbCon
-
+from logger import Logger
 
 class makeMKV(object):
     """
         This class acts as a python wrapper to the MakeMKV CLI.
     """
 
-    def __init__(self, minLength, cacheSize, useHandbrake):
+    def __init__(self, minLength, cacheSize, useHandbrake, debugLevel):
         """
             Initialises the variables that will be used in this class
 
@@ -42,6 +42,7 @@ class makeMKV(object):
         self.minLength = int(minLength)
         self.cacheSize = int(cacheSize)
         self.useHandbrake = bool(useHandbrake)
+        self.log = Logger("makemkv", debugLevel)
 
     def _queueMovie(self):
         """
@@ -138,9 +139,8 @@ class makeMKV(object):
         if proc.stderr is not None:
             output = proc.stderr.read()
             if len(output) is not 0:
-                print "MakeMKV encountered the following error: "
-                print output
-                print ""
+                self.log.error("MakeMKV encountered the following error: ")
+                self.log.error(output)
                 return False
 
         checks = 0
@@ -157,7 +157,7 @@ class makeMKV(object):
             ]
 
             if any(x in line.lower() for x in badStrings):
-                print line
+                self.log.error(line)
                 return False
 
             if "Copy complete" in line:
@@ -194,16 +194,15 @@ class makeMKV(object):
         output = proc.stderr.read()
         if proc.stderr is not None:
             if len(output) is not 0:
-                print "MakeMKV encountered the following error: "
-                print output
-                print ""
+                self.log.error("MakeMKV encountered the following error: ")
+                self.log.error(output)
                 return []
 
         output = proc.stdout.read()
         if "This application version is too old." in output:
-            print "Your MakeMKV version is too old." \
+            self.log.error("Your MakeMKV version is too old." \
                 "Please download the latest version at http://www.makemkv.com" \
-                " or enter a registration key to continue using MakeMKV."
+                " or enter a registration key to continue using MakeMKV.")
 
             return []
 
@@ -253,9 +252,8 @@ class makeMKV(object):
         output = proc.stderr.read()
         if proc.stderr is not None:
             if len(output) is not 0:
-                print "MakeMKV encountered the following error: "
-                print output
-                print ""
+                self.log.error("MakeMKV encountered the following error: ")
+                self.log.error(output)
                 return False
 
         #self.readMKVMessages("TCOUNT")
@@ -285,7 +283,7 @@ class makeMKV(object):
                     if searchIndex is not None:
                         for row in cr:
                             if int(row[0]) == int(searchIndex):
-                                print row
+                                #print row
                                 toReturn.append(row[3])
                     else:
                         for row in cr:

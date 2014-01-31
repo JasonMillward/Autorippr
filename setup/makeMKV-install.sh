@@ -55,12 +55,12 @@ tar -xzf $bin_zip
 tar -xzf $oss_zip
 
 cd $oss_folder
-make -f makefile.linux
-sudo make -f makefile.linux install
+make
+sudo make install
 
 cd ../$bin_folder
-make -f makefile.linux
-sudo make -f makefile.linux install
+make 
+sudo make install
 
 cd ..
 
