@@ -67,7 +67,8 @@ def rip():
     mkv_api = makeMKV(
         read_value('min_length'),
         read_value('cache_MB'),
-        read_value('handbrake')
+        read_value('handbrake'),
+        read_value('debug')
     )
 
     log.debug("Autoripper started successfully")

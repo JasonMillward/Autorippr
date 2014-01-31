@@ -29,7 +29,7 @@ from logger import Logger
 
 class HandBrake(object):
 
-    def __init__(self):
+    def __init__(self, debugLevel):
         self.db = dbCon()
         self.log = Logger("handbrake", True)
 
