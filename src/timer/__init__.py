@@ -1,3 +1,3 @@
 #!/usr/bin/python
 
-from .timer import Timer
+from .timer import timer

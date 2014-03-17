@@ -12,7 +12,6 @@ Copyright (c) 2012, Jason Millward
 """
 
 import subprocess
-import imdb
 import os
 import re
 import csv
@@ -38,7 +37,6 @@ class makeMKV(object):
         self.movieName = ""
         self.path = ""
         self.movieName = ""
-        self.imdbScaper = imdb.IMDb()
         self.minLength = int(minLength)
         self.cacheSize = int(cacheSize)
         self.useHandbrake = bool(useHandbrake)
@@ -302,15 +300,4 @@ class makeMKV(object):
                 movieName   (Str)
         """
         self._cleanTitle()
-
-        # Socket or connection errors
-        try:
-            result = self.imdbScaper.search_movie(self.movieName, results=1)
-
-            if len(result) > 0:
-                self.movieName = result[0]
-
-        except:
-            pass
-
         return self.movieName
