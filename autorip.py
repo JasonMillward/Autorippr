@@ -55,7 +55,7 @@ __version__="1.6"
 
 me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
-CONFIG_FILE = "%s/../settings.cfg" % DIR
+CONFIG_FILE = "%s/settings.cfg" % DIR
 
 def rip(config, debug):
     """
