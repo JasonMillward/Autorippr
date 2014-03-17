@@ -57,13 +57,13 @@ me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "%s/settings.cfg" % DIR
 
-def rip(config, debug):
+def rip(config):
     """
         Main function for ripping
         Does everything
         Returns nothing
     """
-    log = Logger("rip", debug)
+    log = Logger("rip", config['debug'])
 
     mkv_save_path = config['savePath']
     mkv_tmp_output = config['temp']
@@ -140,8 +140,10 @@ if __name__ == '__main__':
     arguments = docopt(__doc__, version=__version__)
     config = yaml.safe_load(open(CONFIG_FILE))
 
+    arguments['debug'] = arguments['--debug']
+
     if arguments['--rip']:
-        rip(config['makemkv'], arguments['--debug'])
+        rip(config['makemkv'])
 
     if arguments['--compress']:
-        compress(config['handbrake'], arguments['--debug'])
+        compress(config['handbrake'])
