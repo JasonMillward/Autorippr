@@ -38,8 +38,7 @@ class makeMKV(object):
         self.path = ""
         self.movieName = ""
         self.minLength = int(config['minLength'])
-        self.cacheSize = int(config['cacheSize'])
-        self.useHandbrake = bool(config['useHandbrake'])
+        self.cacheSize = int(config['cache'])
         self.log = Logger("makemkv", debugLevel)
 
     def _queueMovie(self):
@@ -165,8 +164,7 @@ class makeMKV(object):
                 checks += 1
 
         if checks >= 2:
-            if self.useHandbrake:
-                self._queueMovie()
+            self._queueMovie()
             return True
         else:
             return False
