@@ -30,7 +30,7 @@ class timer(object):
         self.startTime = datetime.datetime.now()
         return self
 
-    def __exit__(self):
+    def __exit__(self, *args):
         endTime = datetime.datetime.now()
         totalTime = endTime - self.startTime
         self.minutes = totalTime.seconds / 60
