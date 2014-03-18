@@ -95,7 +95,7 @@ def rip(config):
 
                 if status:
                     log.info("It took %s minutes to complete the ripping of %s" %
-                        (stopwatch.getTime(), movie_title)
+                        (t.minutes, movie_title)
                     )
 
                 else:
