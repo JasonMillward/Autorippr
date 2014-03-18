@@ -98,6 +98,9 @@ def rip(config):
                         (t.minutes, movie_title)
                     )
 
+                    if config['eject']:
+                        os.system("$(which eject) "+dvd['location'])
+
                 else:
                     log.info("MakeMKV did not did not complete successfully")
                     log.info("See log for more details")

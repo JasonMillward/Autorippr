@@ -215,7 +215,8 @@ class makeMKV(object):
                         drives.append(
                             {
                                 "discIndex": out[0].replace("DRV:", ""),
-                                "discTitle": out[5]
+                                "discTitle": out[5],
+                                "location": out[6]
                             }
                         )
 
