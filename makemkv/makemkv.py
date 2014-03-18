@@ -12,7 +12,6 @@ Copyright (c) 2012, Jason Millward
 """
 
 import subprocess
-import imdb
 import os
 import re
 import csv
@@ -24,7 +23,7 @@ class makeMKV(object):
         This class acts as a python wrapper to the MakeMKV CLI.
     """
 
-    def __init__(self, minLength, cacheSize, useHandbrake, debugLevel):
+    def __init__(self, config):
         """
             Initialises the variables that will be used in this class
 
@@ -38,11 +37,9 @@ class makeMKV(object):
         self.movieName = ""
         self.path = ""
         self.movieName = ""
-        self.imdbScaper = imdb.IMDb()
-        self.minLength = int(minLength)
-        self.cacheSize = int(cacheSize)
-        self.useHandbrake = bool(useHandbrake)
-        self.log = Logger("makemkv", debugLevel)
+        self.minLength = int(config['minLength'])
+        self.cacheSize = int(config['cache'])
+        self.log = Logger("makemkv", config['debug'])
 
     def _queueMovie(self):
         """
@@ -167,8 +164,7 @@ class makeMKV(object):
                 checks += 1
 
         if checks >= 2:
-            if self.useHandbrake:
-                self._queueMovie()
+            self._queueMovie()
             return True
         else:
             return False
@@ -302,15 +298,4 @@ class makeMKV(object):
                 movieName   (Str)
         """
         self._cleanTitle()
-
-        # Socket or connection errors
-        try:
-            result = self.imdbScaper.search_movie(self.movieName, results=1)
-
-            if len(result) > 0:
-                self.movieName = result[0]
-
-        except:
-            pass
-
         return self.movieName

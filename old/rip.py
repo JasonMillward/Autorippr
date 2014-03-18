@@ -1,31 +1,3 @@
-"""
-MakeMKV Auto Ripper
-
-Uses MakeMKV to watch for movies inserted into DVD/BD Drives
-Looks up movie title on IMDb for saving into seperate directory
-
-Automaticly checks for existing directory/movie and will NOT overwrite existing
-files or folders
-Checks minimum length of video to ensure movie is ripped not previews or other
-junk that happens to be on the DVD
-
-
-This script can be run with a simple cron, every 5 minutes or so
-
-DVD goes in > MakeMKV checks IMDb and gets a proper DVD name > MakeMKV Rips
-DVD does not get ejected, maybe it will get added to later versions
-
-Released under the MIT license
-Copyright (c) 2012, Jason Millward
-
-@category   misc
-@version    $Id: 1.5, 2013-10-20 20:40:30 CST $;
-@author     Jason Millward <jason@jcode.me>
-@license    http://opensource.org/licenses/MIT
-
-Enough with these comments, on to the code
-"""
-
 import os
 import ConfigParser
 from makemkv import makeMKV

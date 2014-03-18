@@ -24,15 +24,14 @@ import datetime
 #
 
 
-class Timer(object):
+class timer(object):
 
-    def __init__(self):
+    def __enter__(self):
         self.startTime = datetime.datetime.now()
+        return self
 
-    def stop(self):
+    def __exit__(self, *args):
         endTime = datetime.datetime.now()
         totalTime = endTime - self.startTime
         self.minutes = totalTime.seconds / 60
 
-    def getTime(self):
-        return self.minutes
