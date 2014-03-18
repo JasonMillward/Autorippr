@@ -140,10 +140,10 @@ if __name__ == '__main__':
     arguments = docopt(__doc__, version=__version__)
     config = yaml.safe_load(open(CONFIG_FILE))
 
-    arguments['debug'] = arguments['--debug']
-
     if arguments['--rip']:
+        config['makemkv']['debug'] = arguments['--debug']
         rip(config['makemkv'])
 
     if arguments['--compress']:
+        config['handbrake']['debug'] = arguments['--debug']
         compress(config['handbrake'])
