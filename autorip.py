@@ -63,7 +63,7 @@ def rip(config):
         Does everything
         Returns nothing
     """
-    log = Logger("rip", config['debug'])
+    log = Logger("Rip", config['debug'])
 
     mkv_save_path = config['savePath']
     mkv_tmp_output = config['temp']
@@ -113,7 +113,7 @@ def compress(config, debug):
     """
     compress temp docstring
     """
-    log = Logger("compress", debug)
+    log = Logger("Compress", debug)
 
     hb_nice = int(config['nice'])
     hb_cli = config['com']
