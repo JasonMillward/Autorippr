@@ -13,22 +13,13 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-#
-#   IMPORTS
-#
-
 import os
 import sqlite3
 
-#
-#   CODE
-#
-
-
-class dbCon(object):
+class database(object):
 
     def __init__(self):
-        DATABASE = 'auto-ripper.db'
+        DATABASE = 'autoripper.db'
         REAL_PATH = os.path.dirname(os.path.realpath(__file__))
 
         self.con = sqlite3.connect('%s/../%s' % (REAL_PATH, DATABASE))

@@ -13,21 +13,13 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-#
-#   IMPORTS
-#
-
 import os
 import commands
 from database import dbCon
 from logger import Logger
 
-#
-#   CODE
-#
 
-
-class HandBrake(object):
+class handBrake(object):
 
     def __init__(self, debugLevel):
         self.db = dbCon()

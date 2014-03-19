@@ -45,11 +45,8 @@ Options:
 
 import os
 import yaml
-from timer import timer
+import classes
 from tendo import singleton
-from docopt import docopt
-from logger import Logger
-from makemkv import makeMKV
 
 __version__="1.6"
 
@@ -63,12 +60,12 @@ def rip(config):
         Does everything
         Returns nothing
     """
-    log = Logger("Rip", config['debug'])
+    log = classes.logger("Rip", config['debug'])
 
     mkv_save_path = config['savePath']
     mkv_tmp_output = config['temp']
 
-    mkv_api = makeMKV(config)
+    mkv_api = classes.makeMKV(config)
 
     log.debug("Autoripper started successfully")
     log.debug("Checking for DVDs")
@@ -90,16 +87,16 @@ def rip(config):
 
                 mkv_api.getDiscInfo()
 
-                with timer() as t:
+                with classes.stopwatch() as t:
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                 if status:
-                    log.info("It took %s minutes to complete the ripping of %s" %
+                    log.info("It took %s minute(s) to complete the ripping of %s" %
                         (t.minutes, movie_title)
                     )
 
-                    if config['eject']:
-                        os.system("$(which eject) "+dvd['location'])
+                    #if config['eject']:
+                        #os.system("$(which eject) "+dvd['location'])
 
                 else:
                     log.info("MakeMKV did not did not complete successfully")
@@ -122,7 +119,7 @@ def compress(config, debug):
     hb_cli = config['com']
     hb_out = config['temp_output']
 
-    hb_api = HandBrake(debug)
+    hb_api = HandBrake(config)
 
     if hb_api.loadMovie():
         log.info( "Encoding and compressing %s" % hb_api.getMovieTitle())

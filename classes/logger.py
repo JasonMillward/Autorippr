@@ -13,19 +13,11 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-#
-#   IMPORTS
-#
-
 import logging
 import sys
 
-#
-#   CODE
-#
 
-
-class Logger(object):
+class logger(object):
 
     def __init__(self, name, debug):
         frmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
