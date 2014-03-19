@@ -119,17 +119,17 @@ def compress(config, debug):
     hb_cli = config['com']
     hb_out = config['temp_output']
 
-    hb_api = HandBrake(config)
+    hb = HandBrake(config)
 
-    if hb_api.loadMovie():
-        log.info( "Encoding and compressing %s" % hb_api.getMovieTitle())
+    if hb.loadMovie():
+        log.info( "Encoding and compressing %s" % hb.getMovieTitle())
 
-        if hb_api.convert(args=hb_cli, nice=hb_nice, output=hb_out):
+        if hb.convert(args=hb_cli, nice=hb_nice, output=hb_out):
             log.info( "Movie was compressed and encoded successfully")
 
             log.info( ("It took %s minutes to compress %s"
                 %
-                (stopwatch.getTime(), hb_api.getMovieTitle())))
+                (stopwatch.getTime(), hb.getMovieTitle())))
         else:
             log.info( "HandBrake did not complete successfully")
     else:
