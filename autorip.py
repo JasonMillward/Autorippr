@@ -44,6 +44,7 @@ Options:
 """
 
 import os
+import sys
 import yaml
 from classes import docopt, logger, makemkv, stopwatch
 from tendo import singleton
@@ -53,6 +54,29 @@ __version__="1.6"
 me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "%s/settings.cfg" % DIR
+
+def eject(drive):
+    """
+        Ejects the DVD drive
+        Not really worth its own class
+    """
+
+    log = logger.logger("Eject", config['debug'])
+
+    log.debug("Attempting OS detection")
+
+    if sys.platform == 'win32':
+        log.debug("OS detected as Windows")
+        import ctypes
+        ctypes.windll.winmm.mciSendStringW("set cdaudio door open", None, drive, None)
+
+    elif sys.platform == 'darwin':
+        log.debug("OS detected as OSX")
+        os.system("drutil tray open")
+    else:
+        log.debug("OS detected as Unix")
+        os.system("$(which eject) -vnr " + drive)
+
 
 def rip(config):
     """
@@ -95,8 +119,8 @@ def rip(config):
                         (t.minutes, movie_title)
                     )
 
-                    #if config['eject']:
-                        #os.system("$(which eject) "+dvd['location'])
+                    if config['eject']:
+                        eject(dvd['location'])
 
                 else:
                     log.info("MakeMKV did not did not complete successfully")
