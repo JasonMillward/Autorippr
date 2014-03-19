@@ -60,9 +60,9 @@ def eject(drive):
         Ejects the DVD drive
         Not really worth its own class
     """
+    log = logger.logger("Eject", True)
 
-    log = logger.logger("Eject", config['debug'])
-
+    log.debug("Ejecting drive: " + drive)
     log.debug("Attempting OS detection")
 
     if sys.platform == 'win32':
@@ -72,10 +72,17 @@ def eject(drive):
 
     elif sys.platform == 'darwin':
         log.debug("OS detected as OSX")
-        os.system("drutil tray open")
+        p = os.popen("drutil eject")
+
     else:
         log.debug("OS detected as Unix")
-        os.system("$(which eject) -vnr " + drive)
+        p = os.popen("eject -vnr " + drive)
+
+        while 1:
+            line = p.readline()
+            if not line: break
+            log.debug(line.strip())
+
 
 
 def rip(config):
@@ -115,12 +122,12 @@ def rip(config):
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                 if status:
-                    log.info("It took %s minute(s) to complete the ripping of %s" %
-                        (t.minutes, movie_title)
-                    )
-
                     if config['eject']:
                         eject(dvd['location'])
+
+                    log.info("It took %s minute(s) to complete the ripping of %s" %
+                         (t.minutes, movie_title)
+                    )
 
                 else:
                     log.info("MakeMKV did not did not complete successfully")
