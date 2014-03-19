@@ -60,12 +60,12 @@ def rip(config):
         Does everything
         Returns nothing
     """
-    log = classes.logger("Rip", config['debug'])
+    log = logger.logger("Rip", config['debug'])
 
     mkv_save_path = config['savePath']
     mkv_tmp_output = config['temp']
 
-    mkv_api = classes.makeMKV(config)
+    mkv_api = makemkv.makeMKV(config)
 
     log.debug("Autoripper started successfully")
     log.debug("Checking for DVDs")
@@ -87,7 +87,7 @@ def rip(config):
 
                 mkv_api.getDiscInfo()
 
-                with classes.stopwatch() as t:
+                with stopwatch.stopwatch() as t:
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                 if status:

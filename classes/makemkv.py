@@ -39,7 +39,7 @@ class makeMKV(object):
         self.movieName = ""
         self.minLength = int(config['minLength'])
         self.cacheSize = int(config['cache'])
-        self.log = Logger("makemkv", config['debug'])
+        self.log = logger.logger("makemkv", config['debug'])
 
     def _queueMovie(self):
         """
@@ -52,7 +52,7 @@ class makeMKV(object):
             Outputs:
                 None
         """
-        db = dbCon()
+        db = database.database()
         movie = ""
 
         os.chdir('%s/%s' % (self.path, self.movieName))
