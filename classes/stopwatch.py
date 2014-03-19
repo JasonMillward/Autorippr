@@ -13,18 +13,10 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-#
-#   IMPORTS
-#
-
 import datetime
 
-#
-#   CODE
-#
 
-
-class timer(object):
+class stopwatch(object):
 
     def __enter__(self):
         self.startTime = datetime.datetime.now()

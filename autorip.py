@@ -44,12 +44,10 @@ Options:
 """
 
 import os
+import sys
 import yaml
-from timer import timer
+from classes import docopt, logger, makemkv, stopwatch
 from tendo import singleton
-from docopt import docopt
-from logger import Logger
-from makemkv import makeMKV
 
 __version__="1.6"
 
@@ -57,18 +55,56 @@ me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "%s/settings.cfg" % DIR
 
+def eject(drive):
+    """
+        Ejects the DVD drive
+        Not really worth its own class
+    """
+    log = logger.logger("Eject", True)
+
+    log.debug("Ejecting drive: " + drive)
+    log.debug("Attempting OS detection")
+
+    try:
+        if sys.platform == 'win32':
+            log.debug("OS detected as Windows")
+            import ctypes
+            ctypes.windll.winmm.mciSendStringW("set cdaudio door open", None, drive, None)
+
+        elif sys.platform == 'darwin':
+            log.debug("OS detected as OSX")
+            p = os.popen("drutil eject " + drive)
+
+            while 1:
+                line = p.readline()
+                if not line: break
+                log.debug(line.strip())
+
+        else:
+            log.debug("OS detected as Unix")
+            p = os.popen("eject -vr " + drive)
+
+            while 1:
+                line = p.readline()
+                if not line: break
+                log.debug(line.strip())
+
+    except:
+        log.info("Could not detect OS or eject CD tray")
+
+
 def rip(config):
     """
         Main function for ripping
         Does everything
         Returns nothing
     """
-    log = Logger("Rip", config['debug'])
+    log = logger.logger("Rip", config['debug'])
 
     mkv_save_path = config['savePath']
     mkv_tmp_output = config['temp']
 
-    mkv_api = makeMKV(config)
+    mkv_api = makemkv.makeMKV(config)
 
     log.debug("Autoripper started successfully")
     log.debug("Checking for DVDs")
@@ -90,12 +126,15 @@ def rip(config):
 
                 mkv_api.getDiscInfo()
 
-                with timer() as t:
+                with stopwatch.stopwatch() as t:
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                 if status:
-                    log.info("It took %s minutes to complete the ripping of %s" %
-                        (t.minutes, movie_title)
+                    if config['eject']:
+                        eject(dvd['location'])
+
+                    log.info("It took %s minute(s) to complete the ripping of %s" %
+                         (t.minutes, movie_title)
                     )
 
                 else:
@@ -119,17 +158,17 @@ def compress(config, debug):
     hb_cli = config['com']
     hb_out = config['temp_output']
 
-    hb_api = HandBrake(debug)
+    hb = HandBrake(config)
 
-    if hb_api.loadMovie():
-        log.info( "Encoding and compressing %s" % hb_api.getMovieTitle())
+    if hb.loadMovie():
+        log.info( "Encoding and compressing %s" % hb.getMovieTitle())
 
-        if hb_api.convert(args=hb_cli, nice=hb_nice, output=hb_out):
+        if hb.convert(args=hb_cli, nice=hb_nice, output=hb_out):
             log.info( "Movie was compressed and encoded successfully")
 
             log.info( ("It took %s minutes to compress %s"
                 %
-                (stopwatch.getTime(), hb_api.getMovieTitle())))
+                (stopwatch.getTime(), hb.getMovieTitle())))
         else:
             log.info( "HandBrake did not complete successfully")
     else:
@@ -137,7 +176,7 @@ def compress(config, debug):
 
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version=__version__)
+    arguments = docopt.docopt(__doc__, version=__version__)
     config = yaml.safe_load(open(CONFIG_FILE))
 
     if arguments['--rip']:

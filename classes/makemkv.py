@@ -15,8 +15,8 @@ import subprocess
 import os
 import re
 import csv
-from database import dbCon
-from logger import Logger
+import database
+import logger
 
 class makeMKV(object):
     """
@@ -39,7 +39,7 @@ class makeMKV(object):
         self.movieName = ""
         self.minLength = int(config['minLength'])
         self.cacheSize = int(config['cache'])
-        self.log = Logger("makemkv", config['debug'])
+        self.log = logger.logger("makemkv", config['debug'])
 
     def _queueMovie(self):
         """
@@ -52,7 +52,7 @@ class makeMKV(object):
             Outputs:
                 None
         """
-        db = dbCon()
+        db = database.database()
         movie = ""
 
         os.chdir('%s/%s' % (self.path, self.movieName))
@@ -215,7 +215,8 @@ class makeMKV(object):
                         drives.append(
                             {
                                 "discIndex": out[0].replace("DRV:", ""),
-                                "discTitle": out[5]
+                                "discTitle": out[5],
+                                "location": out[6]
                             }
                         )
 

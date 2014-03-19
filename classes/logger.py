@@ -13,19 +13,11 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-#
-#   IMPORTS
-#
-
 import logging
 import sys
 
-#
-#   CODE
-#
 
-
-class Logger(object):
+class logger(object):
 
     def __init__(self, name, debug):
         frmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -44,7 +36,7 @@ class Logger(object):
         fh.setFormatter(frmt)
 
         self.log = logging.getLogger(name)
-        self.log.setLevel(logging.INFO)
+        self.log.setLevel(logLevel)
         self.log.addHandler(sh)
         self.log.addHandler(fh)
 
