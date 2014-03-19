@@ -45,7 +45,7 @@ Options:
 
 import os
 import yaml
-import classes
+from classes import docopt, logger, makemkv, stopwatch
 from tendo import singleton
 
 __version__="1.6"
@@ -137,7 +137,7 @@ def compress(config, debug):
 
 
 if __name__ == '__main__':
-    arguments = classes.docopt(__doc__, version=__version__)
+    arguments = docopt.docopt(__doc__, version=__version__)
     config = yaml.safe_load(open(CONFIG_FILE))
 
     if arguments['--rip']:

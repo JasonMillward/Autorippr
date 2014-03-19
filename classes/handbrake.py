@@ -15,8 +15,8 @@ Copyright (c) 2012, Jason Millward
 
 import os
 import commands
-from database import dbCon
-from logger import Logger
+import database
+import logger
 
 
 class handBrake(object):

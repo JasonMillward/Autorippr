@@ -2,7 +2,7 @@ __all__ = [
     'database',
     'docopt',
     'handbrake',
-    'log',
+    'logger',
     'makemkv',
     'stopwatch'
 ]

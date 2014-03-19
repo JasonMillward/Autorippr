@@ -15,8 +15,8 @@ import subprocess
 import os
 import re
 import csv
-from database import dbCon
-from logger import Logger
+import database
+import logger
 
 class makeMKV(object):
     """
