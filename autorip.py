@@ -137,7 +137,7 @@ def compress(config, debug):
 
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version=__version__)
+    arguments = classes.docopt(__doc__, version=__version__)
     config = yaml.safe_load(open(CONFIG_FILE))
 
     if arguments['--rip']:
