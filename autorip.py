@@ -65,24 +65,32 @@ def eject(drive):
     log.debug("Ejecting drive: " + drive)
     log.debug("Attempting OS detection")
 
-    if sys.platform == 'win32':
-        log.debug("OS detected as Windows")
-        import ctypes
-        ctypes.windll.winmm.mciSendStringW("set cdaudio door open", None, drive, None)
+    try:
+        if sys.platform == 'win32':
+            log.debug("OS detected as Windows")
+            import ctypes
+            ctypes.windll.winmm.mciSendStringW("set cdaudio door open", None, drive, None)
 
-    elif sys.platform == 'darwin':
-        log.debug("OS detected as OSX")
-        p = os.popen("drutil eject")
+        elif sys.platform == 'darwin':
+            log.debug("OS detected as OSX")
+            p = os.popen("drutil eject " + drive)
 
-    else:
-        log.debug("OS detected as Unix")
-        p = os.popen("eject -vnr " + drive)
+            while 1:
+                line = p.readline()
+                if not line: break
+                log.debug(line.strip())
 
-        while 1:
-            line = p.readline()
-            if not line: break
-            log.debug(line.strip())
+        else:
+            log.debug("OS detected as Unix")
+            p = os.popen("eject -vr " + drive)
 
+            while 1:
+                line = p.readline()
+                if not line: break
+                log.debug(line.strip())
+
+    except:
+        log.info("Could not detect OS or eject CD tray")
 
 
 def rip(config):
