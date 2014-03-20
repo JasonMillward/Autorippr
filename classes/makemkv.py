@@ -255,7 +255,7 @@ class makeMKV(object):
 
         self.log.debug("MakeMKV found %d titles" % len(self.readMKVMessages("TCOUNT")))
         for titleNo in set(self.readMKVMessages("TINFO")):
-            self.log.debug("Title number: %d" % titleNo)
+            self.log.debug("Title number: %s" % titleNo)
             self.log.debug(self.readMKVMessages("CINFO", 2))
 
 
