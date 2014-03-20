@@ -131,7 +131,7 @@ def rip(config):
                 mkv_api.getDiscInfo()
 
                 with stopwatch.stopwatch() as t:
-                    status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
+                    status = mkv_api.ripDisc(mkv_save_path)
 
                 if status:
                     if config['eject']:

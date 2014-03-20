@@ -93,7 +93,7 @@ class handBrake(object):
         Outputs:
             None
     """
-    def convert(self, nice, args, output):
+    def convert(self, nice, args):
         checks = 0
         inMovie = "%s/%s" % (self.path, self.inputMovie)
         outMovie = "%s/%s" % (self.path, self.outputMovie)
@@ -110,12 +110,10 @@ class handBrake(object):
             '--verbose',
             str(1),
             '-i',
-            '"%s"' % inMovie,
+            str(inMovie),
             '-o',
-            '"%s"' % outMovie,
-            args,
-            '2>',
-            output
+            str(outMovie),
+            args
         ]
 
         proc = subprocess.Popen(
@@ -134,7 +132,7 @@ class handBrake(object):
         output = proc.stdout.read()
         lines = output.split("\n")
         for line in lines:
-            self.log.debug(line)
+            self.log.debug(trim(line))
             if "average encoding speed for job" in line:
                 checks += 1
             if "Encode done!" in line:
@@ -147,7 +145,7 @@ class handBrake(object):
             #self._cleanUp(cFile=output)
             return True
         else:
-            self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
+            #self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
             return False
 
     """ Function:   getMovieTitle
