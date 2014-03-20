@@ -46,7 +46,7 @@ Options:
 import os
 import sys
 import yaml
-from classes import docopt, logger, makemkv, stopwatch
+from classes import docopt, handbrake, logger, makemkv, stopwatch
 from tendo import singleton
 
 __version__="1.6"
@@ -89,9 +89,13 @@ def eject(drive):
                 if not line: break
                 log.debug(line.strip())
 
-    except:
-        log.info("Could not detect OS or eject CD tray")
+    except Exception as ex:
+        log.error("Could not detect OS or eject CD tray")
+        log.ex("An exception of type %s occured." % type(ex).__name__)
+        log.ex("Args: \r\n %s" % ex.args)
 
+    finally:
+        del log
 
 def rip(config):
     """
@@ -106,7 +110,7 @@ def rip(config):
 
     mkv_api = makemkv.makeMKV(config)
 
-    log.debug("Autoripper started successfully")
+    log.debug("Ripping started successfully")
     log.debug("Checking for DVDs")
 
     dvds = mkv_api.findDisc(mkv_tmp_output)
@@ -148,29 +152,37 @@ def rip(config):
     else:
         log.info("Could not find any DVDs in drive list")
 
-def compress(config, debug):
+def compress(config):
     """
-    compress temp docstring
+        Main function for compressing
+        Does everything
+        Returns nothing
     """
-    log = Logger("Compress", debug)
+    log = logger.logger("Compress", config['debug'])
 
-    hb_nice = int(config['nice'])
-    hb_cli = config['com']
-    hb_out = config['temp_output']
+    hb = handbrake.handBrake(config['debug'])
 
-    hb = HandBrake(config)
+    log.debug("Compressing started successfully")
+    log.debug("Looking for movies to compress")
 
     if hb.loadMovie():
-        log.info( "Encoding and compressing %s" % hb.getMovieTitle())
+        log.info( "Compressing %s" % hb.getMovieTitle())
 
-        if hb.convert(args=hb_cli, nice=hb_nice, output=hb_out):
-            log.info( "Movie was compressed and encoded successfully")
+        with stopwatch.stopwatch() as t:
+            convert = hb.convert(
+                args=config['com'],
+                nice=int(config['nice'])
+            )
 
-            log.info( ("It took %s minutes to compress %s"
-                %
-                (stopwatch.getTime(), hb.getMovieTitle())))
+        if convert:
+            log.info("Movie was compressed and encoded successfully")
+
+            log.info( ("It took %s minutes to compress %s" %
+                    (t.minutes, hb.getMovieTitle()))
+            )
         else:
             log.info( "HandBrake did not complete successfully")
+
     else:
         log.info( "Queue does not exist or is empty")
 

@@ -14,7 +14,7 @@ Copyright (c) 2012, Jason Millward
 """
 
 import os
-import commands
+import subprocess
 import database
 import logger
 
@@ -22,8 +22,8 @@ import logger
 class handBrake(object):
 
     def __init__(self, debugLevel):
-        self.db = dbCon()
-        self.log = Logger("handbrake", True)
+        self.db = database.database()
+        self.log = logger.logger("handbrake", debugLevel)
 
     """ Function:   _cleanUp
             Removes the log file and the input movie because these files are
@@ -93,7 +93,8 @@ class handBrake(object):
         Outputs:
             None
     """
-    def convert(self, nice, args, output):
+    def convert(self, nice, args):
+        checks = 0
         inMovie = "%s/%s" % (self.path, self.inputMovie)
         outMovie = "%s/%s" % (self.path, self.outputMovie)
 
@@ -101,29 +102,54 @@ class handBrake(object):
             self.log.error("Input file no longer exists")
             return False
 
-        commands.getstatusoutput(
-            'nice -n %d HandBrakeCLI --verbose 1 -i "%s" -o "%s" %s 2> %s'
-            %
-            (nice, inMovie, outMovie, args, output))
+        command = [
+            'nice',
+            '-n',
+            str(nice),
+            'HandBrakeCLI',
+            '--verbose',
+            str(1),
+            '-i',
+            str(inMovie),
+            '-o',
+            str(outMovie),
+            args
+        ]
 
-        checks = 0
-        try:
-            tempFile = open(output, 'r')
-            for line in tempFile.readlines():
-                if "average encoding speed for job" in line:
-                    checks += 1
-                if "Encode done!" in line:
-                    checks += 1
-        except:
-            self.log.info("Could not read output file, no cleanup will be done")
+        proc = subprocess.Popen(
+            command,
+            stderr=subprocess.STDOUT,
+            stdout=subprocess.PIPE
+        )
+
+        if proc.stderr is not None:
+            output = proc.stderr.read()
+            if len(output) is not 0:
+                self.log.error("HandBakeCLI encountered the following error: ")
+                self.log.error(output)
+                return False
+
+        output = proc.stdout.read()
+        lines = output.split("\n")
+        for line in lines:
+            self.log.debug(line.strip())
+            if "average encoding speed for job" in line:
+                checks += 1
+            if "Encode done!" in line:
+                checks += 1
+            if "ERROR" in line:
+                self.log.error("HandBakeCLI encountered the following error: ")
+                self.log.error(line)
+                return False
 
         if checks == 2:
-            self._updateQueue(uStatus="Complete", uAdditional="Job Done")
-            self._cleanUp(cFile=inMovie)
-            self._cleanUp(cFile=output)
+            self.log.debug("HandBakeCLI Completed successfully")
+            #self._updateQueue(uStatus="Complete", uAdditional="Job Done")
+            #self._cleanUp(cFile=inMovie)
+            #self._cleanUp(cFile=output)
             return True
         else:
-            self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
+            #self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
             return False
 
     """ Function:   getMovieTitle

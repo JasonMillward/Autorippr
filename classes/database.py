@@ -65,7 +65,8 @@ class database(object):
                     "(path, inMovie, outMovie, status, statusText) ",
                     "VALUES ('%s', '%s', '%s', 'In Queue', 'Waiting');"
                     %
-                    (path, inMovie, outMovie))
+                    (path, inMovie.replace("'","''"), outMovie.replace("'","''"))
+            )
             cur.execute(''.join(uSql))
 
     def update(self, uid, status, text):

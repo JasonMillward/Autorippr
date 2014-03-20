@@ -34,4 +34,4 @@ settings.cfg
 *.db
 
 # Log files
-makeMKV-Autoripper.log
+*.log
