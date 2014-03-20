@@ -113,7 +113,8 @@ class handBrake(object):
             '-o',
             '"%s"' % outMovie,
             args,
-            '2> %s' % output
+            '2>',
+            output
         ]
 
         self.log.debug("HandBakeCLI commands: ")
