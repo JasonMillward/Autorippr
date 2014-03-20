@@ -82,7 +82,7 @@ def eject(drive):
 
         else:
             log.debug("OS detected as Unix")
-            p = os.popen("eject -vr " + drive)
+            p = os.popen("eject -vrn " + drive)
 
             while 1:
                 line = p.readline()
@@ -90,7 +90,9 @@ def eject(drive):
                 log.debug(line.strip())
 
     except:
-        log.info("Could not detect OS or eject CD tray")
+        log.error("Could not detect OS or eject CD tray")
+
+    log = None
 
 
 def rip(config):
