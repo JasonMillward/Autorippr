@@ -23,7 +23,7 @@ class handBrake(object):
 
     def __init__(self, debugLevel):
         self.db = dbCon()
-        self.log = Logger("handbrake", debugLevel)
+        self.log = logger("handbrake", debugLevel)
 
     """ Function:   _cleanUp
             Removes the log file and the input movie because these files are

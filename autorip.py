@@ -46,7 +46,7 @@ Options:
 import os
 import sys
 import yaml
-from classes import docopt, logger, makemkv, stopwatch
+from classes import docopt, handbrake, logger, makemkv, stopwatch
 from tendo import singleton
 
 __version__="1.6"
@@ -158,9 +158,9 @@ def compress(config):
         Does everything
         Returns nothing
     """
-    log = Logger("Compress", config['debug'])
+    log = logger.logger("Compress", config['debug'])
 
-    hb = HandBrake(config['debug'])
+    hb = handbrake.handbrake(config['debug'])
 
     log.debug("Compressing started successfully")
     log.debug("Looking for movies to compress")
