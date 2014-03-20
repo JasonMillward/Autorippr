@@ -137,6 +137,10 @@ class handBrake(object):
                 checks += 1
             if "Encode done!" in line:
                 checks += 1
+            if "ERROR" in line:
+                self.log.error("HandBakeCLI encountered the following error: ")
+                self.log.error(line)
+                return False
 
         if checks == 2:
             self.log.debug("HandBakeCLI Completed successfully")
