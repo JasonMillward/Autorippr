@@ -131,7 +131,7 @@ def rip(config):
                 mkv_api.getDiscInfo()
 
                 with stopwatch.stopwatch() as t:
-                    status = mkv_api.ripDisc(mkv_save_path)
+                    status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                 if status:
                     if config['eject']:
@@ -171,8 +171,7 @@ def compress(config):
         with stopwatch.stopwatch() as t:
             convert = hb.convert(
                 args=config['com'],
-                nice=int(config['nice']),
-                output=config['temp']
+                nice=int(config['nice'])
             )
 
         if convert:
