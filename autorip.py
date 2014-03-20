@@ -160,7 +160,7 @@ def compress(config):
     """
     log = logger.logger("Compress", config['debug'])
 
-    hb = handbrake.handbrake(config['debug'])
+    hb = handbrake.handBrake(config['debug'])
 
     log.debug("Compressing started successfully")
     log.debug("Looking for movies to compress")
