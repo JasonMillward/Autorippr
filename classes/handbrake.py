@@ -22,7 +22,7 @@ import logger
 class handBrake(object):
 
     def __init__(self, debugLevel):
-        self.db = dbCon()
+        self.db = database.database()
         self.log = logger("handbrake", debugLevel)
 
     """ Function:   _cleanUp
