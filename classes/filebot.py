@@ -23,9 +23,14 @@ class filebot(object):
         self.db = database.database()
         self.log = logger.logger("Filebot", debug)
 
-    # Filebots order of instructions should be
-    # Rename
-    #   filebot -rename title00.mkv --q [Movie Name] -non-strict
-    #
-    # get subtitles
-    #   filebot -get-missing-subtitles --lang
+    def rename(self):
+        #   filebot -rename title00.mkv --q [Movie Name] -non-strict
+        #   [MOVE] Rename [/tmp/Euro Trip G1/Road Trip (2000).mkv] to [EuroTrip (2004).mkv]
+        pass
+
+    def subtitles(self):
+        #   filebot -get-missing-subtitles --lang
+        # Matched
+        # Fetching
+        # Writing
+        pass
