@@ -134,6 +134,7 @@ class handBrake(object):
         output = proc.stdout.read()
         lines = output.split("\n")
         for line in lines:
+            self.log.debug(line)
             if "average encoding speed for job" in line:
                 checks += 1
             if "Encode done!" in line:
