@@ -89,10 +89,16 @@ def eject(drive):
                 if not line: break
                 log.debug(line.strip())
 
-    except:
+    except Exception as ex:
         log.error("Could not detect OS or eject CD tray")
+        log.ex("An exception of type %s occured. Arguments:\n %s" %
+            type(ex).__name__,
+            ex.args
+        )
 
-    del log
+
+    finally:
+        del log
 
 
 def rip(config):
