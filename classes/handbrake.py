@@ -21,9 +21,9 @@ import logger
 
 class handBrake(object):
 
-    def __init__(self, debugLevel):
+    def __init__(self, debug):
         self.db = database.database()
-        self.log = logger.logger("handbrake", debugLevel)
+        self.log = logger.logger("handbrake", debug)
 
     """ Function:   _cleanUp
             Removes the log file and the input movie because these files are
@@ -144,12 +144,12 @@ class handBrake(object):
 
         if checks == 2:
             self.log.debug("HandBakeCLI Completed successfully")
-            #self._updateQueue(uStatus="Complete", uAdditional="Job Done")
-            #self._cleanUp(cFile=inMovie)
-            #self._cleanUp(cFile=output)
+            self._updateQueue(uStatus="Complete", uAdditional="Job Done")
+            self._cleanUp(cFile=inMovie)
+            self._cleanUp(cFile=output)
             return True
         else:
-            #self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
+            self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
             return False
 
     """ Function:   getMovieTitle
