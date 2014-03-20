@@ -43,7 +43,7 @@ class logger(object):
         self.log.addHandler(self.sh)
         self.log.addHandler(self.fh)
 
-    def __del__():
+    def __del__(self):
         self.log.removeHandler(self.sh)
         self.log.removeHandler(self.fh)
         self.log = None
