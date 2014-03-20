@@ -1,8 +1,6 @@
 """
 HandBrake CLI Wrapper + Queue Handler
 
-This class acts as a python wrapper to the HandBrake CLI.
-
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward
@@ -23,7 +21,7 @@ class handBrake(object):
 
     def __init__(self, debug):
         self.db = database.database()
-        self.log = logger.logger("handbrake", debug)
+        self.log = logger.logger("Handbrake", debug)
 
     """ Function:   _cleanUp
             Removes the log file and the input movie because these files are
@@ -126,7 +124,9 @@ class handBrake(object):
             output = proc.stderr.read()
             if len(output) is not 0:
                 self.log.error("HandBakeCLI encountered the following error: ")
-                self.log.error(output)
+                lines = output.split("\n")
+                for line in lines:
+                    self.log.error(line.strip())
                 return False
 
         output = proc.stdout.read()

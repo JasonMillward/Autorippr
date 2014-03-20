@@ -1,8 +1,6 @@
 """
 Simple timer class
 
-This class provides simple functions for timing operations
-
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward

@@ -1,8 +1,6 @@
 """
 MakeMKV CLI Wrapper
 
-This class acts as a python wrapper to the MakeMKV CLI.
-
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward

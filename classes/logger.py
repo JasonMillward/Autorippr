@@ -1,8 +1,6 @@
 """
 Simple logging class
 
-This class provides a cleaner way for adding logging to every file
-
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward
