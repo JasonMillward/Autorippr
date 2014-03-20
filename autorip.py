@@ -92,7 +92,7 @@ def eject(drive):
     except:
         log.error("Could not detect OS or eject CD tray")
 
-    log = None
+    del log
 
 
 def rip(config):

@@ -30,18 +30,23 @@ class logger(object):
         else:
             logLevel = logging.INFO
 
-        sh = logging.StreamHandler(sys.stdout)
-        sh.setLevel(logLevel)
-        sh.setFormatter(frmt)
+        self.sh = logging.StreamHandler(sys.stdout)
+        self.sh.setLevel(logLevel)
+        self.sh.setFormatter(frmt)
 
-        fh = logging.FileHandler('makeMKV-Autoripper.log')
-        fh.setLevel(logLevel)
-        fh.setFormatter(frmt)
+        self.fh = logging.FileHandler('makeMKV-Autoripper.log')
+        self.fh.setLevel(logLevel)
+        self.fh.setFormatter(frmt)
 
         self.log = logging.getLogger(name)
         self.log.setLevel(logLevel)
-        self.log.addHandler(sh)
-        self.log.addHandler(fh)
+        self.log.addHandler(self.sh)
+        self.log.addHandler(self.fh)
+
+    def __del__():
+        self.log.removeHandler(self.sh)
+        self.log.removeHandler(self.fh)
+        self.log = None
 
     def debug(self, msg):
         self.log.debug(msg)
