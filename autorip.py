@@ -172,7 +172,7 @@ def compress(config):
             convert = hb.convert(
                 args=config['com'],
                 nice=int(config['nice']),
-                output=config['temp_output']
+                output=config['temp']
             )
 
         if convert:
