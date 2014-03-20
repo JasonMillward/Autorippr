@@ -39,7 +39,7 @@ class makeMKV(object):
         self.movieName = ""
         self.minLength = int(config['minLength'])
         self.cacheSize = int(config['cache'])
-        self.log = logger.logger("makemkv", config['debug'])
+        self.log = logger.logger("Makemkv", config['debug'])
 
     def _queueMovie(self):
         """
@@ -253,7 +253,7 @@ class makeMKV(object):
                 self.log.error(output)
                 return False
 
-        self.readMKVMessages("TCOUNT")
+        self.log.debug("MakeMKV found %d titles" % len(self.readMKVMessages("TCOUNT")))
         for titleNo in set(self.readMKVMessages("TINFO")):
             print titleNo
 
