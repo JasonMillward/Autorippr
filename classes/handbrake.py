@@ -116,6 +116,9 @@ class handBrake(object):
             '2> %s' % output
         ]
 
+        self.log.debug("HandBakeCLI commands: ")
+        self.log.debug(command)
+
         proc = subprocess.Popen(
             command,
             stderr=subprocess.STDOUT,
