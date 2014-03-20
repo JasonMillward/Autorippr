@@ -168,20 +168,22 @@ def compress(config):
     if hb.loadMovie():
         log.info( "Compressing %s" % hb.getMovieTitle())
 
-        #convert = hb.convert(
-        #    args=config['com'],
-        #    nice=int(config['nice']),
-        #    output=config['temp_output']
-        #)
+        with stopwatch.stopwatch() as t:
+            convert = hb.convert(
+                args=config['com'],
+                nice=int(config['nice']),
+                output=config['temp_output']
+            )
 
-        #if convert:
-        #    log.info( "Movie was compressed and encoded successfully")
+        if convert:
+            log.info("Movie was compressed and encoded successfully")
 
-        #log.info( ("It took %s minutes to compress %s"
-        #        %
-        #        (stopwatch.getTime(), hb.getMovieTitle())))
-        #else:
-        #    log.info( "HandBrake did not complete successfully")
+            log.info( ("It took %s minutes to compress %s" %
+                    (t.minutes, hb.getMovieTitle()))
+            )
+        else:
+            log.info( "HandBrake did not complete successfully")
+
     else:
         log.info( "Queue does not exist or is empty")
 

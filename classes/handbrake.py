@@ -141,9 +141,10 @@ class handBrake(object):
                 checks += 1
 
         if checks == 2:
-            self._updateQueue(uStatus="Complete", uAdditional="Job Done")
-            self._cleanUp(cFile=inMovie)
-            self._cleanUp(cFile=output)
+            self.log.debug("HandBakeCLI Completed successfully")
+            #self._updateQueue(uStatus="Complete", uAdditional="Job Done")
+            #self._cleanUp(cFile=inMovie)
+            #self._cleanUp(cFile=output)
             return True
         else:
             self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
