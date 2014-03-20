@@ -20,7 +20,10 @@ import sys
 class logger(object):
 
     def __init__(self, name, debug):
-        frmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', "%Y-%m-%d %H:%M:%S")
+        frmt = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            "%Y-%m-%d %H:%M:%S"
+        )
 
         if debug == True:
             logLevel = logging.DEBUG
