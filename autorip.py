@@ -91,10 +91,9 @@ def eject(drive):
 
     except Exception as ex:
         log.error("Could not detect OS or eject CD tray")
-        log.ex("An exception of type %s occured. Arguments:\n %s" %
-            type(ex).__name__,
-            ex.args
-        )
+        log.ex("An exception of type %s occured." % type(ex).__name__)
+        log.ex("Args: \r\n %s" % ex.args)
+
 
 
     finally:
