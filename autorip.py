@@ -82,7 +82,7 @@ def eject(drive):
 
         else:
             log.debug("OS detected as Unix")
-            p = os.popen("eject -vrn " + drive)
+            p = os.popen("eject -vr " + drive)
 
             while 1:
                 line = p.readline()
@@ -94,11 +94,8 @@ def eject(drive):
         log.ex("An exception of type %s occured." % type(ex).__name__)
         log.ex("Args: \r\n %s" % ex.args)
 
-
-
     finally:
         del log
-
 
 def rip(config):
     """
@@ -113,7 +110,7 @@ def rip(config):
 
     mkv_api = makemkv.makeMKV(config)
 
-    log.debug("Autoripper started successfully")
+    log.debug("Ripping started successfully")
     log.debug("Checking for DVDs")
 
     dvds = mkv_api.findDisc(mkv_tmp_output)
@@ -157,7 +154,9 @@ def rip(config):
 
 def compress(config, debug):
     """
-    compress temp docstring
+        Main function for compressing
+        Does everything
+        Returns nothing
     """
     log = Logger("Compress", debug)
 
@@ -167,17 +166,20 @@ def compress(config, debug):
 
     hb = HandBrake(config)
 
+    log.debug("Compressing started successfully")
+    log.debug("Looking for movies to compress")
+
     if hb.loadMovie():
         log.info( "Encoding and compressing %s" % hb.getMovieTitle())
 
-        if hb.convert(args=hb_cli, nice=hb_nice, output=hb_out):
-            log.info( "Movie was compressed and encoded successfully")
+        #if hb.convert(args=hb_cli, nice=hb_nice, output=hb_out):
+        #    log.info( "Movie was compressed and encoded successfully")
 
-            log.info( ("It took %s minutes to compress %s"
-                %
-                (stopwatch.getTime(), hb.getMovieTitle())))
-        else:
-            log.info( "HandBrake did not complete successfully")
+        #log.info( ("It took %s minutes to compress %s"
+        #        %
+        #        (stopwatch.getTime(), hb.getMovieTitle())))
+        #else:
+        #    log.info( "HandBrake did not complete successfully")
     else:
         log.info( "Queue does not exist or is empty")
 
