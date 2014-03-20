@@ -166,7 +166,7 @@ def compress(config):
     log.debug("Looking for movies to compress")
 
     if hb.loadMovie():
-        log.info( "Encoding and compressing %s" % hb.getMovieTitle())
+        log.info( "Compressing %s" % hb.getMovieTitle())
 
         #convert = hb.convert(
         #    args=config['com'],

@@ -14,7 +14,7 @@ Copyright (c) 2012, Jason Millward
 """
 
 import os
-import commands
+import subprocess
 import database
 import logger
 
@@ -101,21 +101,41 @@ class handBrake(object):
             self.log.error("Input file no longer exists")
             return False
 
-        commands.getstatusoutput(
-            'nice -n %d HandBrakeCLI --verbose 1 -i "%s" -o "%s" %s 2> %s'
-            %
-            (nice, inMovie, outMovie, args, output))
+        command = [
+            'nice',
+            '-n',
+            nice,
+            'HandBrakeCLI',
+            '--verbose',
+            1,
+            '-i',
+            '"%s"' % inMovie,
+            '-o',
+            '"%s"' % outMovie,
+            args,
+            '2> %s' % output
+        ]
 
-        checks = 0
-        try:
-            tempFile = open(output, 'r')
-            for line in tempFile.readlines():
-                if "average encoding speed for job" in line:
-                    checks += 1
-                if "Encode done!" in line:
-                    checks += 1
-        except:
-            self.log.info("Could not read output file, no cleanup will be done")
+        proc = subprocess.Popen(
+            command,
+            stderr=subprocess.STDOUT,
+            stdout=subprocess.PIPE
+        )
+
+        if proc.stderr is not None:
+            output = proc.stderr.read()
+            if len(output) is not 0:
+                self.log.error("HandBakeCLI encountered the following error: ")
+                self.log.error(output)
+                return False
+
+        output = proc.stdout.read()
+        lines = output.split("\n")
+        for line in lines:
+            if "average encoding speed for job" in line:
+                checks += 1
+            if "Encode done!" in line:
+                checks += 1
 
         if checks == 2:
             self._updateQueue(uStatus="Complete", uAdditional="Job Done")
