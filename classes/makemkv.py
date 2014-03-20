@@ -129,7 +129,7 @@ class makeMKV(object):
 
         proc = subprocess.Popen(
             command,
-            stderr=subprocess.STDOUT,
+            stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
 
@@ -253,9 +253,9 @@ class makeMKV(object):
                 self.log.error(output)
                 return False
 
-        #self.readMKVMessages("TCOUNT")
-        #for titleNo in set(self.readMKVMessages("TINFO")):
-        #    print titleNo
+        self.readMKVMessages("TCOUNT")
+        for titleNo in set(self.readMKVMessages("TINFO")):
+            print titleNo
 
 
     def readMKVMessages(self, search, searchIndex = None):

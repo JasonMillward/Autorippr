@@ -116,7 +116,7 @@ class handBrake(object):
 
         proc = subprocess.Popen(
             command,
-            stderr=subprocess.STDOUT,
+            stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
 
