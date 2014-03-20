@@ -94,6 +94,7 @@ class handBrake(object):
             None
     """
     def convert(self, nice, args, output):
+        checks = 0
         inMovie = "%s/%s" % (self.path, self.inputMovie)
         outMovie = "%s/%s" % (self.path, self.outputMovie)
 
