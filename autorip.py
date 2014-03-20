@@ -152,19 +152,15 @@ def rip(config):
     else:
         log.info("Could not find any DVDs in drive list")
 
-def compress(config, debug):
+def compress(config):
     """
         Main function for compressing
         Does everything
         Returns nothing
     """
-    log = Logger("Compress", debug)
+    log = Logger("Compress", config['debug'])
 
-    hb_nice = int(config['nice'])
-    hb_cli = config['com']
-    hb_out = config['temp_output']
-
-    hb = HandBrake(config)
+    hb = HandBrake(config['debug'])
 
     log.debug("Compressing started successfully")
     log.debug("Looking for movies to compress")
@@ -172,7 +168,13 @@ def compress(config, debug):
     if hb.loadMovie():
         log.info( "Encoding and compressing %s" % hb.getMovieTitle())
 
-        #if hb.convert(args=hb_cli, nice=hb_nice, output=hb_out):
+        #convert = hb.convert(
+        #    args=config['com'],
+        #    nice=int(config['nice']),
+        #    output=config['temp_output']
+        #)
+
+        #if convert:
         #    log.info( "Movie was compressed and encoded successfully")
 
         #log.info( ("It took %s minutes to compress %s"
