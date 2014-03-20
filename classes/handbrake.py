@@ -104,10 +104,10 @@ class handBrake(object):
         command = [
             'nice',
             '-n',
-            nice,
+            str(nice),
             'HandBrakeCLI',
             '--verbose',
-            1,
+            str(1),
             '-i',
             '"%s"' % inMovie,
             '-o',
