@@ -101,7 +101,14 @@ create_statusTypes()
 
 insert_movie(filename="test.mkv", path="/tmp/", filebot=False, statusid=1, lastupdated=datetime.now())
 
+filename = "'''''''"
+filepath = '"""""""'
+insert_movie(filename=filename, path=filepath, filebot=False, statusid=4, lastupdated=datetime.now())
+insert_movie(filename="The_World's_End_t00.mkv", path="/tmp/", filebot=False, statusid=1, lastupdated=datetime.now())
+
+
 movie = next_movie()
-print movie.path
-print movie.filename
-print movie.lastupdated
+if movie is not None:
+    print movie.path
+    print movie.filename
+    print movie.lastupdated
