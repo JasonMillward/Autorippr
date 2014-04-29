@@ -13,6 +13,7 @@ Copyright (c) 2012, Jason Millward
 
 import os
 from peewee import *
+from datetime import datetime
 
 database = SqliteDatabase('autoripper.sqlite', **{})
 
@@ -63,14 +64,44 @@ def create_tables():
     Statustypes.create_table()
 
 def create_historyTypes():
-    for hType in ['Info', 'Error', 'MakeMKV Error', 'Handbrake Error']:
-        Historytypes.create(historytype=hType)
+    for hID, hType in [
+            [1, 'Info'],
+            [2, 'Error'],
+            [3, 'MakeMKV Error'],
+            [4, 'Handbrake Error']
+        ]:
+        Historytypes.create(historytypeid=hID, historytype=hType)
 
 def create_statusTypes():
-    for sType in ['Added', 'Error', 'Submitted to makeMKV',
-        'Submitted to handbrake', 'Submitted to FileBot', 'Completed']:
-        Statustypes.create(statustext=sType)
+    for sID, sType in [
+            [1, 'Added'],
+            [2, 'Error'],
+            [3, 'Submitted to makeMKV'],
+            [4, 'Awaiting HandBrake'],
+            [5, 'Submitted to HandBrake'],
+            [6, 'Awaiting FileBot'],
+            [7, 'Submitted to FileBot'],
+            [8, 'Completed']
+        ]:
+        Statustypes.create(statusid=sID, statustext=sType)
+
+def next_movie():
+    for movie in Movies.select().where(Movies.statusid == 4):
+        return movie
+
+
+def insert_movie(*args, **kwargs):
+    Movies.create(*args, **kwargs)
+
+
 
 create_tables()
 create_historyTypes()
 create_statusTypes()
+
+insert_movie(filename="test.mkv", path="/tmp/", filebot=False, statusid=1, lastupdated=datetime.now())
+
+movie = next_movie()
+print movie.path
+print movie.filename
+print movie.lastupdated
