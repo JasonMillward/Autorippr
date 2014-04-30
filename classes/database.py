@@ -127,7 +127,7 @@ def update_movie(movieOBJ, statusid, filename=None):
     movieOBJ.statusid = statusid
     movieOBJ.lastupdated = datetime.now()
 
-    if filename not None:
+    if filename is not None:
         movieOBJ.filename = filename
 
     movieOBJ.save()
