@@ -13,7 +13,6 @@ Copyright (c) 2012, Jason Millward
 
 import os
 from peewee import *
-from datetime import datetime
 
 database = SqliteDatabase('autoripper.sqlite', **{})
 
