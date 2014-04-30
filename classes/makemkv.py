@@ -41,31 +41,6 @@ class makeMKV(object):
         self.cacheSize = int(config['makemkv']['cache'])
         self.log = logger.logger("Makemkv", config['debug'])
 
-    def _queueMovie(self):
-        """
-            Adds the recently ripped movie to the queue db for the compression
-                script to handle later on
-
-            Inputs:
-                None
-
-            Outputs:
-                None
-        """
-        db = database.database()
-        movie = ""
-
-        os.chdir('%s/%s' % (self.path, self.movieName))
-        for files in os.listdir("."):
-            if files.endswith(".mkv"):
-                movie = files
-                break
-
-        path = "%s/%s" % (self.path, self.movieName)
-        outMovie = "%s.mkv" % self.movieName
-        db.insert(path, inMovie=movie, outMovie=outMovie)
-
-
     def _cleanTitle(self):
         """
             Removes the extra bits in the title and removes whitespace
@@ -164,7 +139,6 @@ class makeMKV(object):
                 checks += 1
 
         if checks >= 2:
-            self._queueMovie()
             return True
         else:
             return False
