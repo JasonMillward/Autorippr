@@ -13,6 +13,7 @@ Copyright (c) 2012, Jason Millward
 
 import os
 from peewee import *
+from datetime import datetime
 
 database = SqliteDatabase('autoripper.sqlite', **{})
 
@@ -103,6 +104,23 @@ def create_statusTypes():
 def next_movie():
     for movie in Movies.select().where(Movies.statusid == 4):
         return movie
+
+def insert_history(id, text):
+    return History.create(
+        movieid=id,
+        historytext=text,
+        historydate=datetime.now()
+        historytypeid=1
+    )
+
+def insert_movie(title, path, filebot):
+    return Movies.create(
+        filename=title,
+        path=path,
+        filebot=filebot,
+        statusid=1,
+        lastupdated=datetime.now()
+    )
 
 
 def dbintegritycheck():

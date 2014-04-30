@@ -47,7 +47,6 @@ import os
 import sys
 import yaml
 from classes import *
-from datetime import datetime
 from tendo import singleton
 
 __version__="1.6"
@@ -129,18 +128,15 @@ def rip(config):
             if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
                 os.makedirs('%s/%s' % (mkv_save_path, movie_title))
 
-                dbMovie = database.Movies.create(
-                    filename=movie_title,
-                    path=mkv_save_path,
-                    filebot=config['filebot']['enable'],
-                    statusid=1,
-                    lastupdated=datetime.now()
+                dbMovie = database.insert_movie(
+                    movie_title,
+                    mkv_save_path,
+                    config['filebot']['enable']
                 )
 
-                database.History.create(
-                    movieid=dbMovie.movieid,
-                    historytext="Movie added to database",
-                    historydate=datetime.now()
+                database.insert_history(
+                    dbMovie.movieid,
+                    "Movie added to database"
                 )
 
                 mkv_api.getDiscInfo()
