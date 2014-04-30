@@ -123,9 +123,13 @@ def insert_movie(title, path, filebot):
         lastupdated=datetime.now()
     )
 
-def update_movie(movieOBJ, statusid):
+def update_movie(movieOBJ, statusid, filename=None):
     movieOBJ.statusid = statusid
     movieOBJ.lastupdated = datetime.now()
+
+    if filename not None:
+        movieOBJ.filename = filename
+
     movieOBJ.save()
 
 def dbintegritycheck():

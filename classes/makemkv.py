@@ -282,3 +282,15 @@ class makeMKV(object):
         """
         self._cleanTitle()
         return self.movieName
+
+    def getSavefile(self):
+        """
+            Returns the current movies title
+
+            Inputs:
+                None
+
+            Outputs:
+                movieName   (Str)
+        """
+        return self.saveFile

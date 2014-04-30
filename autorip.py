@@ -141,7 +141,8 @@ def rip(config):
                 )
 
                 mkv_api.getDiscInfo()
-                database.update_movie(dbMovie, 3)
+
+                database.update_movie(dbMovie, 3, mkv_api.getSavefile())
 
                 with stopwatch.stopwatch() as t:
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
