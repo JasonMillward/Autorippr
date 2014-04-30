@@ -58,12 +58,10 @@ class Statustypes(BaseModel):
 
 def create_tables():
     database.connect()
-
-    # Fail silently if tables exists
-    History.create_table(True)
-    Historytypes.create_table(True)
-    Movies.create_table(True)
-    Statustypes.create_table(True)
+    History.create_table()
+    Historytypes.create_table()
+    Movies.create_table()
+    Statustypes.create_table()
 
 def create_historyTypes():
     for hID, hType in [
@@ -92,10 +90,25 @@ def next_movie():
         return movie
 
 
-def dbintegritycheck():
-    # Stuff
-    create_tables()
+def insert_movie(*args, **kwargs):
+    Movies.create(*args, **kwargs)
 
-    # Things
-    create_historyTypes()
-    create_statusTypes()
+
+
+create_tables()
+create_historyTypes()
+create_statusTypes()
+
+insert_movie(filename="test.mkv", path="/tmp/", filebot=False, statusid=1, lastupdated=datetime.now())
+
+filename = "'''''''"
+filepath = '"""""""'
+insert_movie(filename=filename, path=filepath, filebot=False, statusid=4, lastupdated=datetime.now())
+insert_movie(filename="The_World's_End_t00.mkv", path="/tmp/", filebot=False, statusid=1, lastupdated=datetime.now())
+
+
+movie = next_movie()
+if movie is not None:
+    print movie.path
+    print movie.filename
+    print movie.lastupdated
