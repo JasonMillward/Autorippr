@@ -231,11 +231,11 @@ class makeMKV(object):
         for titleNo in set(self.readMKVMessages("TINFO")):
             self.log.debug("Title number: %s" % titleNo)
             self.log.debug(self.readMKVMessages("CINFO", "2"))
-            self.log.debug(self.readMKVMessages("TINFO"))
+            self.saveFile = self.readMKVMessages("TINFO", titleNo, 27)
+            self.saveFile = self.saveFile[0]
 
 
-
-    def readMKVMessages(self, stype, sid=None, scode=None, value=None):
+    def readMKVMessages(self, stype, sid=None, scode=None):
         """
             Returns a list of messages that match the search string
 
@@ -260,10 +260,8 @@ class makeMKV(object):
                             if int(row[0]) == int(sid):
                                 if scode is not None:
                                     if int(row[1]) == int(scode):
-                                        print row
                                         toReturn.append(row[3])
-                                else
-                                    print row
+                                else:
                                     toReturn.append(row[2])
 
                     else:
