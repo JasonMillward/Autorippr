@@ -139,7 +139,8 @@ def rip(config):
 
                 database.History.create(
                     movieid=dbMovie.movieid,
-                    historytext="Movie added to database"
+                    historytext="Movie added to database",
+                    historydate=datetime.now()
                 )
 
                 mkv_api.getDiscInfo()
