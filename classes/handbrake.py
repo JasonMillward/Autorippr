@@ -20,7 +20,6 @@ import logger
 class handBrake(object):
 
     def __init__(self, debug):
-        self.db = database.database()
         self.log = logger.logger("Handbrake", debug)
 
     """ Function:   _cleanUp
@@ -64,12 +63,12 @@ class handBrake(object):
             None
     """
     def loadMovie(self):
-        movie = self.db.getNextMovie()
-        if isinstance(movie, tuple):
-            self.ID = movie[0]
-            self.path = movie[1]
-            self.inputMovie = movie[2]
-            self.outputMovie = movie[3]
+        for movie in database.next_movie()
+
+            self.ID = movie.movieid
+            self.path = movie.path
+            self.inputMovie = movie.filename
+            self.outputMovie = movie.filename
             return True
         else:
             return False

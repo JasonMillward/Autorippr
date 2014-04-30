@@ -40,6 +40,7 @@ class Historytypes(BaseModel):
 
 class Movies(BaseModel):
     movieid = PrimaryKeyField(db_column='movieID')
+    moviename = CharField()
     filename = CharField()
     path = CharField()
     filebot = BooleanField()
@@ -115,7 +116,7 @@ def insert_history(id, text):
 
 def insert_movie(title, path, filebot):
     return Movies.create(
-        filename=title,
+        moviename=title,
         path=path,
         filebot=filebot,
         statusid=1,

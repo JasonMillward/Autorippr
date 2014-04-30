@@ -125,12 +125,13 @@ def rip(config):
 
             movie_title = mkv_api.getTitle()
 
-            if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
-                os.makedirs('%s/%s' % (mkv_save_path, movie_title))
+            movie_path = '%s/%s' % (mkv_save_path, movie_title)
+            if not os.path.exists(movie_path):
+                os.makedirs(movie_path)
 
                 dbMovie = database.insert_movie(
                     movie_title,
-                    mkv_save_path,
+                    movie_path,
                     config['filebot']['enable']
                 )
 
@@ -192,7 +193,7 @@ def compress(config):
             log.info("Movie was compressed and encoded successfully")
 
             log.info( ("It took %s minutes to compress %s" %
-                    (t.minutes, hb.getMovieTitle()))
+                (t.minutes, hb.getMovieTitle()))
             )
         else:
             log.info( "HandBrake did not complete successfully")
