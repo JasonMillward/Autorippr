@@ -58,57 +58,60 @@ class Statustypes(BaseModel):
 
 def create_tables():
     database.connect()
-    History.create_table()
-    Historytypes.create_table()
-    Movies.create_table()
-    Statustypes.create_table()
+
+    # Fail silently if tables exists
+    History.create_table(True)
+    Historytypes.create_table(True)
+    Movies.create_table(True)
+    Statustypes.create_table(True)
 
 def create_historyTypes():
-    for hID, hType in [
-            [1, 'Info'],
-            [2, 'Error'],
-            [3, 'MakeMKV Error'],
-            [4, 'Handbrake Error']
-        ]:
-        Historytypes.create(historytypeid=hID, historytype=hType)
+    historyTypes = [
+        [1, 'Info'],
+        [2, 'Error'],
+        [3, 'MakeMKV Error'],
+        [4, 'Handbrake Error']
+    ]
+
+    c = 0
+    for z in Historytypes.select():
+        c += 1
+
+    if c != len( historyTypes ):
+        for hID, hType in historyTypes:
+            Historytypes.create(historytypeid=hID, historytype=hType)
 
 def create_statusTypes():
-    for sID, sType in [
-            [1, 'Added'],
-            [2, 'Error'],
-            [3, 'Submitted to makeMKV'],
-            [4, 'Awaiting HandBrake'],
-            [5, 'Submitted to HandBrake'],
-            [6, 'Awaiting FileBot'],
-            [7, 'Submitted to FileBot'],
-            [8, 'Completed']
-        ]:
-        Statustypes.create(statusid=sID, statustext=sType)
+    statusTypes = [
+        [1, 'Added'],
+        [2, 'Error'],
+        [3, 'Submitted to makeMKV'],
+        [4, 'Awaiting HandBrake'],
+        [5, 'Submitted to HandBrake'],
+        [6, 'Awaiting FileBot'],
+        [7, 'Submitted to FileBot'],
+        [8, 'Completed']
+    ]
+
+    c = 0
+    for z in Statustypes.select():
+        c += 1
+
+    if c != len( statusTypes ):
+        for sID, sType in statusTypes:
+            Statustypes.create(statusid=sID, statustext=sType)
 
 def next_movie():
     for movie in Movies.select().where(Movies.statusid == 4):
         return movie
 
 
-def insert_movie(*args, **kwargs):
-    Movies.create(*args, **kwargs)
+def dbintegritycheck():
+    # Stuff
+    create_tables()
 
+    # Things
+    create_historyTypes()
+    create_statusTypes()
 
-
-create_tables()
-create_historyTypes()
-create_statusTypes()
-
-insert_movie(filename="test.mkv", path="/tmp/", filebot=False, statusid=1, lastupdated=datetime.now())
-
-filename = "'''''''"
-filepath = '"""""""'
-insert_movie(filename=filename, path=filepath, filebot=False, statusid=4, lastupdated=datetime.now())
-insert_movie(filename="The_World's_End_t00.mkv", path="/tmp/", filebot=False, statusid=1, lastupdated=datetime.now())
-
-
-movie = next_movie()
-if movie is not None:
-    print movie.path
-    print movie.filename
-    print movie.lastupdated
+dbintegritycheck()
