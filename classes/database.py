@@ -109,7 +109,7 @@ def insert_history(id, text):
     return History.create(
         movieid=id,
         historytext=text,
-        historydate=datetime.now()
+        historydate=datetime.now(),
         historytypeid=1
     )
 
