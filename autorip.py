@@ -136,7 +136,7 @@ def rip(config):
                 )
 
                 database.insert_history(
-                    dbMovie.movieid,
+                    dbMovie,
                     "Movie added to database"
                 )
 
@@ -145,6 +145,10 @@ def rip(config):
                 database.update_movie(dbMovie, 3, mkv_api.getSavefile())
 
                 with stopwatch.stopwatch() as t:
+                    database.insert_history(
+                        dbMovie,
+                        "Movie submitted to MakeMKV"
+                    )
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                 if status:
@@ -161,6 +165,13 @@ def rip(config):
                     log.info("MakeMKV did not did not complete successfully")
                     log.info("See log for more details")
                     log.debug("Movie title: %s" % movie_title)
+
+                    database.insert_history(
+                        dbMovie,
+                        "MakeMKV failed to rip movie"
+                    )
+
+                    database.update_movie(dbMovie, 2)
 
             else:
                 log.info("Movie folder %s already exists" % movie_title)

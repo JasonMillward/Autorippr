@@ -41,8 +41,8 @@ class Historytypes(BaseModel):
 class Movies(BaseModel):
     movieid = PrimaryKeyField(db_column='movieID')
     moviename = CharField()
-    filename = CharField(null=True)
     path = CharField()
+    filename = CharField(null=True)
     filebot = BooleanField()
     statusid = IntegerField(db_column='statusID')
     lastupdated = DateTimeField(db_column='lastUpdated')
@@ -106,9 +106,9 @@ def next_movie():
     for movie in Movies.select().where(Movies.statusid == 4):
         return movie
 
-def insert_history(id, text):
+def insert_history(dbMovie, text):
     return History.create(
-        movieid=id,
+        movieid=dbMovie.movieid,
         historytext=text,
         historydate=datetime.now(),
         historytypeid=1
