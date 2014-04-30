@@ -103,7 +103,7 @@ def create_statusTypes():
             Statustypes.create(statusid=sID, statustext=sType)
 
 def next_movie():
-    for movie in Movies.select().where(Movies.statusid == 4):
+    for movie in Movies.select().where((Movies.statusid == 4) | (Movies.filename != None )):
         return movie
 
 def insert_history(dbMovie, text):
