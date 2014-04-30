@@ -69,7 +69,7 @@ class handBrake(object):
             self.ID = movie.movieid
             self.path = movie.path
             self.inputMovie = movie.filename
-            self.outputMovie = movie.filename
+            self.outputMovie = "%s.mkv" % movie.moviename
 
             return True
 
