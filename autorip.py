@@ -104,7 +104,7 @@ def rip(config):
         Does everything
         Returns nothing
     """
-    log = logger.logger("Rip", config['makemkv']['debug'])
+    log = logger.logger("Rip", config['debug'])
 
     mkv_save_path = config['makemkv']['savePath']
     mkv_tmp_output = config['makemkv']['temp']
