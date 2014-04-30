@@ -99,7 +99,7 @@ class handBrake(object):
         outMovie = "%s/%s" % (self.path, self.outputMovie)
 
         if not os.path.isfile(inMovie):
-            self.debug.error(inMovie)
+            self.log.debug(inMovie)
             self.log.error("Input file no longer exists")
             return False
 
