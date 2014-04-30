@@ -256,7 +256,7 @@ class makeMKV(object):
         self.log.debug("MakeMKV found %d titles" % len(self.readMKVMessages("TCOUNT")))
         for titleNo in set(self.readMKVMessages("TINFO")):
             self.log.debug("Title number: %s" % titleNo)
-            self.log.debug(self.readMKVMessages("CINFO", 2))
+            self.log.debug(self.readMKVMessages("CINFO", "2"))
 
 
     def readMKVMessages(self, search, searchIndex = None):
@@ -282,7 +282,7 @@ class makeMKV(object):
                         for row in cr:
                             if int(row[0]) == int(searchIndex):
                                 #print row
-                                toReturn.append(row[3])
+                                toReturn.append(row[2])
                     else:
                         for row in cr:
                             toReturn.append(row[0])
