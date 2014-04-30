@@ -63,13 +63,16 @@ class handBrake(object):
             None
     """
     def loadMovie(self):
-        for movie in database.next_movie():
+        movie = database.next_movie()
 
+        if movie is not None:
             self.ID = movie.movieid
             self.path = movie.path
             self.inputMovie = movie.filename
             self.outputMovie = movie.filename
+
             return True
+
         else:
             return False
 
