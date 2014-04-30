@@ -41,7 +41,7 @@ class Historytypes(BaseModel):
 class Movies(BaseModel):
     movieid = PrimaryKeyField(db_column='movieID')
     moviename = CharField()
-    filename = CharField()
+    filename = CharField(null=True)
     path = CharField()
     filebot = BooleanField()
     statusid = IntegerField(db_column='statusID')
