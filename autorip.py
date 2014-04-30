@@ -46,7 +46,8 @@ Options:
 import os
 import sys
 import yaml
-from classes import docopt, handbrake, logger, makemkv, stopwatch
+from classes import *
+from datetime import datetime
 from tendo import singleton
 
 __version__="1.6"
@@ -103,10 +104,10 @@ def rip(config):
         Does everything
         Returns nothing
     """
-    log = logger.logger("Rip", config['debug'])
+    log = logger.logger("Rip", config['makemkv']['debug'])
 
-    mkv_save_path = config['savePath']
-    mkv_tmp_output = config['temp']
+    mkv_save_path = config['makemkv']['savePath']
+    mkv_tmp_output = config['makemkv']['temp']
 
     mkv_api = makemkv.makeMKV(config)
 
@@ -127,6 +128,14 @@ def rip(config):
 
             if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
                 os.makedirs('%s/%s' % (mkv_save_path, movie_title))
+
+                Movies.create(
+                    filename=movie_title,
+                    path=mkv_save_path,
+                    filebot=config['filebot']['enable'],
+                    statusid=1,
+                    lastupdated=datetime.now()
+                )
 
                 mkv_api.getDiscInfo()
 
@@ -190,11 +199,10 @@ def compress(config):
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version=__version__)
     config = yaml.safe_load(open(CONFIG_FILE))
+    config['debug'] = arguments['--debug']
 
     if arguments['--rip']:
-        config['makemkv']['debug'] = arguments['--debug']
-        rip(config['makemkv'])
+        rip(config)
 
     if arguments['--compress']:
-        config['handbrake']['debug'] = arguments['--debug']
-        compress(config['handbrake'])
+        compress(config)
