@@ -63,7 +63,7 @@ class handBrake(object):
             None
     """
     def loadMovie(self):
-        for movie in database.next_movie()
+        for movie in database.next_movie():
 
             self.ID = movie.movieid
             self.path = movie.path
