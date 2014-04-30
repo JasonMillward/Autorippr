@@ -235,7 +235,7 @@ class makeMKV(object):
 
 
 
-    def readMKVMessages(self, search, searchIndex = None):
+    def readMKVMessages(self, stype, sid=None, scode=None, value=None):
         """
             Returns a list of messages that match the search string
 
@@ -247,18 +247,25 @@ class makeMKV(object):
                 toReturn    (List)
         """
         toReturn = []
+
         with open('/tmp/makemkvMessages', 'r') as messages:
             for line in messages:
-                if line[:len(search)] == search:
-                    values = line.replace("%s:" % search, "").strip()
+                if line[:len(stype)] == stype:
+                    values = line.replace("%s:" % stype, "").strip()
 
                     cr = csv.reader([values])
 
-                    if searchIndex is not None:
+                    if sid is not None:
                         for row in cr:
-                            if int(row[0]) == int(searchIndex):
-                                #print row
-                                toReturn.append(row[2])
+                            if int(row[0]) == int(sid):
+                                if scode is not None:
+                                    if int(row[1]) == int(scode):
+                                        print row
+                                        toReturn.append(row[3])
+                                else
+                                    print row
+                                    toReturn.append(row[2])
+
                     else:
                         for row in cr:
                             toReturn.append(row[0])
