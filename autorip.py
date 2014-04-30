@@ -140,9 +140,7 @@ def rip(config):
                 )
 
                 mkv_api.getDiscInfo()
-
-                dbMovie.statusid = 3
-                dbMovie.save()
+                database.update_movie(dbMovie, 3)
 
                 with stopwatch.stopwatch() as t:
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
@@ -154,6 +152,8 @@ def rip(config):
                     log.info("It took %s minute(s) to complete the ripping of %s" %
                          (t.minutes, movie_title)
                     )
+
+                    database.update_movie(dbMovie, 4)
 
                 else:
                     log.info("MakeMKV did not did not complete successfully")
