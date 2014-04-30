@@ -148,7 +148,7 @@ def rip(config):
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                 if status:
-                    if config['eject']:
+                    if config['makemkv']['eject']:
                         eject(dvd['location'])
 
                     log.info("It took %s minute(s) to complete the ripping of %s" %
