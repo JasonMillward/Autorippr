@@ -197,8 +197,8 @@ def compress(config):
 
         with stopwatch.stopwatch() as t:
             convert = hb.convert(
-                args=config['com'],
-                nice=int(config['nice'])
+                args=config['handbrake']['com'],
+                nice=int(config['handbrake']['nice'])
             )
 
         if convert:
