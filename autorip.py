@@ -129,7 +129,7 @@ def rip(config):
             if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
                 os.makedirs('%s/%s' % (mkv_save_path, movie_title))
 
-                Movies.create(
+                dbMovie = database.Movies.create(
                     filename=movie_title,
                     path=mkv_save_path,
                     filebot=config['filebot']['enable'],
@@ -137,7 +137,15 @@ def rip(config):
                     lastupdated=datetime.now()
                 )
 
+                database.History.create(
+                    movieid=dbMovie.movieid,
+                    historytext="Movie added to database"
+                )
+
                 mkv_api.getDiscInfo()
+
+                dbMovie.statusid = 3
+                dbMovie.save()
 
                 with stopwatch.stopwatch() as t:
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
