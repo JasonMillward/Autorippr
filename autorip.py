@@ -46,7 +46,7 @@ Options:
 import os
 import sys
 import yaml
-from classes import docopt, handbrake, logger, makemkv, stopwatch
+from classes import *
 from tendo import singleton
 
 __version__="1.6"
@@ -128,6 +128,7 @@ def rip(config):
             if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
                 os.makedirs('%s/%s' % (mkv_save_path, movie_title))
 
+
                 mkv_api.getDiscInfo()
 
                 with stopwatch.stopwatch() as t:
@@ -190,6 +191,8 @@ def compress(config):
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version=__version__)
     config = yaml.safe_load(open(CONFIG_FILE))
+
+    dbintegritycheck()
 
     if arguments['--rip']:
         config['makemkv']['debug'] = arguments['--debug']
