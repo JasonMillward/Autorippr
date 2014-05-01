@@ -1,5 +1,17 @@
 """
-Simple timer class
+Basic analtics
+
+The purpose of this file is to simply send a 'ping' with a unique identifier
+
+Because Github doesn't show a download counter, I have no way of knowing if
+this script is even being used (except for people telling me it broke).
+
+You are free to opt-out by disabling the config option
+
+    analytics:
+        enable:     True <- make this False
+
+If the computer doesn't have internet access the script will continue as normal
 
 
 Released under the MIT license
@@ -11,12 +23,15 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
+try:
+    import uuid
+    import requests
 
-from requests import requests
+    data = {
+        "uuid": uuid.getnode()
+    }
 
-data = {
-    "asd"
-}
+    requests.post('http://api.jcode.me/makemkv/stats', data=data)
 
-print "I'm calling a phone home script"
-requests.post('http://some.url/streamed', data=data)
+except :
+    pass
