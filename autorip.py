@@ -108,11 +108,10 @@ def rip(config):
     mkv_save_path = config['makemkv']['savePath']
     mkv_tmp_output = config['makemkv']['temp']
 
+    log.debug("Ripping initialised")
     mkv_api = makemkv.makeMKV(config)
 
-    log.debug("Ripping started successfully")
     log.debug("Checking for DVDs")
-
     dvds = mkv_api.findDisc(mkv_tmp_output)
 
     log.debug("%d DVDs found" % len(dvds))

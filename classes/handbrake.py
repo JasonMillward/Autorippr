@@ -49,8 +49,8 @@ class handBrake(object):
         Outputs:
             None
     """
-    def _updateQueue(self, uStatus, uAdditional):
-        self.db.update(uid=self.ID, status=uStatus, text=uAdditional)
+    def _updateQueue(self, uStatus):
+        database.update_movie(self.dbMovie, uStatus)
 
     """ Function:   loadMovie
             Check to see if the queue file exists, if it does load the first
@@ -72,7 +72,7 @@ class handBrake(object):
             self.outputMovie = "%s.mkv" % movie.moviename
 
             return True
-
+            self.movie = movie
         else:
             return False
 
@@ -130,6 +130,8 @@ class handBrake(object):
                 lines = output.split("\n")
                 for line in lines:
                     self.log.error(line.strip())
+                    database.insert_history(self.dbMovie, line, 4)
+                self._updateQueue(2)
                 return False
 
         output = proc.stdout.read()
@@ -143,16 +145,23 @@ class handBrake(object):
             if "ERROR" in line:
                 self.log.error("HandBakeCLI encountered the following error: ")
                 self.log.error(line)
+                self._updateQueue(2)
+                database.insert_history(self.dbMovie, line, 4)
                 return False
 
         if checks == 2:
             self.log.debug("HandBakeCLI Completed successfully")
-            self._updateQueue(uStatus="Complete", uAdditional="Job Done")
+            self._updateQueue(6)
             self._cleanUp(cFile=inMovie)
             self._cleanUp(cFile=output)
+            database.insert_history(
+                self.dbMovie,
+                "HandBakeCLI Completed successfully"
+            )
             return True
         else:
-            self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
+            self._updateQueue(2)
+            database.insert_history(self.dbMovie, "Handbrake failed", 4)
             return False
 
     """ Function:   getMovieTitle

@@ -106,12 +106,12 @@ def next_movie():
     for movie in Movies.select().where((Movies.statusid == 4) | (Movies.filename != None )):
         return movie
 
-def insert_history(dbMovie, text):
+def insert_history(dbMovie, text, typeid=1):
     return History.create(
         movieid=dbMovie.movieid,
         historytext=text,
         historydate=datetime.now(),
-        historytypeid=1
+        historytypeid=typeid
     )
 
 def insert_movie(title, path, filebot):
