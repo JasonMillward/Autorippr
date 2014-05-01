@@ -1,8 +1,6 @@
 """
 HandBrake CLI Wrapper + Queue Handler
 
-This class acts as a python wrapper to the HandBrake CLI.
-
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward
@@ -22,8 +20,7 @@ import logger
 class handBrake(object):
 
     def __init__(self, debug):
-        self.db = database.database()
-        self.log = logger.logger("handbrake", debug)
+        self.log = logger.logger("Handbrake", debug)
 
     """ Function:   _cleanUp
             Removes the log file and the input movie because these files are
@@ -52,8 +49,8 @@ class handBrake(object):
         Outputs:
             None
     """
-    def _updateQueue(self, uStatus, uAdditional):
-        self.db.update(uid=self.ID, status=uStatus, text=uAdditional)
+    def _updateQueue(self, uStatus):
+        database.update_movie(self.dbMovie, uStatus)
 
     """ Function:   loadMovie
             Check to see if the queue file exists, if it does load the first
@@ -66,12 +63,15 @@ class handBrake(object):
             None
     """
     def loadMovie(self):
-        movie = self.db.getNextMovie()
-        if isinstance(movie, tuple):
-            self.ID = movie[0]
-            self.path = movie[1]
-            self.inputMovie = movie[2]
-            self.outputMovie = movie[3]
+        movie = database.next_movie()
+
+        if movie is not None:
+            self.ID = movie.movieid
+            self.path = movie.path
+            self.inputMovie = movie.filename
+            self.outputMovie = "%s.mkv" % movie.moviename
+            self.dbMovie = movie
+
             return True
         else:
             return False
@@ -99,6 +99,7 @@ class handBrake(object):
         outMovie = "%s/%s" % (self.path, self.outputMovie)
 
         if not os.path.isfile(inMovie):
+            self.log.debug(inMovie)
             self.log.error("Input file no longer exists")
             return False
 
@@ -118,7 +119,7 @@ class handBrake(object):
 
         proc = subprocess.Popen(
             command,
-            stderr=subprocess.STDOUT,
+            stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
 
@@ -126,7 +127,11 @@ class handBrake(object):
             output = proc.stderr.read()
             if len(output) is not 0:
                 self.log.error("HandBakeCLI encountered the following error: ")
-                self.log.error(output)
+                lines = output.split("\n")
+                for line in lines:
+                    self.log.error(line.strip())
+                    database.insert_history(self.dbMovie, line, 4)
+                self._updateQueue(2)
                 return False
 
         output = proc.stdout.read()
@@ -140,16 +145,23 @@ class handBrake(object):
             if "ERROR" in line:
                 self.log.error("HandBakeCLI encountered the following error: ")
                 self.log.error(line)
+                self._updateQueue(2)
+                database.insert_history(self.dbMovie, line, 4)
                 return False
 
         if checks == 2:
             self.log.debug("HandBakeCLI Completed successfully")
-            self._updateQueue(uStatus="Complete", uAdditional="Job Done")
+            self._updateQueue(6)
             self._cleanUp(cFile=inMovie)
             self._cleanUp(cFile=output)
+            database.insert_history(
+                self.dbMovie,
+                "HandBakeCLI Completed successfully"
+            )
             return True
         else:
-            self._updateQueue(uStatus="Failed", uAdditional="HandBrake failed")
+            self._updateQueue(2)
+            database.insert_history(self.dbMovie, "Handbrake failed", 4)
             return False
 
     """ Function:   getMovieTitle
