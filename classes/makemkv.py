@@ -37,34 +37,9 @@ class makeMKV(object):
         self.movieName = ""
         self.path = ""
         self.movieName = ""
-        self.minLength = int(config['minLength'])
-        self.cacheSize = int(config['cache'])
+        self.minLength = int(config['makemkv']['minLength'])
+        self.cacheSize = int(config['makemkv']['cache'])
         self.log = logger.logger("Makemkv", config['debug'])
-
-    def _queueMovie(self):
-        """
-            Adds the recently ripped movie to the queue db for the compression
-                script to handle later on
-
-            Inputs:
-                None
-
-            Outputs:
-                None
-        """
-        db = database.database()
-        movie = ""
-
-        os.chdir('%s/%s' % (self.path, self.movieName))
-        for files in os.listdir("."):
-            if files.endswith(".mkv"):
-                movie = files
-                break
-
-        path = "%s/%s" % (self.path, self.movieName)
-        outMovie = "%s.mkv" % self.movieName
-        db.insert(path, inMovie=movie, outMovie=outMovie)
-
 
     def _cleanTitle(self):
         """
@@ -164,7 +139,6 @@ class makeMKV(object):
                 checks += 1
 
         if checks >= 2:
-            self._queueMovie()
             return True
         else:
             return False
@@ -256,10 +230,14 @@ class makeMKV(object):
         self.log.debug("MakeMKV found %d titles" % len(self.readMKVMessages("TCOUNT")))
         for titleNo in set(self.readMKVMessages("TINFO")):
             self.log.debug("Title number: %s" % titleNo)
+
             self.log.debug(self.readMKVMessages("CINFO", 2))
 
+            self.saveFile = self.readMKVMessages("TINFO", titleNo, 27)
+            self.saveFile = self.saveFile[0]
 
-    def readMKVMessages(self, search, searchIndex = None):
+
+    def readMKVMessages(self, stype, sid=None, scode=None):
         """
             Returns a list of messages that match the search string
 
@@ -271,18 +249,23 @@ class makeMKV(object):
                 toReturn    (List)
         """
         toReturn = []
+
         with open('/tmp/makemkvMessages', 'r') as messages:
             for line in messages:
-                if line[:len(search)] == search:
-                    values = line.replace("%s:" % search, "").strip()
+                if line[:len(stype)] == stype:
+                    values = line.replace("%s:" % stype, "").strip()
 
                     cr = csv.reader([values])
 
-                    if searchIndex is not None:
+                    if sid is not None:
                         for row in cr:
-                            if int(row[0]) == int(searchIndex):
-                                #print row
-                                toReturn.append(row[3])
+                            if int(row[0]) == int(sid):
+                                if scode is not None:
+                                    if int(row[1]) == int(scode):
+                                        toReturn.append(row[3])
+                                else:
+                                    toReturn.append(row[2])
+
                     else:
                         for row in cr:
                             toReturn.append(row[0])
@@ -301,3 +284,15 @@ class makeMKV(object):
         """
         self._cleanTitle()
         return self.movieName
+
+    def getSavefile(self):
+        """
+            Returns the current movies title
+
+            Inputs:
+                None
+
+            Outputs:
+                movieName   (Str)
+        """
+        return self.saveFile

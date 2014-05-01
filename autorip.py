@@ -16,7 +16,7 @@ Ripping
 Compressing
     An optional additional used to rename and compress movies to an acceptable standard
     which still delivers quallity audio and video but reduces the file size
-    dramatly.
+    dramatically.
 
     Using a nice value of 15 by default, it runs HandBrake as a background task
     that allows other critical tasks to complete first.
@@ -46,7 +46,7 @@ Options:
 import os
 import sys
 import yaml
-from classes import docopt, handbrake, logger, makemkv, stopwatch
+from classes import *
 from tendo import singleton
 
 __version__="1.6"
@@ -105,14 +105,13 @@ def rip(config):
     """
     log = logger.logger("Rip", config['debug'])
 
-    mkv_save_path = config['savePath']
-    mkv_tmp_output = config['temp']
+    mkv_save_path = config['makemkv']['savePath']
+    mkv_tmp_output = config['makemkv']['temp']
 
+    log.debug("Ripping initialised")
     mkv_api = makemkv.makeMKV(config)
 
-    log.debug("Ripping started successfully")
     log.debug("Checking for DVDs")
-
     dvds = mkv_api.findDisc(mkv_tmp_output)
 
     log.debug("%d DVDs found" % len(dvds))
@@ -125,26 +124,53 @@ def rip(config):
 
             movie_title = mkv_api.getTitle()
 
-            if not os.path.exists('%s/%s' % (mkv_save_path, movie_title)):
-                os.makedirs('%s/%s' % (mkv_save_path, movie_title))
+            movie_path = '%s/%s' % (mkv_save_path, movie_title)
+            if not os.path.exists(movie_path):
+                os.makedirs(movie_path)
+
+                dbMovie = database.insert_movie(
+                    movie_title,
+                    movie_path,
+                    config['filebot']['enable']
+                )
+
+                database.insert_history(
+                    dbMovie,
+                    "Movie added to database"
+                )
 
                 mkv_api.getDiscInfo()
 
+                database.update_movie(dbMovie, 3, mkv_api.getSavefile())
+
                 with stopwatch.stopwatch() as t:
+                    database.insert_history(
+                        dbMovie,
+                        "Movie submitted to MakeMKV"
+                    )
                     status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
 
                 if status:
-                    if config['eject']:
+                    if config['makemkv']['eject']:
                         eject(dvd['location'])
 
                     log.info("It took %s minute(s) to complete the ripping of %s" %
                          (t.minutes, movie_title)
                     )
 
+                    database.update_movie(dbMovie, 4)
+
                 else:
                     log.info("MakeMKV did not did not complete successfully")
                     log.info("See log for more details")
                     log.debug("Movie title: %s" % movie_title)
+
+                    database.insert_history(
+                        dbMovie,
+                        "MakeMKV failed to rip movie"
+                    )
+
+                    database.update_movie(dbMovie, 2)
 
             else:
                 log.info("Movie folder %s already exists" % movie_title)
@@ -170,15 +196,15 @@ def compress(config):
 
         with stopwatch.stopwatch() as t:
             convert = hb.convert(
-                args=config['com'],
-                nice=int(config['nice'])
+                args=config['handbrake']['com'],
+                nice=int(config['handbrake']['nice'])
             )
 
         if convert:
             log.info("Movie was compressed and encoded successfully")
 
             log.info( ("It took %s minutes to compress %s" %
-                    (t.minutes, hb.getMovieTitle()))
+                (t.minutes, hb.getMovieTitle()))
             )
         else:
             log.info( "HandBrake did not complete successfully")
@@ -190,11 +216,10 @@ def compress(config):
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version=__version__)
     config = yaml.safe_load(open(CONFIG_FILE))
+    config['debug'] = arguments['--debug']
 
     if arguments['--rip']:
-        config['makemkv']['debug'] = arguments['--debug']
-        rip(config['makemkv'])
+        rip(config)
 
     if arguments['--compress']:
-        config['handbrake']['debug'] = arguments['--debug']
-        compress(config['handbrake'])
+        compress(config)

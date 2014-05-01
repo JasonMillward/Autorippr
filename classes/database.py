@@ -1,5 +1,5 @@
 """
-MakeMKV CLI Wrapper
+SQLite Database Helper
 
 
 Released under the MIT license
@@ -12,78 +12,132 @@ Copyright (c) 2012, Jason Millward
 """
 
 import os
-import sqlite3
+from peewee import *
+from datetime import datetime
 
-class database(object):
+database = SqliteDatabase('autoripper.sqlite', **{})
 
-    def __init__(self):
-        DATABASE = 'autoripper.db'
-        REAL_PATH = os.path.dirname(os.path.realpath(__file__))
+class BaseModel(Model):
+    class Meta:
+        database = database
 
-        self.con = sqlite3.connect('%s/../%s' % (REAL_PATH, DATABASE))
+class History(BaseModel):
+    historyid = PrimaryKeyField(db_column='historyID')
+    historydate = DateTimeField(db_column='historyDate')
+    historytext = CharField(db_column='historyText')
+    historytypeid = IntegerField(db_column='historyTypeID')
+    movieid = IntegerField(db_column='movieID')
 
-        if not self._tableExists():
-            self._createStructure()
+    class Meta:
+        db_table = 'history'
 
-    def _tableExists(self):
-        with self.con:
+class Historytypes(BaseModel):
+    historytypeid = PrimaryKeyField(db_column='historyTypeID')
+    historytype = CharField(db_column='historyType')
 
-            cur = self.con.cursor()
-            uSql = ("SELECT name ",
-                    "FROM   sqlite_master ",
-                    "WHERE  type='table' ",
-                    "AND    name='movies' ",
-                    "LIMIT 1;")
+    class Meta:
+        db_table = 'historyTypes'
 
-            cur.execute(''.join(uSql))
-            data = cur.fetchone()
+class Movies(BaseModel):
+    movieid = PrimaryKeyField(db_column='movieID')
+    moviename = CharField()
+    path = CharField()
+    filename = CharField(null=True)
+    filebot = BooleanField()
+    statusid = IntegerField(db_column='statusID')
+    lastupdated = DateTimeField(db_column='lastUpdated')
 
-            if isinstance(data, tuple) and ''.join(data) == "movies":
-                return True
-            else:
-                return False
+    class Meta:
+        db_table = 'movies'
 
-    def _createStructure(self):
-        with self.con:
-            cur = self.con.cursor()
-            uSql = ("CREATE TABLE movies ("
-                    "ID         INTEGER PRIMARY KEY AUTOINCREMENT, ",
-                    "path       TEXT, ",
-                    "inMovie    TEXT, ",
-                    "outMovie   TEXT, ",
-                    "status     TEXT, ",
-                    "statusText TEXT)")
+class Statustypes(BaseModel):
+    statusid = PrimaryKeyField(db_column='statusID')
+    statustext = CharField(db_column='statusText')
 
-            cur.execute(''.join(uSql))
+    class Meta:
+        db_table = 'statusTypes'
 
-    def insert(self, path, inMovie, outMovie):
-        with self.con:
-            cur = self.con.cursor()
-            uSql = ("INSERT INTO movies ",
-                    "(path, inMovie, outMovie, status, statusText) ",
-                    "VALUES ('%s', '%s', '%s', 'In Queue', 'Waiting');"
-                    %
-                    (path, inMovie.replace("'","''"), outMovie.replace("'","''"))
-            )
-            cur.execute(''.join(uSql))
+def create_tables():
+    database.connect()
 
-    def update(self, uid, status, text):
-        with self.con:
-            cur = self.con.cursor()
-            uSql = ("UPDATE  movies ",
-                   "SET     status=?, ",
-                   "        statusText=? ",
-                   "WHERE   ID=?")
+    # Fail silently if tables exists
+    History.create_table(True)
+    Historytypes.create_table(True)
+    Movies.create_table(True)
+    Statustypes.create_table(True)
 
-            cur.execute(''.join(uSql), (status, text, uid))
-            self.con.commit()
+def create_historyTypes():
+    historyTypes = [
+        [1, 'Info'],
+        [2, 'Error'],
+        [3, 'MakeMKV Error'],
+        [4, 'Handbrake Error']
+    ]
 
-    def getNextMovie(self):
-        with self.con:
-            cur = self.con.cursor()
-            uSql = ("SELECT ID, path, inMovie, outMovie ",
-                   "FROM movies WHERE status = 'In Queue'")
-            cur.execute(''.join(uSql))
+    c = 0
+    for z in Historytypes.select():
+        c += 1
 
-            return cur.fetchone()
+    if c != len( historyTypes ):
+        for hID, hType in historyTypes:
+            Historytypes.create(historytypeid=hID, historytype=hType)
 
+def create_statusTypes():
+    statusTypes = [
+        [1, 'Added'],
+        [2, 'Error'],
+        [3, 'Submitted to makeMKV'],
+        [4, 'Awaiting HandBrake'],
+        [5, 'Submitted to HandBrake'],
+        [6, 'Awaiting FileBot'],
+        [7, 'Submitted to FileBot'],
+        [8, 'Completed']
+    ]
+
+    c = 0
+    for z in Statustypes.select():
+        c += 1
+
+    if c != len( statusTypes ):
+        for sID, sType in statusTypes:
+            Statustypes.create(statusid=sID, statustext=sType)
+
+def next_movie():
+    for movie in Movies.select().where((Movies.statusid == 4) | (Movies.filename != None )):
+        return movie
+
+def insert_history(dbMovie, text, typeid=1):
+    return History.create(
+        movieid=dbMovie.movieid,
+        historytext=text,
+        historydate=datetime.now(),
+        historytypeid=typeid
+    )
+
+def insert_movie(title, path, filebot):
+    return Movies.create(
+        moviename=title,
+        path=path,
+        filebot=filebot,
+        statusid=1,
+        lastupdated=datetime.now()
+    )
+
+def update_movie(movieOBJ, statusid, filename=None):
+    movieOBJ.statusid = statusid
+    movieOBJ.lastupdated = datetime.now()
+
+    if filename is not None:
+        movieOBJ.filename = filename
+
+    movieOBJ.save()
+
+def dbintegritycheck():
+    # Stuff
+    create_tables()
+
+    # Things
+    create_historyTypes()
+    create_statusTypes()
+
+dbintegritycheck()
