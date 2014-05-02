@@ -26,8 +26,8 @@ Copyright (c) 2012, Jason Millward
 
 def ping():
     """
-        Send a simple
-
+        Send a simple ping to my server
+            to see how many people are using this script
     """
     try:
         import uuid
