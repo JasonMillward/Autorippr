@@ -1,4 +1,5 @@
 __all__ = [
+    'analytics',
     'database',
     'docopt',
     'handbrake',
