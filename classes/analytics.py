@@ -27,12 +27,18 @@ Copyright (c) 2012, Jason Millward
 try:
     import uuid
     import requests
+    import json
 
     data = {
         "uuid": uuid.getnode()
     }
 
-    requests.post('http://api.jcode.me/autoripper/stats', data=data)
+    requests.post(
+        'http://api.jcode.me/autoripper/stats', 
+        data=json.dumps(data),
+        timeout=5
+    )
 
 except :
     pass
+
