@@ -2,6 +2,7 @@
 Basic analtics
 
 The purpose of this file is to simply send a 'ping' with a unique identifier
+to give an indication of unique users
 
 Because Github doesn't show a download counter, I have no way of knowing if
 this script is even being used (except for people telling me it broke).
@@ -31,7 +32,7 @@ try:
         "uuid": uuid.getnode()
     }
 
-    requests.post('http://api.jcode.me/makemkv/stats', data=data)
+    requests.post('http://api.jcode.me/autoripper/stats', data=data)
 
 except :
     pass
