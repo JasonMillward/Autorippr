@@ -22,47 +22,47 @@ class handBrake(object):
     def __init__(self, debug):
         self.log = logger.logger("Handbrake", debug)
 
-    """ Function:   _cleanUp
-            Removes the log file and the input movie because these files are
-                no longer needed by this script
-
-        Inputs:
-            log         (Str): File path of the log to remove
-            oldMovie    (Str): File path of the movie to remove
-
-        Outputs:
-            None
-    """
     def _cleanUp(self, cFile):
+        """ Function:   _cleanUp
+                Removes the log file and the input movie because these files are
+                    no longer needed by this script
+
+            Inputs:
+                log         (Str): File path of the log to remove
+                oldMovie    (Str): File path of the movie to remove
+
+            Outputs:
+                None
+        """
         try:
             os.remove(cFile)
         except:
             self.log.error("Could not remove %s" % cFile)
 
-    """ Function:   _updateQueue
-            Removes the recently processed movie from the queue so it's not
-                processed again
-
-        Inputs:
-            None
-
-        Outputs:
-            None
-    """
     def _updateQueue(self, uStatus):
+        """ Function:   _updateQueue
+                Removes the recently processed movie from the queue so it's not
+                    processed again
+
+            Inputs:
+                None
+
+            Outputs:
+                None
+        """
         database.update_movie(self.dbMovie, uStatus)
 
-    """ Function:   loadMovie
-            Check to see if the queue file exists, if it does load the first
-                line and proccess it for the rest of the script to use
-
-        Inputs:
-            None
-
-        Outputs:
-            None
-    """
     def loadMovie(self):
+        """ Function:   loadMovie
+                Check to see if the queue file exists, if it does load the first
+                    line and proccess it for the rest of the script to use
+
+            Inputs:
+                None
+
+            Outputs:
+                None
+        """
         movie = database.next_movie()
 
         if movie is not None:
@@ -76,24 +76,24 @@ class handBrake(object):
         else:
             return False
 
-    """ Function:   convert
-            Passes the nessesary parameters to HandBrake to start an encoding
-            Assigns a nice value to allow give normal system tasks priority
-
-            Upon successful encode, clean up the output logs and remove the
-                input movie as they are no longer needed
-
-        Inputs:
-            nice    (Int): Priority to assign to task (nice value)
-            args    (Str): All of the handbrake arguments taken from the
-                            settings file
-            output  (Str): File to log to. Used to see if the job completed
-                            successfully
-
-        Outputs:
-            None
-    """
     def convert(self, nice, args):
+        """ Function:   convert
+                Passes the nessesary parameters to HandBrake to start an encoding
+                Assigns a nice value to allow give normal system tasks priority
+
+                Upon successful encode, clean up the output logs and remove the
+                    input movie as they are no longer needed
+
+            Inputs:
+                nice    (Int): Priority to assign to task (nice value)
+                args    (Str): All of the handbrake arguments taken from the
+                                settings file
+                output  (Str): File to log to. Used to see if the job completed
+                                successfully
+
+            Outputs:
+                None
+        """
         checks = 0
         inMovie = "%s/%s" % (self.path, self.inputMovie)
         outMovie = "%s/%s" % (self.path, self.outputMovie)
@@ -101,6 +101,10 @@ class handBrake(object):
         if not os.path.isfile(inMovie):
             self.log.debug(inMovie)
             self.log.error("Input file no longer exists")
+            database.insert_history(
+                self.dbMovie, "Input file no longer exists", 4
+            )
+
             return False
 
         command = [
@@ -170,14 +174,14 @@ class handBrake(object):
             database.insert_history(self.dbMovie, "Handbrake failed", 4)
             return False
 
-    """ Function:   getMovieTitle
-            Returns the currently loaded movie title
-
-        Inputs:
-            None
-
-        Outputs:
-            self.movie  (Str): Movie title parsed from queue
-    """
     def getMovieTitle(self):
+        """ Function:   getMovieTitle
+                Returns the currently loaded movie title
+
+            Inputs:
+                None
+
+            Outputs:
+                self.movie  (Str): Movie title parsed from queue
+        """
         return self.outputMovie
