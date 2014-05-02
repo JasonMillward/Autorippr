@@ -117,6 +117,12 @@ class handBrake(object):
             args
         ]
 
+        # Subtitle changes
+        # -F, --subtitle-forced   Only display subtitles from the selected stream if
+        #  <string>          the subtitle has the forced flag set.
+        # -N, --native-language   Specifiy your language preference. When the first
+        # -F --subtitle scan -N eng
+
         proc = subprocess.Popen(
             command,
             stderr=subprocess.PIPE,
