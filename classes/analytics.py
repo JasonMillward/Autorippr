@@ -24,21 +24,26 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-try:
-    import uuid
-    import requests
-    import json
+def ping():
+    """
+        Send a simple
 
-    data = {
-        "uuid": uuid.getnode()
-    }
+    """
+    try:
+        import uuid
+        import requests
+        import json
 
-    requests.post(
-        'http://api.jcode.me/autoripper/stats', 
-        data=json.dumps(data),
-        timeout=5
-    )
+        data = {
+            "uuid": uuid.getnode()
+        }
 
-except :
-    pass
+        requests.post(
+            'http://api.jcode.me/autoripper/stats',
+            data=json.dumps(data),
+            timeout=5
+        )
+
+    except :
+        pass
 

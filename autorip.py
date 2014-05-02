@@ -218,6 +218,9 @@ if __name__ == '__main__':
     config = yaml.safe_load(open(CONFIG_FILE))
     config['debug'] = arguments['--debug']
 
+    if config['analytics']['enable']:
+        analytics.ping()
+
     if arguments['--rip']:
         rip(config)
 
