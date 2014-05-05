@@ -31,15 +31,19 @@ Copyright (c) 2014, Jason Millward
 @license    http://opensource.org/licenses/MIT
 
 Usage:
-    autorip.py ( --rip | --compress | ( --rip --compress) ) [options]
+    autorip.py  --rip | --compress | --extra    [options]
+    autorip.py  ( --rip --compress --extra )    [options]
+    autorip.py  --all                           [options]
 
 Options:
-    -h --help     Show this screen.
-    --version     Show version.
-    --debug       Output debug.
-    --rip         Rip disc using makeMKV.
-    --compress    Compress using handbrake.
-    --test        Testing?
+    -h --help       Show this screen.
+    --version       Show version.
+    --debug         Output debug.
+    --rip           Rip disc using makeMKV.
+    --compress      Compress using HandBrake.
+    --extra         Lookup, rename and/or download extras.
+    --all           Do everything
+    --test          Testing?
 
 """
 
