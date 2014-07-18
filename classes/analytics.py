@@ -50,7 +50,7 @@ def ping(version):
                 os.utime(dateFile, None)
 
             requests.post(
-                'http://api.jcode.me/autoripper/stats',
+                'http://api.jcode.me/autorippr/stats',
                 data=json.dumps(data),
                 timeout=5
             )
