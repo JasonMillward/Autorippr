@@ -86,7 +86,7 @@ def eject(drive):
 
         else:
             log.debug("OS detected as Unix")
-            p = os.popen("eject -vr " + drive)
+            p = os.popen("eject -vm " + drive)
 
             while 1:
                 line = p.readline()
@@ -224,7 +224,7 @@ if __name__ == '__main__':
     config['debug'] = arguments['--debug']
 
     if bool(config['analytics']['enable']):
-        analytics.ping()
+        analytics.ping(__version__)
 
     if arguments['--rip']:
         rip(config)
