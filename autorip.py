@@ -220,7 +220,7 @@ if __name__ == '__main__':
     config['debug'] = arguments['--debug']
 
     if bool(config['analytics']['enable']):
-        analytics.ping()
+        analytics.ping(__version__)
 
     if arguments['--rip']:
         rip(config)
