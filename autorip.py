@@ -43,7 +43,6 @@ Options:
     --compress      Compress using HandBrake.
     --extra         Lookup, rename and/or download extras.
     --all           Do everything
-    --test          Testing?
 
 """
 
@@ -216,6 +215,14 @@ def compress(config):
     else:
         log.info( "Queue does not exist or is empty")
 
+def filebot(config):
+    """
+        Main function for filebotting
+        Does everything
+        Returns nothing
+    """
+    fb = filebot.filebot(config['debug'])
+
 
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version=__version__)
@@ -231,3 +238,7 @@ if __name__ == '__main__':
 
     if arguments['--compress']:
         compress(config)
+
+    if arguments['--extra']:
+        filebot(config)
+
