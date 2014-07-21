@@ -239,6 +239,6 @@ if __name__ == '__main__':
     if arguments['--compress'] or arguments['--all']:
         compress(config)
 
-    if arguments['--extra']:
+    if arguments['--extra'] or arguments['--all']:
         filebot(config)
 
