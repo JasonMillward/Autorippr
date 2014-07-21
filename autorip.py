@@ -213,7 +213,7 @@ def compress(config):
                 log.info("Movie was compressed and encoded successfully")
 
                 log.info( ("It took %s minutes to compress %s" %
-                    (t.minutes, hb.getMovieTitle()))
+                    (t.minutes, dbMovie.moviename))
                 )
 
                 database.insert_history(
