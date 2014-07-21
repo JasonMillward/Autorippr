@@ -84,3 +84,12 @@ T = Title info
 
 	CINFO:28,0,"eng"
 	CINFO:29,0,"English"
+
+## Subtitles 
+
+	2014-07-21 22:29:18 - Filebot - DEBUG - Get [English] subtitles for 1 files
+	2014-07-21 22:29:18 - Filebot - DEBUG - Looking up subtitles by hash via OpenSubtitles
+	2014-07-21 22:29:18 - Filebot - DEBUG - Looking up subtitles by name via OpenSubtitles
+	2014-07-21 22:29:18 - Filebot - DEBUG - Fetching [Smokin'.Aces.2006.720p.BRRiP.XViD.AC3-LEGi0N.srt]
+	2014-07-21 22:29:18 - Filebot - DEBUG - Export [Smokin'.Aces.2006.720p.BRRiP.XViD.AC3-LEGi0N.srt] as: SubRip / UTF-8
+	2014-07-21 22:29:18 - Filebot - DEBUG - Writing [Smokin'.Aces.2006.720p.BRRiP.XViD.AC3-LEGi0N.srt] to [Smokin' Aces (2006).eng.srt]
