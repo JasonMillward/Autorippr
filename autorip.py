@@ -226,8 +226,8 @@ if __name__ == '__main__':
     if bool(config['analytics']['enable']):
         analytics.ping(__version__)
 
-    if arguments['--rip']:
+    if arguments['--rip'] or arguments['--all']:
         rip(config)
 
-    if arguments['--compress']:
+    if arguments['--compress'] or arguments['--all']:
         compress(config)
