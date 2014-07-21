@@ -66,8 +66,9 @@ class handBrake(object):
         """
         checks = 0
 
+        moviename = "%s.mkv" % moviedb.moviename
         inMovie = "%s/%s" % (moviedb.path, moviedb.filename)
-        outMovie = "%s/%s" % (dbMovie.path, moviename)
+        outMovie = "%s/%s" % (moviedb.path, moviename)
 
         command = [
             'nice',
@@ -82,6 +83,8 @@ class handBrake(object):
             str(outMovie),
             args
         ]
+
+        print " ".join(command)
 
         # Subtitle changes
         # -F, --subtitle-forced   Only display subtitles from the selected stream if
@@ -98,7 +101,6 @@ class handBrake(object):
         if proc.stderr is not None:
             output = proc.stderr.read()
             if len(output) is not 0:
-                self.log.error("HandBrakeCLI encountered the following error: ")
                 lines = output.split("\n")
                 for line in lines:
                     self.log.error(line.strip())
@@ -123,8 +125,8 @@ class handBrake(object):
 
         if checks == 2:
             self.log.debug("HandBrakeCLI Completed successfully")
-            self._cleanUp(cFile=inMovie)
-            self._cleanUp(cFile=output)
+            #self._cleanUp(cFile=inMovie)
+            #self._cleanUp(cFile=output)
 
             return True
         else:
