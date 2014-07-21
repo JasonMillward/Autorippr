@@ -222,7 +222,7 @@ def compress(config):
                     "HandBakeCLI Completed successfully"
                 )
 
-                database.update_movie(dbMovie, 6, filename="%s.mkv" % moviedb.moviename)
+                database.update_movie(dbMovie, 6, filename="%s.mkv" % dbMovie.moviename)
 
             else:
                 database.update_movie(dbMovie, 5)
