@@ -207,7 +207,7 @@ def compress(config):
                 status = hb.convert(
                     args=config['handbrake']['com'],
                     nice=int(config['handbrake']['nice']),
-                    moviedb=dbMovie
+                    dbMovie=dbMovie
                 )
 
             if status:

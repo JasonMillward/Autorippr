@@ -35,15 +35,15 @@ class handBrake(object):
         except:
             self.log.error("Could not remove %s" % cFile)
 
-    def check_exists(self, moviedb):
-        inMovie = "%s/%s" % (moviedb.path, moviedb.filename)
+    def check_exists(self, dbMovie):
+        inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
 
         if not os.path.isfile(inMovie):
             self.log.debug(inMovie)
             self.log.error("Input file no longer exists")
             return False
 
-    def convert(self, nice, args, moviedb):
+    def convert(self, nice, args, dbMovie):
         """ Function:   convert
                 Passes the nessesary parameters to HandBrake to start an encoding
                 Assigns a nice value to allow give normal system tasks priority
@@ -63,9 +63,9 @@ class handBrake(object):
         """
         checks = 0
 
-        moviename = "%s.mkv" % moviedb.moviename
-        inMovie = "%s/%s" % (moviedb.path, moviedb.filename)
-        outMovie = "%s/%s" % (moviedb.path, moviename)
+        moviename = "%s.mkv" % dbMovie.moviename
+        inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
+        outMovie = "%s/%s" % (dbMovie.path, moviename)
 
         command = [
             'nice',

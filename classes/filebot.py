@@ -26,9 +26,9 @@ class filebot(object):
         command = [
             'filebot',
             '-rename',
-            "%s/%s" % (moviedb.path, moviedb.filename),
+            "%s/%s" % (dbMovie.path, dbMovie.filename),
             '--q',
-            moviedb.moviename,
+            dbMovie.moviename,
             '-non-strict'
         ]
 
