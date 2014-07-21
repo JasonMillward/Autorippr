@@ -252,7 +252,9 @@ def extras(config):
 
     dbMovie = database.next_movie_to_filebot()
 
-    print dbMovie
+    fb.rename(dbMovie)
+
+
 
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version=__version__)

@@ -21,10 +21,28 @@ class filebot(object):
     def __init__(self, debug):
         self.log = logger.logger("Filebot", debug)
 
-    def rename(self):
-        #   filebot -rename title00.mkv --q [Movie Name] -non-strict
+    def rename(self, dbMovie):
+
+        command = [
+            'filebot',
+            '-rename',
+            "%s/%s" % (moviedb.path, moviedb.filename),
+            '--q',
+            moviedb.moviename,
+            '-non-strict'
+        ]
+
+        proc = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
+        print  proc.stdout.read()
+
+        #   filebot -rename title00.mkv --q [Movie Name]
         #   [MOVE] Rename [/tmp/Euro Trip G1/Road Trip (2000).mkv] to [EuroTrip (2004).mkv]
-        pass
+
 
     def subtitles(self):
         #   filebot -get-missing-subtitles --lang
