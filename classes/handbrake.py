@@ -98,13 +98,38 @@ class handBrake(object):
             stdout=subprocess.PIPE
         )
 
+        # I'm a little confused here
+        # handbrake cli spits out stdout into stderr
+        # so I'll parse both stderr and stdout
+
         if proc.stderr is not None:
             output = proc.stderr.read()
             if len(output) is not 0:
                 lines = output.split("\n")
                 for line in lines:
-                    self.log.error(line.strip())
-                return False
+                    self.log.debug(line.strip())
+
+                    if "average encoding speed for job" in line:
+                        checks += 1
+
+                    if "Encode done!" in line:
+                        checks += 1
+
+                    if "ERROR" in line:
+                        self.log.error("HandBrakeCLI encountered the following error: ")
+                        self.log.error(line)
+
+                        return False
+
+                if checks >= 2:
+                    self.log.debug("HandBrakeCLI Completed successfully")
+                    #self._cleanUp(cFile=inMovie)
+                    #self._cleanUp(cFile=output)
+
+                    return True
+                else:
+                    return False
+
 
         output = proc.stdout.read()
         lines = output.split("\n")
@@ -123,7 +148,7 @@ class handBrake(object):
 
                 return False
 
-        if checks == 2:
+        if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")
             #self._cleanUp(cFile=inMovie)
             #self._cleanUp(cFile=output)
