@@ -58,11 +58,10 @@ class filebot(object):
                 if "Done" in line:
                     checks += 1
 
-            if checks >= 3 and renamedMovie:
-                return [True, renamedMovie]
-
-            else:
-                return [False]
+        if checks >= 3 and renamedMovie:
+            return [True, renamedMovie]
+        else:
+            return [False]
 
     def get_subtitles(self, dbMovie, lang):
         command = [
@@ -99,8 +98,7 @@ class filebot(object):
                 if "Done" in line:
                     checks += 1
 
-            if checks >= 2:
-                return True
-
-            else:
-                return False
+        if checks >= 2:
+            return True
+        else:
+            return False
