@@ -266,7 +266,7 @@ def extras(config):
             if config['filebot']['subtitles']:
                 log.info( "Grabbing subtitles" )
 
-                status = fb.get_subtitles(dbMovie)
+                status = fb.get_subtitles(dbMovie, config['filebot']['language'])
 
                 if status:
                     log.info( "Subtitles downloaded" )
