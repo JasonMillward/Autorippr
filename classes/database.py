@@ -113,12 +113,12 @@ def create_statusTypes():
 
 
 def next_movie_to_compress():
-    for movie in Movies.select().where((Movies.statusid is 4) & (Movies.filename is not None)):
+    for movie in Movies.select().where((Movies.statusid == 4) & (Movies.filename != None)):
         return movie
 
 
 def next_movie_to_filebot():
-    for movie in Movies.select().where((Movies.statusid is 6) & (Movies.filename is not None) & (Movies.filebot is 1)):
+    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != None) & (Movies.filebot == 1)):
         return movie
 
 
