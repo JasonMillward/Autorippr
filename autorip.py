@@ -217,7 +217,7 @@ def compress(config):
                 )
 
                 database.insert_history(
-                    self.dbMovie,
+                    dbMovie,
                     "HandBakeCLI Completed successfully"
                 )
 
