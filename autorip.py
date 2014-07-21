@@ -276,6 +276,8 @@ def extras(config):
                     log.info( "Subtitles not downloaded, no match" )
                     database.update_movie(dbMovie, 8)
 
+                log.info( "Completed work on %s" % dbMovie.moviename )
+
             else:
                 log.info( "Not grabbing subtitles" )
                 database.update_movie(dbMovie, 8)
