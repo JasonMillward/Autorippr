@@ -31,15 +31,18 @@ Copyright (c) 2014, Jason Millward
 @license    http://opensource.org/licenses/MIT
 
 Usage:
-    autorip.py ( --rip | --compress | ( --rip --compress) ) [options]
+    autorip.py   ( --rip | --compress | --extra )  [options]
+    autorip.py   ( --rip [ --compress ] )          [options]
+    autorip.py   --all                             [options]
 
 Options:
-    -h --help     Show this screen.
-    --version     Show version.
-    --debug       Output debug.
-    --rip         Rip disc using makeMKV.
-    --compress    Compress using handbrake.
-    --test        Testing?
+    -h --help       Show this screen.
+    --version       Show version.
+    --debug         Output debug.
+    --rip           Rip disc using makeMKV.
+    --compress      Compress using HandBrake.
+    --extra         Lookup, rename and/or download extras.
+    --all           Do everything
 
 """
 
@@ -188,29 +191,102 @@ def compress(config):
 
     hb = handbrake.handBrake(config['debug'])
 
-    log.debug("Compressing started successfully")
+    log.debug("Compressing initialised")
     log.debug("Looking for movies to compress")
 
-    if hb.loadMovie():
-        log.info( "Compressing %s" % hb.getMovieTitle())
+    dbMovie = database.next_movie_to_compress()
 
-        with stopwatch.stopwatch() as t:
-            convert = hb.convert(
-                args=config['handbrake']['com'],
-                nice=int(config['handbrake']['nice'])
-            )
+    if dbMovie is not None:
+        if hb.check_exists(dbMovie) is not False:
 
-        if convert:
-            log.info("Movie was compressed and encoded successfully")
+            database.update_movie(dbMovie, 5)
 
-            log.info( ("It took %s minutes to compress %s" %
-                (t.minutes, hb.getMovieTitle()))
-            )
+            log.info( "Compressing %s" % dbMovie.moviename )
+
+            with stopwatch.stopwatch() as t:
+                status = hb.convert(
+                    args=config['handbrake']['com'],
+                    nice=int(config['handbrake']['nice']),
+                    dbMovie=dbMovie
+                )
+
+            if status:
+                log.info("Movie was compressed and encoded successfully")
+
+                log.info( ("It took %s minutes to compress %s" %
+                    (t.minutes, dbMovie.moviename))
+                )
+
+                database.insert_history(
+                    dbMovie,
+                    "HandBakeCLI Completed successfully"
+                )
+
+                database.update_movie(dbMovie, 6, filename="%s.mkv" % dbMovie.moviename)
+
+            else:
+                database.update_movie(dbMovie, 5)
+
+                database.insert_history(dbMovie, "Handbrake failed", 4)
+
+                log.info( "HandBrake did not complete successfully")
         else:
-            log.info( "HandBrake did not complete successfully")
+            database.update_movie(dbMovie, 2)
+
+            database.insert_history(
+                dbMovie, "Input file no longer exists", 4
+            )
 
     else:
         log.info( "Queue does not exist or is empty")
+
+def extras(config):
+    """
+        Main function for filebotting
+        Does everything
+        Returns nothing
+    """
+    log = logger.logger("Extras", config['debug'])
+
+    fb = filebot.filebot(config['debug'])
+
+    dbMovie = database.next_movie_to_filebot()
+
+    if dbMovie is not None:
+        log.info( "Attempting movie rename" )
+
+        database.update_movie(dbMovie, 7)
+
+        status = fb.rename(dbMovie)
+
+        if status[0]:
+            log.info( "Rename success")
+            database.update_movie(dbMovie, 6, filename=status[1])
+
+            if config['filebot']['subtitles']:
+                log.info( "Grabbing subtitles" )
+
+                status = fb.get_subtitles(dbMovie, config['filebot']['language'])
+
+                if status:
+                    log.info( "Subtitles downloaded" )
+                    database.update_movie(dbMovie, 8)
+
+                else:
+                    log.info( "Subtitles not downloaded, no match" )
+                    database.update_movie(dbMovie, 8)
+
+                log.info( "Completed work on %s" % dbMovie.moviename )
+
+            else:
+                log.info( "Not grabbing subtitles" )
+                database.update_movie(dbMovie, 8)
+
+        else:
+            log.info( "Rename failed")
+
+    else:
+        log.info( "No movies ready for filebot")
 
 
 if __name__ == '__main__':
@@ -222,8 +298,12 @@ if __name__ == '__main__':
     if bool(config['analytics']['enable']):
         analytics.ping(__version__)
 
-    if arguments['--rip']:
+    if arguments['--rip'] or arguments['--all']:
         rip(config)
 
-    if arguments['--compress']:
+    if arguments['--compress'] or arguments['--all']:
         compress(config)
+
+    if arguments['--extra'] or arguments['--all']:
+        extras(config)
+
