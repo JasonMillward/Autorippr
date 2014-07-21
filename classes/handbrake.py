@@ -23,12 +23,9 @@ class handBrake(object):
 
     def _cleanUp(self, cFile):
         """ Function:   _cleanUp
-                Removes the log file and the input movie because these files are
-                    no longer needed by this script
 
             Inputs:
-                log         (Str): File path of the log to remove
-                oldMovie    (Str): File path of the movie to remove
+                cFile    (Str): File path of the movie to remove
 
             Outputs:
                 None
@@ -99,14 +96,14 @@ class handBrake(object):
 
         # I'm a little confused here
         # handbrake cli spits out stdout into stderr
-        # so I'll parse both stderr and stdout
+        # so I'll parse stderr as stdout
 
         if proc.stderr is not None:
             output = proc.stderr.read()
             if len(output) is not 0:
                 lines = output.split("\n")
                 for line in lines:
-                    #self.log.debug(line.strip())
+                    self.log.debug(line.strip())
 
                     if "average encoding speed for job" in line:
                         checks += 1
