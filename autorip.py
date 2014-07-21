@@ -224,13 +224,13 @@ def compress(config):
                 database.update_movie(dbMovie, 6)
 
             else:
-                #database.update_movie(dbMovie, 5)
+                database.update_movie(dbMovie, 5)
 
                 database.insert_history(dbMovie, "Handbrake failed", 4)
 
                 log.info( "HandBrake did not complete successfully")
         else:
-            database.update_movie(dbMovie, 2)
+            database.update_movie(dbMovie, 2, filename="%s.mkv" % moviedb.moviename)
 
             database.insert_history(
                 dbMovie, "Input file no longer exists", 4
