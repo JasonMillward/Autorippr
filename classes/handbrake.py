@@ -84,8 +84,6 @@ class handBrake(object):
             args
         ]
 
-        print " ".join(command)
-
         # Subtitle changes
         # -F, --subtitle-forced   Only display subtitles from the selected stream if
         #  <string>          the subtitle has the forced flag set.
@@ -123,8 +121,8 @@ class handBrake(object):
 
                 if checks >= 2:
                     self.log.debug("HandBrakeCLI Completed successfully")
-                    #self._cleanUp(cFile=inMovie)
-                    #self._cleanUp(cFile=output)
+                    self._cleanUp(cFile=inMovie)
+                    self._cleanUp(cFile=output)
 
                     return True
                 else:
@@ -150,8 +148,8 @@ class handBrake(object):
 
         if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")
-            #self._cleanUp(cFile=inMovie)
-            #self._cleanUp(cFile=output)
+            self._cleanUp(cFile=inMovie)
+            self._cleanUp(cFile=output)
 
             return True
         else:
