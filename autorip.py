@@ -252,9 +252,11 @@ def extras(config):
 
     dbMovie = database.next_movie_to_filebot()
 
-    fb.rename(dbMovie)
+    if dbMovie is not None:
+        fb.rename(dbMovie)
 
-
+    else:
+        log.info( "No movies ready for filebot")
 
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version=__version__)
