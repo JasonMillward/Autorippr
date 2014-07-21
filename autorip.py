@@ -253,10 +253,39 @@ def extras(config):
     dbMovie = database.next_movie_to_filebot()
 
     if dbMovie is not None:
-        fb.rename(dbMovie)
+        log.info( "Attempting movie rename" )
+
+        database.update_movie(dbMovie, 7)
+
+        status = fb.rename(dbMovie)
+
+        if status[0]:
+            log.info( "Rename success")
+            database.update_movie(dbMovie, 6, filename=status[1])
+
+            if config['filebot']['subtitles']:
+                log.info( "Grabbing subtitles" )
+
+                status = fb.get_subtitles(dbMovie)
+
+                if status:
+                    log.info( "Subtitles downloaded" )
+                    database.update_movie(dbMovie, 8)
+
+                else:
+                    log.info( "Subtitles not downloaded, no match" )
+                    database.update_movie(dbMovie, 8)
+
+            else:
+                log.info( "Not grabbing subtitles" )
+                database.update_movie(dbMovie, 8)
+
+        else:
+            log.info( "Rename failed")
 
     else:
         log.info( "No movies ready for filebot")
+
 
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version=__version__)

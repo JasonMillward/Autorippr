@@ -40,7 +40,6 @@ class filebot(object):
             stderr=subprocess.PIPE
         )
 
-
         output = proc.stdout.read()
         renamedMovie = ""
         checks = 0
@@ -48,11 +47,10 @@ class filebot(object):
         if len(output) is not 0:
             lines = output.split("\n")
             for line in lines:
+                self.log.debug(line.strip())
                 if "MOVE" in line:
                     renamedMovie = line.split("] to [", 1)[1].rstrip(']')
                     checks += 1
-
-                    print renamedMovie
 
                 if "Processed" in line:
                     checks += 1
@@ -60,14 +58,49 @@ class filebot(object):
                 if "Done" in line:
                     checks += 1
 
-            if checks >= 3:
-                print "Success"
+            if checks >= 3 and renamedMovie:
+                return [True, renamedMovie]
+
+            else:
+                return [False]
+
+    def get_subtitles(self, dbMovie, lang):
+         command = [
+            'filebot',
+            '-get-subtitles',
+            dbMovie.path,
+            '--q',
+            "\"%s\"" % dbMovie.moviename,
+            '--lang',
+            lang,
+            '--output',
+            'srt',
+            '--encoding',
+            'utf8',
+            '-non-strict'
+        ]
+
+        proc = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
+        checks = 0
+
+        if len(output) is not 0:
+            lines = output.split("\n")
+            for line in lines:
+                self.log.debug(line.strip())
+
+                if "Processed" in line:
+                    checks += 1
+
+                if "Done" in line:
+                    checks += 1
+
+            if checks >= 2:
                 return True
 
-
-    def subtitles(self):
-        #   filebot -get-missing-subtitles --lang
-        # Matched
-        # Fetching
-        # Writing
-        pass
+            else:
+                return False
