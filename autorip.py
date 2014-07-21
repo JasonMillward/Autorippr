@@ -240,14 +240,19 @@ def compress(config):
     else:
         log.info( "Queue does not exist or is empty")
 
-def filebot(config):
+def extras(config):
     """
         Main function for filebotting
         Does everything
         Returns nothing
     """
+    log = logger.logger("Extras", config['debug'])
+
     fb = filebot.filebot(config['debug'])
 
+    dbMovie = database.next_movie_to_filebot()
+
+    print dbMovie
 
 if __name__ == '__main__':
     arguments = docopt.docopt(__doc__, version=__version__)
@@ -265,5 +270,5 @@ if __name__ == '__main__':
         compress(config)
 
     if arguments['--extra'] or arguments['--all']:
-        filebot(config)
+        extras(config)
 
