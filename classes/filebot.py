@@ -86,6 +86,7 @@ class filebot(object):
         )
 
         checks = 0
+        output = proc.stdout.read()
 
         if len(output) is not 0:
             lines = output.split("\n")
