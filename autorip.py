@@ -31,9 +31,8 @@ Copyright (c) 2014, Jason Millward
 @license    http://opensource.org/licenses/MIT
 
 Usage:
-    autorip.py  --rip | --compress | --extra    [options]
-    autorip.py  ( --rip --compress --extra )    [options]
-    autorip.py  --all                           [options]
+    autorip.py  ( --rip | --compress | --extra ) [options]
+    autorip.py  ( --rip --compress --extra )     [options]
 
 Options:
     -h --help       Show this screen.
@@ -225,16 +224,16 @@ def compress(config):
                 database.update_movie(dbMovie, 6)
 
             else:
-                database.update_movie(dbMovie, 5)
+                #database.update_movie(dbMovie, 5)
 
-                database.insert_history(self.dbMovie, "Handbrake failed", 4)
+                database.insert_history(dbMovie, "Handbrake failed", 4)
 
                 log.info( "HandBrake did not complete successfully")
         else:
             database.update_movie(dbMovie, 2)
 
             database.insert_history(
-                self.dbMovie, "Input file no longer exists", 4
+                dbMovie, "Input file no longer exists", 4
             )
 
     else:
