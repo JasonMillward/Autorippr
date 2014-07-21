@@ -31,8 +31,9 @@ Copyright (c) 2014, Jason Millward
 @license    http://opensource.org/licenses/MIT
 
 Usage:
-    autorip.py  ( --rip | --compress | --extra ) [options]
-    autorip.py  ( --rip --compress --extra )     [options]
+    autorip.py   ( --rip | --compress | --extra )  [options]
+    autorip.py   ( --rip [ --compress ] )          [options]
+    autorip.py   --all                             [options]
 
 Options:
     -h --help       Show this screen.
