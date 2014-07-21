@@ -13,14 +13,12 @@ Copyright (c) 2012, Jason Millward
 
 import os
 import subprocess
-import database
 import logger
 
 
 class filebot(object):
 
     def __init__(self, debug):
-        self.db = database.database()
         self.log = logger.logger("Filebot", debug)
 
     def rename(self):

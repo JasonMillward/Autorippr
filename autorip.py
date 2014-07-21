@@ -191,26 +191,51 @@ def compress(config):
 
     hb = handbrake.handBrake(config['debug'])
 
-    log.debug("Compressing started successfully")
+    log.debug("Compressing initialised")
     log.debug("Looking for movies to compress")
 
-    if hb.loadMovie():
-        log.info( "Compressing %s" % hb.getMovieTitle())
+    dbMovie = database.next_movie_to_compress()
 
-        with stopwatch.stopwatch() as t:
-            convert = hb.convert(
-                args=config['handbrake']['com'],
-                nice=int(config['handbrake']['nice'])
-            )
+    if dbMovie is not None:
+        if hb.check_exists(dbMovie) is not False:
 
-        if convert:
-            log.info("Movie was compressed and encoded successfully")
+            database.update_movie(dbMovie, 5)
 
-            log.info( ("It took %s minutes to compress %s" %
-                (t.minutes, hb.getMovieTitle()))
-            )
+            log.info( "Compressing %s" % dbMovie.moviename )
+
+            with stopwatch.stopwatch() as t:
+                status = hb.convert(
+                    args=config['handbrake']['com'],
+                    nice=int(config['handbrake']['nice'])
+                    moviedb=dbMovie
+                )
+
+            if status:
+                log.info("Movie was compressed and encoded successfully")
+
+                log.info( ("It took %s minutes to compress %s" %
+                    (t.minutes, hb.getMovieTitle()))
+                )
+
+                database.insert_history(
+                    self.dbMovie,
+                    "HandBakeCLI Completed successfully"
+                )
+
+                database.update_movie(dbMovie, 6)
+
+            else:
+                database.update_movie(dbMovie, 5)
+
+                database.insert_history(self.dbMovie, "Handbrake failed", 4)
+
+                log.info( "HandBrake did not complete successfully")
         else:
-            log.info( "HandBrake did not complete successfully")
+            database.update_movie(dbMovie, 2)
+
+            database.insert_history(
+                self.dbMovie, "Input file no longer exists", 4
+            )
 
     else:
         log.info( "Queue does not exist or is empty")

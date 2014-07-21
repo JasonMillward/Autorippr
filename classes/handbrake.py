@@ -13,7 +13,6 @@ Copyright (c) 2012, Jason Millward
 
 import os
 import subprocess
-import database
 import logger
 
 
@@ -39,44 +38,15 @@ class handBrake(object):
         except:
             self.log.error("Could not remove %s" % cFile)
 
-    def _updateQueue(self, uStatus):
-        """ Function:   _updateQueue
-                Removes the recently processed movie from the queue so it's not
-                    processed again
+    def check_exists(self, moviedb):
+        inMovie = "%s/%s" % (moviedb.path, moviedb.filename)
 
-            Inputs:
-                None
-
-            Outputs:
-                None
-        """
-        database.update_movie(self.dbMovie, uStatus)
-
-    def loadMovie(self):
-        """ Function:   loadMovie
-                Check to see if the queue file exists, if it does load the first
-                    line and proccess it for the rest of the script to use
-
-            Inputs:
-                None
-
-            Outputs:
-                None
-        """
-        movie = database.next_movie_to_compress()
-
-        if movie is not None:
-            self.ID = movie.movieid
-            self.path = movie.path
-            self.inputMovie = movie.filename
-            self.outputMovie = "%s.mkv" % movie.moviename
-            self.dbMovie = movie
-
-            return True
-        else:
+        if not os.path.isfile(inMovie):
+            self.log.debug(inMovie)
+            self.log.error("Input file no longer exists")
             return False
 
-    def convert(self, nice, args):
+    def convert(self, nice, args, moviedb):
         """ Function:   convert
                 Passes the nessesary parameters to HandBrake to start an encoding
                 Assigns a nice value to allow give normal system tasks priority
@@ -95,17 +65,9 @@ class handBrake(object):
                 None
         """
         checks = 0
-        inMovie = "%s/%s" % (self.path, self.inputMovie)
-        outMovie = "%s/%s" % (self.path, self.outputMovie)
 
-        if not os.path.isfile(inMovie):
-            self.log.debug(inMovie)
-            self.log.error("Input file no longer exists")
-            database.insert_history(
-                self.dbMovie, "Input file no longer exists", 4
-            )
-
-            return False
+        inMovie = "%s/%s" % (moviedb.path, moviedb.filename)
+        outMovie = "%s/%s" % (dbMovie.path, moviename)
 
         command = [
             'nice',
@@ -136,52 +98,34 @@ class handBrake(object):
         if proc.stderr is not None:
             output = proc.stderr.read()
             if len(output) is not 0:
-                self.log.error("HandBakeCLI encountered the following error: ")
+                self.log.error("HandBrakeCLI encountered the following error: ")
                 lines = output.split("\n")
                 for line in lines:
                     self.log.error(line.strip())
-                    database.insert_history(self.dbMovie, line, 4)
-                self._updateQueue(2)
                 return False
 
         output = proc.stdout.read()
         lines = output.split("\n")
         for line in lines:
             self.log.debug(line.strip())
+
             if "average encoding speed for job" in line:
                 checks += 1
+
             if "Encode done!" in line:
                 checks += 1
+
             if "ERROR" in line:
-                self.log.error("HandBakeCLI encountered the following error: ")
+                self.log.error("HandBrakeCLI encountered the following error: ")
                 self.log.error(line)
-                self._updateQueue(2)
-                database.insert_history(self.dbMovie, line, 4)
+
                 return False
 
         if checks == 2:
-            self.log.debug("HandBakeCLI Completed successfully")
-            self._updateQueue(6)
+            self.log.debug("HandBrakeCLI Completed successfully")
             self._cleanUp(cFile=inMovie)
             self._cleanUp(cFile=output)
-            database.insert_history(
-                self.dbMovie,
-                "HandBakeCLI Completed successfully"
-            )
+
             return True
         else:
-            self._updateQueue(2)
-            database.insert_history(self.dbMovie, "Handbrake failed", 4)
             return False
-
-    def getMovieTitle(self):
-        """ Function:   getMovieTitle
-                Returns the currently loaded movie title
-
-            Inputs:
-                None
-
-            Outputs:
-                self.movie  (Str): Movie title parsed from queue
-        """
-        return self.outputMovie
