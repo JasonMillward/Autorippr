@@ -206,7 +206,7 @@ def compress(config):
             with stopwatch.stopwatch() as t:
                 status = hb.convert(
                     args=config['handbrake']['com'],
-                    nice=int(config['handbrake']['nice'])
+                    nice=int(config['handbrake']['nice']),
                     moviedb=dbMovie
                 )
 
