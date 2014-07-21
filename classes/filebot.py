@@ -40,10 +40,29 @@ class filebot(object):
             stderr=subprocess.PIPE
         )
 
-        print  proc.stdout.read()
 
-        #   filebot -rename title00.mkv --q [Movie Name]
-        #   [MOVE] Rename [/tmp/Euro Trip G1/Road Trip (2000).mkv] to [EuroTrip (2004).mkv]
+        output = proc.stdout.read()
+        renamedMovie = ""
+        checks = 0
+
+        if len(output) is not 0:
+            lines = output.split("\n")
+            for line in lines:
+                if "MOVE" in line:
+                    renamedMovie = line.split("] to [", 1)[1].rstrip(']')
+                    checks += 1
+
+                    print renamedMovie
+
+                if "Processed" in line:
+                    checks += 1
+
+                if "Done" in line:
+                    checks += 1
+
+            if checks >= 3:
+                print "Success"
+                return True
 
 
     def subtitles(self):
