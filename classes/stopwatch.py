@@ -24,4 +24,3 @@ class stopwatch(object):
         endTime = datetime.datetime.now()
         totalTime = endTime - self.startTime
         self.minutes = totalTime.seconds / 60
-

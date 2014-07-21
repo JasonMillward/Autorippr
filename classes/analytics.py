@@ -25,6 +25,7 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
+
 def ping(version):
     """
         Send a simple ping to my server
@@ -57,4 +58,3 @@ def ping(version):
 
     except:
         pass
-

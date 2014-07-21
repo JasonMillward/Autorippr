@@ -23,7 +23,7 @@ class logger(object):
             "%Y-%m-%d %H:%M:%S"
         )
 
-        if debug == True:
+        if debug:
             logLevel = logging.DEBUG
         else:
             logLevel = logging.INFO

@@ -17,7 +17,9 @@ import re
 import csv
 import logger
 
+
 class makeMKV(object):
+
     """
         This class acts as a python wrapper to the MakeMKV CLI.
     """
@@ -66,14 +68,11 @@ class makeMKV(object):
         # Clean up the edges and remove whitespace
         self.movieName = tmpName.strip()
 
-
     def setTitle(self, movieName):
         self.movieName = movieName
 
-
     def setIndex(self, index):
         self.discIndex = int(index)
-
 
     def ripDisc(self, path, output):
         """
@@ -169,9 +168,9 @@ class makeMKV(object):
 
         output = proc.stdout.read()
         if "This application version is too old." in output:
-            self.log.error("Your MakeMKV version is too old." \
-                "Please download the latest version at http://www.makemkv.com" \
-                " or enter a registration key to continue using MakeMKV.")
+            self.log.error("Your MakeMKV version is too old."
+                           "Please download the latest version at http://www.makemkv.com"
+                           " or enter a registration key to continue using MakeMKV.")
 
             return []
 
@@ -194,7 +193,6 @@ class makeMKV(object):
                         )
 
         return drives
-
 
     def getDiscInfo(self):
         """
@@ -226,7 +224,8 @@ class makeMKV(object):
                 self.log.error(output)
                 return False
 
-        self.log.debug("MakeMKV found %d titles" % len(self.readMKVMessages("TCOUNT")))
+        self.log.debug("MakeMKV found %d titles" %
+                       len(self.readMKVMessages("TCOUNT")))
         for titleNo in set(self.readMKVMessages("TINFO")):
             self.log.debug("Title number: %s" % titleNo)
 
@@ -234,7 +233,6 @@ class makeMKV(object):
 
             self.saveFile = self.readMKVMessages("TINFO", titleNo, 27)
             self.saveFile = self.saveFile[0]
-
 
     def readMKVMessages(self, stype, sid=None, scode=None):
         """

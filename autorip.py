@@ -52,11 +52,12 @@ import yaml
 from classes import *
 from tendo import singleton
 
-__version__="1.6"
+__version__ = "1.6"
 
 me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "%s/settings.cfg" % DIR
+
 
 def eject(drive):
     """
@@ -72,7 +73,8 @@ def eject(drive):
         if sys.platform == 'win32':
             log.debug("OS detected as Windows")
             import ctypes
-            ctypes.windll.winmm.mciSendStringW("set cdaudio door open", None, drive, None)
+            ctypes.windll.winmm.mciSendStringW(
+                "set cdaudio door open", None, drive, None)
 
         elif sys.platform == 'darwin':
             log.debug("OS detected as OSX")
@@ -80,7 +82,8 @@ def eject(drive):
 
             while 1:
                 line = p.readline()
-                if not line: break
+                if not line:
+                    break
                 log.debug(line.strip())
 
         else:
@@ -89,7 +92,8 @@ def eject(drive):
 
             while 1:
                 line = p.readline()
-                if not line: break
+                if not line:
+                    break
                 log.debug(line.strip())
 
     except Exception as ex:
@@ -99,6 +103,7 @@ def eject(drive):
 
     finally:
         del log
+
 
 def rip(config):
     """
@@ -158,8 +163,8 @@ def rip(config):
                         eject(dvd['location'])
 
                     log.info("It took %s minute(s) to complete the ripping of %s" %
-                         (t.minutes, movie_title)
-                    )
+                             (t.minutes, movie_title)
+                             )
 
                     database.update_movie(dbMovie, 4)
 
@@ -181,6 +186,7 @@ def rip(config):
     else:
         log.info("Could not find any DVDs in drive list")
 
+
 def compress(config):
     """
         Main function for compressing
@@ -201,7 +207,7 @@ def compress(config):
 
             database.update_movie(dbMovie, 5)
 
-            log.info( "Compressing %s" % dbMovie.moviename )
+            log.info("Compressing %s" % dbMovie.moviename)
 
             with stopwatch.stopwatch() as t:
                 status = hb.convert(
@@ -213,23 +219,24 @@ def compress(config):
             if status:
                 log.info("Movie was compressed and encoded successfully")
 
-                log.info( ("It took %s minutes to compress %s" %
-                    (t.minutes, dbMovie.moviename))
-                )
+                log.info(("It took %s minutes to compress %s" %
+                          (t.minutes, dbMovie.moviename))
+                         )
 
                 database.insert_history(
                     dbMovie,
                     "HandBakeCLI Completed successfully"
                 )
 
-                database.update_movie(dbMovie, 6, filename="%s.mkv" % dbMovie.moviename)
+                database.update_movie(
+                    dbMovie, 6, filename="%s.mkv" % dbMovie.moviename)
 
             else:
                 database.update_movie(dbMovie, 5)
 
                 database.insert_history(dbMovie, "Handbrake failed", 4)
 
-                log.info( "HandBrake did not complete successfully")
+                log.info("HandBrake did not complete successfully")
         else:
             database.update_movie(dbMovie, 2)
 
@@ -238,7 +245,8 @@ def compress(config):
             )
 
     else:
-        log.info( "Queue does not exist or is empty")
+        log.info("Queue does not exist or is empty")
+
 
 def extras(config):
     """
@@ -253,40 +261,41 @@ def extras(config):
     dbMovie = database.next_movie_to_filebot()
 
     if dbMovie is not None:
-        log.info( "Attempting movie rename" )
+        log.info("Attempting movie rename")
 
         database.update_movie(dbMovie, 7)
 
         status = fb.rename(dbMovie)
 
         if status[0]:
-            log.info( "Rename success")
+            log.info("Rename success")
             database.update_movie(dbMovie, 6, filename=status[1])
 
             if config['filebot']['subtitles']:
-                log.info( "Grabbing subtitles" )
+                log.info("Grabbing subtitles")
 
-                status = fb.get_subtitles(dbMovie, config['filebot']['language'])
+                status = fb.get_subtitles(
+                    dbMovie, config['filebot']['language'])
 
                 if status:
-                    log.info( "Subtitles downloaded" )
+                    log.info("Subtitles downloaded")
                     database.update_movie(dbMovie, 8)
 
                 else:
-                    log.info( "Subtitles not downloaded, no match" )
+                    log.info("Subtitles not downloaded, no match")
                     database.update_movie(dbMovie, 8)
 
-                log.info( "Completed work on %s" % dbMovie.moviename )
+                log.info("Completed work on %s" % dbMovie.moviename)
 
             else:
-                log.info( "Not grabbing subtitles" )
+                log.info("Not grabbing subtitles")
                 database.update_movie(dbMovie, 8)
 
         else:
-            log.info( "Rename failed")
+            log.info("Rename failed")
 
     else:
-        log.info( "No movies ready for filebot")
+        log.info("No movies ready for filebot")
 
 
 if __name__ == '__main__':
@@ -306,4 +315,3 @@ if __name__ == '__main__':
 
     if arguments['--extra'] or arguments['--all']:
         extras(config)
-

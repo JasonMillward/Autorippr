@@ -17,9 +17,12 @@ from datetime import datetime
 
 database = SqliteDatabase('autoripper.sqlite', **{})
 
+
 class BaseModel(Model):
+
     class Meta:
         database = database
+
 
 class History(BaseModel):
     historyid = PrimaryKeyField(db_column='historyID')
@@ -31,12 +34,14 @@ class History(BaseModel):
     class Meta:
         db_table = 'history'
 
+
 class Historytypes(BaseModel):
     historytypeid = PrimaryKeyField(db_column='historyTypeID')
     historytype = CharField(db_column='historyType')
 
     class Meta:
         db_table = 'historyTypes'
+
 
 class Movies(BaseModel):
     movieid = PrimaryKeyField(db_column='movieID')
@@ -50,12 +55,14 @@ class Movies(BaseModel):
     class Meta:
         db_table = 'movies'
 
+
 class Statustypes(BaseModel):
     statusid = PrimaryKeyField(db_column='statusID')
     statustext = CharField(db_column='statusText')
 
     class Meta:
         db_table = 'statusTypes'
+
 
 def create_tables():
     database.connect()
@@ -65,6 +72,7 @@ def create_tables():
     Historytypes.create_table(True)
     Movies.create_table(True)
     Statustypes.create_table(True)
+
 
 def create_historyTypes():
     historyTypes = [
@@ -78,9 +86,10 @@ def create_historyTypes():
     for z in Historytypes.select():
         c += 1
 
-    if c != len( historyTypes ):
+    if c != len(historyTypes):
         for hID, hType in historyTypes:
             Historytypes.create(historytypeid=hID, historytype=hType)
+
 
 def create_statusTypes():
     statusTypes = [
@@ -98,17 +107,20 @@ def create_statusTypes():
     for z in Statustypes.select():
         c += 1
 
-    if c != len( statusTypes ):
+    if c != len(statusTypes):
         for sID, sType in statusTypes:
             Statustypes.create(statusid=sID, statustext=sType)
 
+
 def next_movie_to_compress():
-    for movie in Movies.select().where((Movies.statusid == 4) & (Movies.filename != None )):
+    for movie in Movies.select().where((Movies.statusid is 4) & (Movies.filename is not None)):
         return movie
 
+
 def next_movie_to_filebot():
-    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != None ) & (Movies.filebot == 1 )):
+    for movie in Movies.select().where((Movies.statusid is 6) & (Movies.filename is not None) & (Movies.filebot is 1)):
         return movie
+
 
 def insert_history(dbMovie, text, typeid=1):
     return History.create(
@@ -117,6 +129,7 @@ def insert_history(dbMovie, text, typeid=1):
         historydate=datetime.now(),
         historytypeid=typeid
     )
+
 
 def insert_movie(title, path, filebot):
     return Movies.create(
@@ -127,6 +140,7 @@ def insert_movie(title, path, filebot):
         lastupdated=datetime.now()
     )
 
+
 def update_movie(movieOBJ, statusid, filename=None):
     movieOBJ.statusid = statusid
     movieOBJ.lastupdated = datetime.now()
@@ -135,6 +149,7 @@ def update_movie(movieOBJ, statusid, filename=None):
         movieOBJ.filename = filename
 
     movieOBJ.save()
+
 
 def dbintegritycheck():
     # Stuff

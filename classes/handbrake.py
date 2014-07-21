@@ -112,7 +112,8 @@ class handBrake(object):
                         checks += 1
 
                     if "ERROR" in line and "opening" not in line:
-                        self.log.error("HandBrakeCLI encountered the following error: ")
+                        self.log.error(
+                            "HandBrakeCLI encountered the following error: ")
                         self.log.error(line)
 
                         return False
@@ -124,4 +125,3 @@ class handBrake(object):
                     return True
                 else:
                     return False
-
