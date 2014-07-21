@@ -63,7 +63,7 @@ class handBrake(object):
             Outputs:
                 None
         """
-        movie = database.next_movie()
+        movie = database.next_movie_to_compress()
 
         if movie is not None:
             self.ID = movie.movieid

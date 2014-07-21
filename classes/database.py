@@ -102,8 +102,12 @@ def create_statusTypes():
         for sID, sType in statusTypes:
             Statustypes.create(statusid=sID, statustext=sType)
 
-def next_movie():
+def next_movie_to_compress():
     for movie in Movies.select().where((Movies.statusid == 4) | (Movies.filename != None )):
+        return movie
+
+def next_movie_to_filebot():
+    for movie in Movies.select().where((Movies.statusid == 6) | (Movies.filename != None )):
         return movie
 
 def insert_history(dbMovie, text, typeid=1):
