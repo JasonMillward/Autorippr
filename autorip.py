@@ -221,7 +221,7 @@ def compress(config):
                     "HandBakeCLI Completed successfully"
                 )
 
-                database.update_movie(dbMovie, 6)
+                database.update_movie(dbMovie, 6, filename="%s.mkv" % moviedb.moviename)
 
             else:
                 database.update_movie(dbMovie, 5)
@@ -230,7 +230,7 @@ def compress(config):
 
                 log.info( "HandBrake did not complete successfully")
         else:
-            database.update_movie(dbMovie, 2, filename="%s.mkv" % moviedb.moviename)
+            database.update_movie(dbMovie, 2)
 
             database.insert_history(
                 dbMovie, "Input file no longer exists", 4
