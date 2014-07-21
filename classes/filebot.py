@@ -65,7 +65,7 @@ class filebot(object):
                 return [False]
 
     def get_subtitles(self, dbMovie, lang):
-         command = [
+        command = [
             'filebot',
             '-get-subtitles',
             dbMovie.path,
