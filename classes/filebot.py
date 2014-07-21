@@ -28,8 +28,10 @@ class filebot(object):
             '-rename',
             "%s/%s" % (dbMovie.path, dbMovie.filename),
             '--q',
-            dbMovie.moviename,
-            '-non-strict'
+            "\"%s\"" % dbMovie.moviename,
+            '-non-strict',
+            '--db',
+            'OpenSubtitles'
         ]
 
         proc = subprocess.Popen(
