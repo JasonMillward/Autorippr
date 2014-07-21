@@ -107,7 +107,7 @@ def next_movie_to_compress():
         return movie
 
 def next_movie_to_filebot():
-    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != None )):
+    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != None ) & (Movies.filebot == 1 )):
         return movie
 
 def insert_history(dbMovie, text, typeid=1):
