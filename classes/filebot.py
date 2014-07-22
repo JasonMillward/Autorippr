@@ -22,6 +22,15 @@ class filebot(object):
         self.log = logger.logger("Filebot", debug)
 
     def rename(self, dbMovie):
+        """
+            Renames movie file upon successful database lookup
+
+            Inputs:
+                dbMovie (Obj): Movie database object
+
+            Outputs:
+                Bool    Was lookup successful
+        """
         proc = subprocess.Popen(
             [
                 'filebot',
@@ -61,7 +70,16 @@ class filebot(object):
             return [False]
 
     def get_subtitles(self, dbMovie, lang):
+        """
+            Downloads subtitles of specified language
 
+            Inputs:
+                dbMovie (Obj): Movie database object
+                lang    (Str): Language of subtitles to download
+
+            Outputs:
+                Bool    Was download successful
+        """
         proc = subprocess.Popen(
             [
                 'filebot',
