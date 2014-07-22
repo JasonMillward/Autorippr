@@ -45,7 +45,7 @@ class handBrake(object):
                 dbMovie (Obj): Movie database object
 
             Outputs:
-                Boolean
+                Bool    Does file exist
 
         """
         inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
@@ -74,7 +74,7 @@ class handBrake(object):
                                 successfully
 
             Outputs:
-                None
+                Bool    Was convertion successful
         """
         checks = 0
 
@@ -102,7 +102,7 @@ class handBrake(object):
         )
 
         # I'm a little confused here
-        # handbrake cli spits out stdout into stderr
+        # handbrake cli spits out good information into stderr
         # so I'll parse stderr as stdout
 
         if proc.stderr is not None:
@@ -125,10 +125,10 @@ class handBrake(object):
 
                         return False
 
-                if checks >= 2:
-                    self.log.debug("HandBrakeCLI Completed successfully")
-                    self._cleanUp(cFile=inMovie)
+        if checks >= 2:
+            self.log.debug("HandBrakeCLI Completed successfully")
+            self._cleanUp(cFile=inMovie)
 
-                    return True
-                else:
-                    return False
+            return True
+        else:
+            return False
