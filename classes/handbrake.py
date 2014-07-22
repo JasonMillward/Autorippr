@@ -85,11 +85,15 @@ class handBrake(object):
         proc = subprocess.Popen(
             [
                 'nice',
-                '-n %d' % nice,
+                '-n',
+                str(nice),
                 'HandBrakeCLI',
-                '--verbose 1',
-                '-i %s' % inMovie,
-                '-o %s' % outMovie,
+                '--verbose',
+                str(1),
+                '-i',
+                str(inMovie),
+                '-o',
+                str(outMovie),
                 args,
                 '2>&1'
             ],
