@@ -15,7 +15,7 @@ import os
 from peewee import *
 from datetime import datetime
 
-database = SqliteDatabase('autoripper.sqlite', **{})
+database = SqliteDatabase('autorippr.sqlite', **{})
 
 
 class BaseModel(Model):
@@ -74,7 +74,7 @@ def create_tables():
     Statustypes.create_table(True)
 
 
-def create_historyTypes():
+def create_history_types():
     historyTypes = [
         [1, 'Info'],
         [2, 'Error'],
@@ -91,7 +91,7 @@ def create_historyTypes():
             Historytypes.create(historytypeid=hID, historytype=hType)
 
 
-def create_statusTypes():
+def create_status_types():
     statusTypes = [
         [1, 'Added'],
         [2, 'Error'],
@@ -151,12 +151,12 @@ def update_movie(movieOBJ, statusid, filename=None):
     movieOBJ.save()
 
 
-def dbintegritycheck():
+def db_integrity_check():
     # Stuff
     create_tables()
 
     # Things
-    create_historyTypes()
-    create_statusTypes()
+    create_history_types()
+    create_status_types()
 
-dbintegritycheck()
+db_integrity_check()
