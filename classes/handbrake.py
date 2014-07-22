@@ -1,5 +1,5 @@
 """
-HandBrake CLI Wrapper + Queue Handler
+HandBrake CLI Wrapper
 
 
 Released under the MIT license
@@ -19,10 +19,11 @@ import logger
 class handBrake(object):
 
     def __init__(self, debug):
-        self.log = logger.logger("Handbrake CLI", debug)
+        self.log = logger.logger("HandBrake", debug)
 
     def _cleanUp(self, cFile):
-        """ Function:   _cleanUp
+        """
+            Deletes files once HandBrake is finished with them
 
             Inputs:
                 cFile    (Str): File path of the movie to remove
@@ -36,20 +37,34 @@ class handBrake(object):
             self.log.error("Could not remove %s" % cFile)
 
     def check_exists(self, dbMovie):
+        """
+            Checks to see if the file still exists at the path set in the
+                database
+
+            Inputs:
+                dbMovie (Obj): Movie database object
+
+            Outputs:
+                Boolean
+
+        """
         inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
 
-        if not os.path.isfile(inMovie):
+        if os.path.isfile(inMovie):
+            return True
+
+        else:
             self.log.debug(inMovie)
             self.log.error("Input file no longer exists")
             return False
 
     def convert(self, nice, args, dbMovie):
-        """ Function:   convert
-                Passes the nessesary parameters to HandBrake to start an encoding
-                Assigns a nice value to allow give normal system tasks priority
+        """
+            Passes the nessesary parameters to HandBrake to start an encoding
+            Assigns a nice value to allow give normal system tasks priority
 
-                Upon successful encode, clean up the output logs and remove the
-                    input movie as they are no longer needed
+            Upon successful encode, clean up the output logs and remove the
+                input movie as they are no longer needed
 
             Inputs:
                 nice    (Int): Priority to assign to task (nice value)
@@ -67,29 +82,17 @@ class handBrake(object):
         inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
         outMovie = "%s/%s" % (dbMovie.path, moviename)
 
-        command = [
-            'nice',
-            '-n',
-            str(nice),
-            'HandBrakeCLI',
-            '--verbose',
-            str(1),
-            '-i',
-            str(inMovie),
-            '-o',
-            str(outMovie),
-            args,
-            '2>&1'
-        ]
-
-        # Subtitle changes
-        # -F, --subtitle-forced   Only display subtitles from the selected stream if
-        #  <string>          the subtitle has the forced flag set.
-        # -N, --native-language   Specifiy your language preference. When the first
-        # -F --subtitle scan -N eng
-
         proc = subprocess.Popen(
-            command,
+            [
+                'nice',
+                '-n %d' % nice,
+                'HandBrakeCLI',
+                '--verbose 1',
+                '-i %s' % inMovie,
+                '-o %s' % outMovie,
+                args,
+                '2>&1'
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
