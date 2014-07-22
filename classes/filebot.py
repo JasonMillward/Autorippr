@@ -22,20 +22,17 @@ class filebot(object):
         self.log = logger.logger("Filebot", debug)
 
     def rename(self, dbMovie):
-
-        command = [
-            'filebot',
-            '-rename',
-            "%s/%s" % (dbMovie.path, dbMovie.filename),
-            '--q',
-            "\"%s\"" % dbMovie.moviename,
-            '-non-strict',
-            '--db',
-            'OpenSubtitles'
-        ]
-
         proc = subprocess.Popen(
-            command,
+            [
+                'filebot',
+                '-rename',
+                "%s/%s" % (dbMovie.path, dbMovie.filename),
+                '--q',
+                "\"%s\"" % dbMovie.moviename,
+                '-non-strict',
+                '--db',
+                'OpenSubtitles'
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
@@ -64,23 +61,22 @@ class filebot(object):
             return [False]
 
     def get_subtitles(self, dbMovie, lang):
-        command = [
-            'filebot',
-            '-get-subtitles',
-            dbMovie.path,
-            '--q',
-            "\"%s\"" % dbMovie.moviename,
-            '--lang',
-            lang,
-            '--output',
-            'srt',
-            '--encoding',
-            'utf8',
-            '-non-strict'
-        ]
 
         proc = subprocess.Popen(
-            command,
+            [
+                'filebot',
+                '-get-subtitles',
+                dbMovie.path,
+                '--q',
+                "\"%s\"" % dbMovie.moviename,
+                '--lang',
+                lang,
+                '--output',
+                'srt',
+                '--encoding',
+                'utf8',
+                '-non-strict'
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
