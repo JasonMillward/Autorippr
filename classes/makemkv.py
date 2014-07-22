@@ -20,20 +20,7 @@ import logger
 
 class makeMKV(object):
 
-    """
-        This class acts as a python wrapper to the MakeMKV CLI.
-    """
-
     def __init__(self, config):
-        """
-            Initialises the variables that will be used in this class
-
-            Inputs:
-                None
-
-            Outputs:
-                None
-        """
         self.discIndex = 0
         self.movieName = ""
         self.path = ""
@@ -53,16 +40,13 @@ class makeMKV(object):
                 None
         """
         tmpName = self.movieName
-        # A little fix for extended editions (eg; Die Hard 4)
+
         tmpName = tmpName.title().replace("Extended_Edition", "")
 
-        # Remove Special Edition
         tmpName = tmpName.replace("Special_Edition", "")
 
-        # Remove Disc X from the title
         tmpName = re.sub(r"Disc_(\d)", "", tmpName)
 
-        # Clean up the disc title so IMDb can identify it easier
         tmpName = tmpName.replace("\"", "").replace("_", " ")
 
         # Clean up the edges and remove whitespace
@@ -71,10 +55,12 @@ class makeMKV(object):
     def _read_MKV_messages(self, stype, sid=None, scode=None):
         """
             Returns a list of messages that match the search string
+            Parses message output.
 
             Inputs:
-                search      (Str)
-                searchIndex (Str)
+                stype   (Str): Type of message
+                sid     (Int): ID of message
+                scode   (Int): Code of message
 
             Outputs:
                 toReturn    (List)
@@ -104,9 +90,27 @@ class makeMKV(object):
         return toReturn
 
     def set_title(self, movieName):
+        """
+            Sets local movie name
+
+            Inputs:
+                movieName   (Str): Name of movie
+
+            Outputs:
+                None
+        """
         self.movieName = movieName
 
     def set_index(self, index):
+        """
+            Sets local disc index
+
+            Inputs:
+                index   (Int): Disc index
+
+            Outputs:
+                None
+        """
         self.discIndex = int(index)
 
     def rip_disc(self, path, output):
