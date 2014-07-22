@@ -1,5 +1,5 @@
 """
-Auto Ripper
+Autorippr
 
 Ripping
     Uses MakeMKV to watch for movies inserted into DVD/BD Drives
@@ -20,6 +20,8 @@ Compressing
 
     Using a nice value of 15 by default, it runs HandBrake as a background task
     that allows other critical tasks to complete first.
+
+Extras
 
 
 Released under the MIT license
@@ -120,17 +122,17 @@ def rip(config):
     mkv_api = makemkv.makeMKV(config)
 
     log.debug("Checking for DVDs")
-    dvds = mkv_api.findDisc(mkv_tmp_output)
+    dvds = mkv_api.find_disc(mkv_tmp_output)
 
     log.debug("%d DVDs found" % len(dvds))
 
     if (len(dvds) > 0):
         # Best naming convention ever
         for dvd in dvds:
-            mkv_api.setTitle(dvd["discTitle"])
-            mkv_api.setIndex(dvd["discIndex"])
+            mkv_api.set_title(dvd["discTitle"])
+            mkv_api.set_index(dvd["discIndex"])
 
-            movie_title = mkv_api.getTitle()
+            movie_title = mkv_api.get_title()
 
             movie_path = '%s/%s' % (mkv_save_path, movie_title)
             if not os.path.exists(movie_path):
@@ -147,16 +149,16 @@ def rip(config):
                     "Movie added to database"
                 )
 
-                mkv_api.getDiscInfo()
+                mkv_api.get_disc_info()
 
-                database.update_movie(dbMovie, 3, mkv_api.getSavefile())
+                database.update_movie(dbMovie, 3, mkv_api.get_savefile())
 
                 with stopwatch.stopwatch() as t:
                     database.insert_history(
                         dbMovie,
                         "Movie submitted to MakeMKV"
                     )
-                    status = mkv_api.ripDisc(mkv_save_path, mkv_tmp_output)
+                    status = mkv_api.rip_disc(mkv_save_path, mkv_tmp_output)
 
                 if status:
                     if config['makemkv']['eject']:
@@ -225,7 +227,7 @@ def compress(config):
 
                 database.insert_history(
                     dbMovie,
-                    "HandBakeCLI Completed successfully"
+                    "HandBake Completed successfully"
                 )
 
                 database.update_movie(
