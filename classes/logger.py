@@ -32,7 +32,7 @@ class logger(object):
         self.sh.setLevel(logLevel)
         self.sh.setFormatter(frmt)
 
-        self.fh = logging.FileHandler('autoripper.log')
+        self.fh = logging.FileHandler('autorippr.log')
         self.fh.setLevel(logLevel)
         self.fh.setFormatter(frmt)
 
