@@ -1,9 +1,5 @@
 # Misc notes for future me / developers
 
-## Single instance requires pip & tendo
-	sudo apt-get install python-pip
-	pip install tendo
-
 ## TV Shows (and maybe proper movie titles)
 
 Disc info can be obtained, it returns a lot more information about each disc instead of just the 'is disc inserted'
@@ -85,7 +81,7 @@ T = Title info
 	CINFO:28,0,"eng"
 	CINFO:29,0,"English"
 
-## Subtitles 
+## Subtitles
 
 	2014-07-21 22:29:18 - Filebot - DEBUG - Get [English] subtitles for 1 files
 	2014-07-21 22:29:18 - Filebot - DEBUG - Looking up subtitles by hash via OpenSubtitles
