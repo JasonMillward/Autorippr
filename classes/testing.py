@@ -15,6 +15,7 @@ import sys
 import os
 import subprocess
 
+
 def perform_testing(config):
 
     requirements = {
@@ -24,7 +25,7 @@ def perform_testing(config):
     }
 
     print "= Checking directory permissions"
-    print canWrite( config['makemkv']['savePath'] ), "makemkv savePath"
+    print canWrite(config['makemkv']['savePath']), "makemkv savePath"
 
     print ""
     print "= Checking requirements"
@@ -33,19 +34,22 @@ def perform_testing(config):
 
     sys.exit(0)
 
+
 def canWrite(path):
     try:
-        ret = boolToStatus( os.access(path, os.W_OK | os.X_OK) )
+        ret = boolToStatus(os.access(path, os.W_OK | os.X_OK))
     except:
         ret = False
     finally:
         return ret
+
 
 def boolToStatus(inBool):
     if inBool:
         return "[  OK  ]"
     else:
         return "[ FAIL ]"
+
 
 def checkCommand(com):
     proc = subprocess.Popen(
@@ -56,5 +60,4 @@ def checkCommand(com):
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE
     )
-    return boolToStatus( len(proc.stdout.read()) > 0 )
-
+    return boolToStatus(len(proc.stdout.read()) > 0)
