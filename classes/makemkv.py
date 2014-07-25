@@ -113,7 +113,7 @@ class makeMKV(object):
         """
         self.discIndex = int(index)
 
-    def rip_disc(self, path, output):
+    def rip_disc(self, path):
         """
             Passes in all of the arguments to makemkvcon to start the ripping
                 of the currently inserted DVD or BD
@@ -179,7 +179,7 @@ class makeMKV(object):
         else:
             return False
 
-    def find_disc(self, output):
+    def find_disc(self):
         """
             Use makemkvcon to list all DVDs or BDs inserted
             If more then one disc is inserted, use the first result

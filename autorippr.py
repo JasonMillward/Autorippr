@@ -118,13 +118,12 @@ def rip(config):
     log = logger.logger("Rip", config['debug'])
 
     mkv_save_path = config['makemkv']['savePath']
-    mkv_tmp_output = config['makemkv']['temp']
 
     log.debug("Ripping initialised")
     mkv_api = makemkv.makeMKV(config)
 
     log.debug("Checking for DVDs")
-    dvds = mkv_api.find_disc(mkv_tmp_output)
+    dvds = mkv_api.find_disc()
 
     log.debug("%d DVDs found" % len(dvds))
 
@@ -160,7 +159,7 @@ def rip(config):
                         dbMovie,
                         "Movie submitted to MakeMKV"
                     )
-                    status = mkv_api.rip_disc(mkv_save_path, mkv_tmp_output)
+                    status = mkv_api.rip_disc(mkv_save_path)
 
                 if status:
                     if config['makemkv']['eject']:
