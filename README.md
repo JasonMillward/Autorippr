@@ -4,7 +4,7 @@ Autorippr
 
 ## Install
 
-See the [docs](docs.jcode.me/autorippr)
+See the [docs](http://docs.jcode.me/autorippr)
 
 
 ## Copyright & License
