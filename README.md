@@ -6,6 +6,9 @@ Autorippr
 
 See the [docs](http://docs.jcode.me/autorippr)
 
+## Issues?
+
+[Report them here](/issues)
 
 ## Copyright & License
 
