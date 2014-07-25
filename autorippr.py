@@ -45,6 +45,7 @@ Options:
     --compress      Compress using HandBrake.
     --extra         Lookup, rename and/or download extras.
     --all           Do everything
+    --test          Tests config and requirements
 
 """
 
