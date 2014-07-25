@@ -36,6 +36,7 @@ Usage:
     autorippr.py   ( --rip | --compress | --extra )  [options]
     autorippr.py   ( --rip [ --compress ] )          [options]
     autorippr.py   --all                             [options]
+    autorippr.py   --test
 
 Options:
     -h --help       Show this screen.
@@ -309,6 +310,9 @@ if __name__ == '__main__':
 
     if bool(config['analytics']['enable']):
         analytics.ping(__version__)
+
+    if arguments['--test']:
+        testing.perform_testing(config)
 
     if arguments['--rip'] or arguments['--all']:
         rip(config)
