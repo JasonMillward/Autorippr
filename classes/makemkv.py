@@ -47,6 +47,8 @@ class makeMKV(object):
 
         tmpName = re.sub(r"Disc_(\d)", "", tmpName)
 
+        tmpName = tmpName.replace("_t00","")
+
         tmpName = tmpName.replace("\"", "").replace("_", " ")
 
         # Clean up the edges and remove whitespace
