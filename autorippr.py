@@ -53,10 +53,11 @@ Options:
 import os
 import sys
 import yaml
+import subprocess
 from classes import *
 from tendo import singleton
 
-__version__ = "1.6"
+__version__ = "1.6.1-dev"
 
 me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
