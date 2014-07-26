@@ -8,7 +8,7 @@ See the [docs](http://docs.jcode.me/autorippr)
 
 ## Issues?
 
-[Report them here](https://github.com/JasonMillward/makeMKV-Autoripper/issues)
+[Report them here](https://github.com/JasonMillward/Autorippr/issues)
 
 ## Copyright & License
 
