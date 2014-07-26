@@ -291,6 +291,15 @@ def extras(config):
 
                 log.info("Completed work on %s" % dbMovie.moviename)
 
+                if config['commands'] is not None and len(config['commands']) > 0:
+                    for com in config['commands']:
+                        proc = subprocess.Popen(
+                            [ com ],
+                            stderr=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            shell=True
+                        )
+
             else:
                 log.info("Not grabbing subtitles")
                 database.update_movie(dbMovie, 8)
