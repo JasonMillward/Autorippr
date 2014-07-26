@@ -1,38 +1,26 @@
 """
 Simple timer class
 
-This class provides simple functions for timing operations
-
 
 Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.5, 2013-10-20 20:40:30 CST $;
+@version    $Id: 1.6, 2014-07-21 18:48:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
 
-#
-#   IMPORTS
-#
-
 import datetime
 
-#
-#   CODE
-#
 
+class stopwatch(object):
 
-class Timer(object):
-
-    def __init__(self):
+    def __enter__(self):
         self.startTime = datetime.datetime.now()
+        return self
 
-    def stop(self):
+    def __exit__(self, *args):
         endTime = datetime.datetime.now()
         totalTime = endTime - self.startTime
         self.minutes = totalTime.seconds / 60
-
-    def getTime(self):
-        return self.minutes

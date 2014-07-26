@@ -6,70 +6,30 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.5, 2013-10-20 20:40:30 CST $;
+@version    $Id: 1.6, 2014-07-21 18:48:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
 
 import subprocess
-import imdb
 import os
 import re
 import csv
-from database import dbCon
-from logger import Logger
+import logger
+
 
 class makeMKV(object):
-    """
-        This class acts as a python wrapper to the MakeMKV CLI.
-    """
 
-    def __init__(self, minLength, cacheSize, useHandbrake, debugLevel):
-        """
-            Initialises the variables that will be used in this class
-
-            Inputs:
-                None
-
-            Outputs:
-                None
-        """
+    def __init__(self, config):
         self.discIndex = 0
         self.movieName = ""
         self.path = ""
         self.movieName = ""
-        self.imdbScaper = imdb.IMDb()
-        self.minLength = int(minLength)
-        self.cacheSize = int(cacheSize)
-        self.useHandbrake = bool(useHandbrake)
-        self.log = Logger("makemkv", debugLevel)
+        self.minLength = int(config['makemkv']['minLength'])
+        self.cacheSize = int(config['makemkv']['cache'])
+        self.log = logger.logger("Makemkv", config['debug'])
 
-    def _queueMovie(self):
-        """
-            Adds the recently ripped movie to the queue db for the compression
-                script to handle later on
-
-            Inputs:
-                None
-
-            Outputs:
-                None
-        """
-        db = dbCon()
-        movie = ""
-
-        os.chdir('%s/%s' % (self.path, self.movieName))
-        for files in os.listdir("."):
-            if files.endswith(".mkv"):
-                movie = files
-                break
-
-        path = "%s/%s" % (self.path, self.movieName)
-        outMovie = "%s.mkv" % self.movieName
-        db.insert(path, inMovie=movie, outMovie=outMovie)
-
-
-    def _cleanTitle(self):
+    def _clean_title(self):
         """
             Removes the extra bits in the title and removes whitespace
 
@@ -80,31 +40,80 @@ class makeMKV(object):
                 None
         """
         tmpName = self.movieName
-        # A little fix for extended editions (eg; Die Hard 4)
+
         tmpName = tmpName.title().replace("Extended_Edition", "")
 
-        # Remove Special Edition
         tmpName = tmpName.replace("Special_Edition", "")
 
-        # Remove Disc X from the title
         tmpName = re.sub(r"Disc_(\d)", "", tmpName)
 
-        # Clean up the disc title so IMDb can identify it easier
         tmpName = tmpName.replace("\"", "").replace("_", " ")
 
         # Clean up the edges and remove whitespace
         self.movieName = tmpName.strip()
 
+    def _read_MKV_messages(self, stype, sid=None, scode=None):
+        """
+            Returns a list of messages that match the search string
+            Parses message output.
 
-    def setTitle(self, movieName):
+            Inputs:
+                stype   (Str): Type of message
+                sid     (Int): ID of message
+                scode   (Int): Code of message
+
+            Outputs:
+                toReturn    (List)
+        """
+        toReturn = []
+
+        with open('/tmp/makemkvMessages', 'r') as messages:
+            for line in messages:
+                if line[:len(stype)] == stype:
+                    values = line.replace("%s:" % stype, "").strip()
+
+                    cr = csv.reader([values])
+
+                    if sid is not None:
+                        for row in cr:
+                            if int(row[0]) == int(sid):
+                                if scode is not None:
+                                    if int(row[1]) == int(scode):
+                                        toReturn.append(row[3])
+                                else:
+                                    toReturn.append(row[2])
+
+                    else:
+                        for row in cr:
+                            toReturn.append(row[0])
+
+        return toReturn
+
+    def set_title(self, movieName):
+        """
+            Sets local movie name
+
+            Inputs:
+                movieName   (Str): Name of movie
+
+            Outputs:
+                None
+        """
         self.movieName = movieName
 
+    def set_index(self, index):
+        """
+            Sets local disc index
 
-    def setIndex(self, index):
+            Inputs:
+                index   (Int): Disc index
+
+            Outputs:
+                None
+        """
         self.discIndex = int(index)
 
-
-    def ripDisc(self, path, output):
+    def rip_disc(self, path):
         """
             Passes in all of the arguments to makemkvcon to start the ripping
                 of the currently inserted DVD or BD
@@ -119,20 +128,19 @@ class makeMKV(object):
         self.path = path
 
         fullPath = '%s/%s' % (self.path, self.movieName)
-        command = [
-            'makemkvcon',
-            'mkv',
-            'disc:%d' % self.discIndex,
-            '0',
-            fullPath,
-            '--cache=%d' % self.cacheSize,
-            '--noscan',
-            '--minlength=%d' % self.minLength
-        ]
 
         proc = subprocess.Popen(
-            command,
-            stderr=subprocess.STDOUT,
+            [
+                'makemkvcon',
+                'mkv',
+                'disc:%d' % self.discIndex,
+                '0',
+                fullPath,
+                '--cache=%d' % self.cacheSize,
+                '--noscan',
+                '--minlength=%d' % self.minLength
+            ],
+            stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
 
@@ -167,13 +175,11 @@ class makeMKV(object):
                 checks += 1
 
         if checks >= 2:
-            if self.useHandbrake:
-                self._queueMovie()
             return True
         else:
             return False
 
-    def findDisc(self, output):
+    def find_disc(self):
         """
             Use makemkvcon to list all DVDs or BDs inserted
             If more then one disc is inserted, use the first result
@@ -200,9 +206,9 @@ class makeMKV(object):
 
         output = proc.stdout.read()
         if "This application version is too old." in output:
-            self.log.error("Your MakeMKV version is too old." \
-                "Please download the latest version at http://www.makemkv.com" \
-                " or enter a registration key to continue using MakeMKV.")
+            self.log.error("Your MakeMKV version is too old."
+                           "Please download the latest version at http://www.makemkv.com"
+                           " or enter a registration key to continue using MakeMKV.")
 
             return []
 
@@ -219,14 +225,14 @@ class makeMKV(object):
                         drives.append(
                             {
                                 "discIndex": out[0].replace("DRV:", ""),
-                                "discTitle": out[5]
+                                "discTitle": out[5],
+                                "location": out[6]
                             }
                         )
 
         return drives
 
-
-    def getDiscInfo(self):
+    def get_disc_info(self):
         """
             Returns information about the selected disc
 
@@ -256,42 +262,17 @@ class makeMKV(object):
                 self.log.error(output)
                 return False
 
-        #self.readMKVMessages("TCOUNT")
-        #for titleNo in set(self.readMKVMessages("TINFO")):
-        #    print titleNo
+        self.log.debug("MakeMKV found %d titles" %
+                       len(self._read_MKV_messages("TCOUNT")))
+        for titleNo in set(self._read_MKV_messages("TINFO")):
+            self.log.debug("Title number: %s" % titleNo)
 
+            self.log.debug(self._read_MKV_messages("CINFO", 2))
 
-    def readMKVMessages(self, search, searchIndex = None):
-        """
-            Returns a list of messages that match the search string
+            self.saveFile = self._read_MKV_messages("TINFO", titleNo, 27)
+            self.saveFile = self.saveFile[0]
 
-            Inputs:
-                search      (Str)
-                searchIndex (Str)
-
-            Outputs:
-                toReturn    (List)
-        """
-        toReturn = []
-        with open('/tmp/makemkvMessages', 'r') as messages:
-            for line in messages:
-                if line[:len(search)] == search:
-                    values = line.replace("%s:" % search, "").strip()
-
-                    cr = csv.reader([values])
-
-                    if searchIndex is not None:
-                        for row in cr:
-                            if int(row[0]) == int(searchIndex):
-                                #print row
-                                toReturn.append(row[3])
-                    else:
-                        for row in cr:
-                            toReturn.append(row[0])
-
-        return toReturn
-
-    def getTitle(self):
+    def get_title(self):
         """
             Returns the current movies title
 
@@ -301,16 +282,17 @@ class makeMKV(object):
             Outputs:
                 movieName   (Str)
         """
-        self._cleanTitle()
-
-        # Socket or connection errors
-        try:
-            result = self.imdbScaper.search_movie(self.movieName, results=1)
-
-            if len(result) > 0:
-                self.movieName = result[0]
-
-        except:
-            pass
-
+        self._clean_title()
         return self.movieName
+
+    def get_savefile(self):
+        """
+            Returns the current movies title
+
+            Inputs:
+                None
+
+            Outputs:
+                movieName   (Str)
+        """
+        return self.saveFile
