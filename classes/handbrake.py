@@ -100,29 +100,30 @@ class handBrake(object):
             stderr=subprocess.STDOUT
         )
 
-        # I'm a little confused here
-        # handbrake cli spits out good information into stderr
-        # so I'll parse stderr as stdout
+        (results, errors) = proc.communicate()
 
-        if proc.stderr is not None:
-            output = proc.stderr.read()
-            if len(output) is not 0:
-                lines = output.split("\n")
-                for line in lines:
+        if proc.returncode is not 0:
+            self.log.error(
+                "HandBrakeCLI returned status code: %d" % proc.returncode)
+
+        if results is not None and len(results) is not 0:
+            lines = results.split("\n")
+            for line in lines:
+                if "Encoding: task" not in line:
                     self.log.debug(line.strip())
 
-                    if "average encoding speed for job" in line:
-                        checks += 1
+                if "average encoding speed for job" in line:
+                    checks += 1
 
-                    if "Encode done!" in line:
-                        checks += 1
+                if "Encode done!" in line:
+                    checks += 1
 
-                    if "ERROR" in line and "opening" not in line:
-                        self.log.error(
-                            "HandBrakeCLI encountered the following error: ")
-                        self.log.error(line)
+                if "ERROR" in line and "opening" not in line:
+                    self.log.error(
+                        "HandBrakeCLI encountered the following error: ")
+                    self.log.error(line)
 
-                        return False
+                    return False
 
         if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")
