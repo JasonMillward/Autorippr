@@ -94,11 +94,10 @@ class handBrake(object):
                 str(inMovie),
                 '-o',
                 str(outMovie),
-                args,
-                '2>&1'
+                args
             ],
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.STDOUT
         )
 
         # I'm a little confused here
