@@ -294,7 +294,7 @@ def extras(config):
                 if config['commands'] is not None and len(config['commands']) > 0:
                     for com in config['commands']:
                         proc = subprocess.Popen(
-                            [ com ],
+                            [com],
                             stderr=subprocess.PIPE,
                             stdout=subprocess.PIPE,
                             shell=True
