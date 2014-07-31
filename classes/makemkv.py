@@ -150,7 +150,7 @@ class makeMKV(object):
 
         if proc.returncode is not 0:
             self.log.error(
-                "MakeMKV returned status code: %d" % proc.returncode)
+                "MakeMKV (rip_disc) returned status code: %d" % proc.returncode)
 
         if errors is not None:
             if len(errors) is not 0:
@@ -208,7 +208,7 @@ class makeMKV(object):
 
         if proc.returncode is not 0:
             self.log.error(
-                "MakeMKV returned status code: %d" % proc.returncode)
+                "MakeMKV (find_disc) returned status code: %d" % proc.returncode)
 
         if errors is not None:
             if len(errors) is not 0:
@@ -269,7 +269,7 @@ class makeMKV(object):
 
         if proc.returncode is not 0:
             self.log.error(
-                "MakeMKV returned status code: %d" % proc.returncode)
+                "MakeMKV (get_disc_info) returned status code: %d" % proc.returncode)
 
         if errors is not None:
             if len(errors) is not 0:
