@@ -58,7 +58,7 @@ class handBrake(object):
             self.log.error("Input file no longer exists")
             return False
 
-    def convert(self, nice, args, dbMovie):
+    def compress(self, nice, args, dbMovie):
         """
             Passes the nessesary parameters to HandBrake to start an encoding
             Assigns a nice value to allow give normal system tasks priority
@@ -104,7 +104,7 @@ class handBrake(object):
 
         if proc.returncode is not 0:
             self.log.error(
-                "HandBrakeCLI returned status code: %d" % proc.returncode)
+                "HandBrakeCLI (compress) returned status code: %d" % proc.returncode)
 
         if results is not None and len(results) is not 0:
             lines = results.split("\n")
