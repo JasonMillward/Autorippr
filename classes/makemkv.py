@@ -199,7 +199,7 @@ class makeMKV(object):
         """
         drives = []
         proc = subprocess.Popen(
-            ['makemkvcon', '-r', 'info'],
+            ['makemkvcon', '-r', 'info', 'disc:-1'],
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
