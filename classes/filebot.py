@@ -50,7 +50,7 @@ class filebot(object):
 
         if proc.returncode is not 0:
             self.log.error(
-                "Filebot returned status code: %d" % proc.returncode)
+                "Filebot (rename) returned status code: %d" % proc.returncode)
 
         renamedMovie = ""
         checks = 0
@@ -108,7 +108,7 @@ class filebot(object):
 
         if proc.returncode is not 0:
             self.log.error(
-                "Filebot returned status code: %d" % proc.returncode)
+                "Filebot (get_subtitles) returned status code: %d" % proc.returncode)
 
         checks = 0
 
