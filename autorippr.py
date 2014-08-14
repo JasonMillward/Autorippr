@@ -11,7 +11,6 @@ Ripping
     junk that happens to be on the DVD
 
     DVD goes in > MakeMKV gets a proper DVD name > MakeMKV Rips
-    DVD does not get ejected, maybe it will get added to later versions
 
 Compressing
     An optional additional used to rename and compress movies to an acceptable standard
