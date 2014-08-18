@@ -214,7 +214,7 @@ def compress(config):
             log.info("Compressing %s" % dbMovie.moviename)
 
             with stopwatch.stopwatch() as t:
-                status = hb.convert(
+                status = hb.compress(
                     args=config['handbrake']['com'],
                     nice=int(config['handbrake']['nice']),
                     dbMovie=dbMovie
