@@ -6,7 +6,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.6, 2014-07-21 18:48:00 CST $;
+@version    $Id: 1.6.1, 2014-08-18 10:42:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
@@ -46,12 +46,17 @@ class filebot(object):
             stderr=subprocess.PIPE
         )
 
-        output = proc.stdout.read()
+        (results, errors) = proc.communicate()
+
+        if proc.returncode is not 0:
+            self.log.error(
+                "Filebot (rename) returned status code: %d" % proc.returncode)
+
         renamedMovie = ""
         checks = 0
 
-        if len(output) is not 0:
-            lines = output.split("\n")
+        if len(results) is not 0:
+            lines = results.split("\n")
             for line in lines:
                 self.log.debug(line.strip())
                 if "MOVE" in line:
@@ -99,11 +104,16 @@ class filebot(object):
             stderr=subprocess.PIPE
         )
 
-        checks = 0
-        output = proc.stdout.read()
+        (results, errors) = proc.communicate()
 
-        if len(output) is not 0:
-            lines = output.split("\n")
+        if proc.returncode is not 0:
+            self.log.error(
+                "Filebot (get_subtitles) returned status code: %d" % proc.returncode)
+
+        checks = 0
+
+        if len(results) is not 0:
+            lines = results.split("\n")
             for line in lines:
                 self.log.debug(line.strip())
 

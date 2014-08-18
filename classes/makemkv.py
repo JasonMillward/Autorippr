@@ -6,7 +6,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.6, 2014-07-21 18:48:00 CST $;
+@version    $Id: 1.6.1, 2014-08-18 10:42:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
@@ -46,6 +46,8 @@ class makeMKV(object):
         tmpName = tmpName.replace("Special_Edition", "")
 
         tmpName = re.sub(r"Disc_(\d)", "", tmpName)
+
+        tmpName = tmpName.replace("_t00", "")
 
         tmpName = tmpName.replace("\"", "").replace("_", " ")
 
@@ -144,16 +146,21 @@ class makeMKV(object):
             stdout=subprocess.PIPE
         )
 
-        if proc.stderr is not None:
-            output = proc.stderr.read()
-            if len(output) is not 0:
+        (results, errors) = proc.communicate()
+
+        if proc.returncode is not 0:
+            self.log.error(
+                "MakeMKV (rip_disc) returned status code: %d" % proc.returncode)
+
+        if errors is not None:
+            if len(errors) is not 0:
                 self.log.error("MakeMKV encountered the following error: ")
-                self.log.error(output)
+                self.log.error(errors)
                 return False
 
         checks = 0
-        output = proc.stdout.read()
-        lines = output.split("\n")
+
+        lines = results.split("\n")
         for line in lines:
             if "skipped" in line:
                 continue
@@ -192,20 +199,24 @@ class makeMKV(object):
         """
         drives = []
         proc = subprocess.Popen(
-            ['makemkvcon', '-r', 'info'],
+            ['makemkvcon', '-r', 'info', 'disc:-1'],
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
 
-        output = proc.stderr.read()
-        if proc.stderr is not None:
-            if len(output) is not 0:
+        (results, errors) = proc.communicate()
+
+        if proc.returncode is not 0:
+            self.log.error(
+                "MakeMKV (find_disc) returned status code: %d" % proc.returncode)
+
+        if errors is not None:
+            if len(errors) is not 0:
                 self.log.error("MakeMKV encountered the following error: ")
-                self.log.error(output)
+                self.log.error(errors)
                 return []
 
-        output = proc.stdout.read()
-        if "This application version is too old." in output:
+        if "This application version is too old." in results:
             self.log.error("Your MakeMKV version is too old."
                            "Please download the latest version at http://www.makemkv.com"
                            " or enter a registration key to continue using MakeMKV.")
@@ -213,8 +224,7 @@ class makeMKV(object):
             return []
 
         # Passed the simple tests, now check for disk drives
-
-        lines = output.split("\n")
+        lines = results.split("\n")
         for line in lines:
             if line[:4] == "DRV:":
                 if "/dev/" in line:
@@ -255,11 +265,16 @@ class makeMKV(object):
             stderr=subprocess.PIPE
         )
 
-        output = proc.stderr.read()
-        if proc.stderr is not None:
-            if len(output) is not 0:
+        (results, errors) = proc.communicate()
+
+        if proc.returncode is not 0:
+            self.log.error(
+                "MakeMKV (get_disc_info) returned status code: %d" % proc.returncode)
+
+        if errors is not None:
+            if len(errors) is not 0:
                 self.log.error("MakeMKV encountered the following error: ")
-                self.log.error(output)
+                self.log.error(errors)
                 return False
 
         self.log.debug("MakeMKV found %d titles" %

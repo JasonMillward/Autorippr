@@ -27,7 +27,7 @@ Released under the MIT license
 Copyright (c) 2014, Jason Millward
 
 @category   misc
-@version    $Id: 1.6, 2014-07-21 18:48:00 CST $;
+@version    $Id: 1.6.1, 2014-08-18 10:42:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 
@@ -52,10 +52,11 @@ Options:
 import os
 import sys
 import yaml
+import subprocess
 from classes import *
 from tendo import singleton
 
-__version__ = "1.6"
+__version__ = "1.6.1"
 
 me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
@@ -212,7 +213,7 @@ def compress(config):
             log.info("Compressing %s" % dbMovie.moviename)
 
             with stopwatch.stopwatch() as t:
-                status = hb.convert(
+                status = hb.compress(
                     args=config['handbrake']['com'],
                     nice=int(config['handbrake']['nice']),
                     dbMovie=dbMovie
@@ -288,6 +289,15 @@ def extras(config):
                     database.update_movie(dbMovie, 8)
 
                 log.info("Completed work on %s" % dbMovie.moviename)
+
+                if config['commands'] is not None and len(config['commands']) > 0:
+                    for com in config['commands']:
+                        proc = subprocess.Popen(
+                            [com],
+                            stderr=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            shell=True
+                        )
 
             else:
                 log.info("Not grabbing subtitles")
