@@ -82,24 +82,19 @@ class handBrake(object):
         inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
         outMovie = "%s/%s" % (dbMovie.path, moviename)
 
-        proc = subprocess.Popen(
-            [
-                'nice',
-                '-n',
-                str(nice),
-                'HandBrakeCLI',
-                '--verbose',
-                str(1),
-                '-i',
-                str(inMovie),
-                '-o',
-                str(outMovie),
-                args
-            ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT
+        command = 'nice -n {0} HandBrakeCLI --verbose -i "{1}" -o "{2}" {3}'.format(
+            nice, 
+            inMovie, 
+            outMovie, 
+            ' '.join(args)
         )
-
+ 
+        proc = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=True
+        )
         (results, errors) = proc.communicate()
 
         if proc.returncode is not 0:
