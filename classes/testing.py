@@ -21,7 +21,8 @@ def perform_testing(config):
     requirements = {
         "MakeMKV":   "makemkvcon",
         "Filebot":   "filebot",
-        "HandBrake": "HandBrakeCLI"
+        "HandBrake": "HandBrakeCLI",
+        "FFmpeg (optional)": "ffmpeg"
     }
 
     print "= Checking directory permissions"

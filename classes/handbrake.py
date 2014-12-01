@@ -14,49 +14,14 @@ Copyright (c) 2012, Jason Millward
 import os
 import subprocess
 import logger
+import compression
 
+from compression import compression
 
-class handBrake(object):
+class handBrake(compression):
 
     def __init__(self, debug):
         self.log = logger.logger("HandBrake", debug)
-
-    def _cleanUp(self, cFile):
-        """
-            Deletes files once HandBrake is finished with them
-
-            Inputs:
-                cFile    (Str): File path of the movie to remove
-
-            Outputs:
-                None
-        """
-        try:
-            os.remove(cFile)
-        except:
-            self.log.error("Could not remove %s" % cFile)
-
-    def check_exists(self, dbMovie):
-        """
-            Checks to see if the file still exists at the path set in the
-                database
-
-            Inputs:
-                dbMovie (Obj): Movie database object
-
-            Outputs:
-                Bool    Does file exist
-
-        """
-        inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
-
-        if os.path.isfile(inMovie):
-            return True
-
-        else:
-            self.log.debug(inMovie)
-            self.log.error("Input file no longer exists")
-            return False
 
     def compress(self, nice, args, dbMovie):
         """
