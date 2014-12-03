@@ -17,7 +17,7 @@ Compressing
     which still delivers quallity audio and video but reduces the file size
     dramatically.
 
-    Using a nice value of 15 by default, it runs HandBrake as a background task
+    Using a nice value of 15 by default, it runs HandBrake (of FFmpeg) as a background task
     that allows other critical tasks to complete first.
 
 Extras
@@ -42,7 +42,7 @@ Options:
     --version       Show version.
     --debug         Output debug.
     --rip           Rip disc using makeMKV.
-    --compress      Compress using HandBrake.
+    --compress      Compress using HandBrake or FFmpeg.
     --extra         Lookup, rename and/or download extras.
     --all           Do everything
     --test          Tests config and requirements
@@ -198,7 +198,10 @@ def compress(config):
     """
     log = logger.logger("Compress", config['debug'])
 
-    hb = handbrake.handBrake(config['debug'])
+    if config['compress']['type'] == "ffmpeg":
+        comp = ffmpeg.ffmpeg(config['debug'])
+    else:
+        comp = handbrake.handBrake(config['debug']);
 
     log.debug("Compressing initialised")
     log.debug("Looking for movies to compress")
@@ -206,16 +209,16 @@ def compress(config):
     dbMovie = database.next_movie_to_compress()
 
     if dbMovie is not None:
-        if hb.check_exists(dbMovie) is not False:
+        if comp.check_exists(dbMovie) is not False:
 
             database.update_movie(dbMovie, 5)
 
             log.info("Compressing %s" % dbMovie.moviename)
 
             with stopwatch.stopwatch() as t:
-                status = hb.compress(
-                    args=config['handbrake']['com'],
-                    nice=int(config['handbrake']['nice']),
+                status = comp.compress(
+                    args=config['compress']['com'],
+                    nice=int(config['compress']['nice']),
                     dbMovie=dbMovie
                 )
 
@@ -228,7 +231,7 @@ def compress(config):
 
                 database.insert_history(
                     dbMovie,
-                    "HandBake Completed successfully"
+                    "Compression Completed successfully"
                 )
 
                 database.update_movie(
@@ -237,9 +240,9 @@ def compress(config):
             else:
                 database.update_movie(dbMovie, 5)
 
-                database.insert_history(dbMovie, "Handbrake failed", 4)
+                database.insert_history(dbMovie, "Compression failed", 4)
 
-                log.info("HandBrake did not complete successfully")
+                log.info("Compression did not complete successfully")
         else:
             database.update_movie(dbMovie, 2)
 
