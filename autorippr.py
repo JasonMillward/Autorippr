@@ -17,7 +17,7 @@ Compressing
     which still delivers quallity audio and video but reduces the file size
     dramatically.
 
-    Using a nice value of 15 by default, it runs HandBrake (of FFmpeg) as a background task
+    Using a nice value of 15 by default, it runs HandBrake (or FFmpeg) as a background task
     that allows other critical tasks to complete first.
 
 Extras
