@@ -6,7 +6,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.6, 2014-07-21 18:48:00 CST $;
+@version    $Id: 1.6.1, 2014-08-18 10:42:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
@@ -113,12 +113,12 @@ def create_status_types():
 
 
 def next_movie_to_compress():
-    for movie in Movies.select().where((Movies.statusid == 4) & (Movies.filename != None)):
+    for movie in Movies.select().where((Movies.statusid == 4) & (Movies.filename != "None")):
         return movie
 
 
 def next_movie_to_filebot():
-    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != None) & (Movies.filebot == 1)):
+    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != "None") & (Movies.filebot == 1)):
         return movie
 
 
@@ -135,6 +135,7 @@ def insert_movie(title, path, filebot):
     return Movies.create(
         moviename=title,
         path=path,
+        filename="None",
         filebot=filebot,
         statusid=1,
         lastupdated=datetime.now()

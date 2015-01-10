@@ -6,7 +6,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.6, 2014-07-21 18:48:00 CST $;
+@version    $Id: 1.6.1, 2014-08-18 10:42:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
@@ -14,52 +14,17 @@ Copyright (c) 2012, Jason Millward
 import os
 import subprocess
 import logger
+import compression
 
+from compression import compression
 
-class handBrake(object):
+class handBrake(compression):
 
     def __init__(self, debug):
         self.log = logger.logger("HandBrake", debug)
         self.handbrakecliPath = config['handbrake']['handbrakecliPath']
 
-    def _cleanUp(self, cFile):
-        """
-            Deletes files once HandBrake is finished with them
-
-            Inputs:
-                cFile    (Str): File path of the movie to remove
-
-            Outputs:
-                None
-        """
-        try:
-            os.remove(cFile)
-        except:
-            self.log.error("Could not remove %s" % cFile)
-
-    def check_exists(self, dbMovie):
-        """
-            Checks to see if the file still exists at the path set in the
-                database
-
-            Inputs:
-                dbMovie (Obj): Movie database object
-
-            Outputs:
-                Bool    Does file exist
-
-        """
-        inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
-
-        if os.path.isfile(inMovie):
-            return True
-
-        else:
-            self.log.debug(inMovie)
-            self.log.error("Input file no longer exists")
-            return False
-
-    def convert(self, nice, args, dbMovie):
+    def compress(self, nice, args, dbMovie):
         """
             Passes the nessesary parameters to HandBrake to start an encoding
             Assigns a nice value to allow give normal system tasks priority
@@ -83,48 +48,43 @@ class handBrake(object):
         inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
         outMovie = "%s/%s" % (dbMovie.path, moviename)
 
-        proc = subprocess.Popen(
-            [
-                'nice',
-                '-n',
-                str(nice),
-                '%sHandBrakeCLI' %s self.handbrakecliPath,
-                '--verbose',
-                str(1),
-                '-i',
-                str(inMovie),
-                '-o',
-                str(outMovie),
-                args,
-                '2>&1'
-            ],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+        command = 'nice -n {0} HandBrakeCLI --verbose -i "{1}" -o "{2}" {3}'.format(
+            nice, 
+            inMovie, 
+            outMovie, 
+            ' '.join(args)
         )
+ 
+        proc = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            shell=True
+        )
+        (results, errors) = proc.communicate()
 
-        # I'm a little confused here
-        # handbrake cli spits out good information into stderr
-        # so I'll parse stderr as stdout
+        if proc.returncode is not 0:
+            self.log.error(
+                "HandBrakeCLI (compress) returned status code: %d" % proc.returncode)
 
-        if proc.stderr is not None:
-            output = proc.stderr.read()
-            if len(output) is not 0:
-                lines = output.split("\n")
-                for line in lines:
+        if results is not None and len(results) is not 0:
+            lines = results.split("\n")
+            for line in lines:
+                if "Encoding: task" not in line:
                     self.log.debug(line.strip())
 
-                    if "average encoding speed for job" in line:
-                        checks += 1
+                if "average encoding speed for job" in line:
+                    checks += 1
 
-                    if "Encode done!" in line:
-                        checks += 1
+                if "Encode done!" in line:
+                    checks += 1
 
-                    if "ERROR" in line and "opening" not in line:
-                        self.log.error(
-                            "HandBrakeCLI encountered the following error: ")
-                        self.log.error(line)
+                if "ERROR" in line and "opening" not in line:
+                    self.log.error(
+                        "HandBrakeCLI encountered the following error: ")
+                    self.log.error(line)
 
-                        return False
+                    return False
 
         if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")

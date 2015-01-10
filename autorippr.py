@@ -11,14 +11,13 @@ Ripping
     junk that happens to be on the DVD
 
     DVD goes in > MakeMKV gets a proper DVD name > MakeMKV Rips
-    DVD does not get ejected, maybe it will get added to later versions
 
 Compressing
     An optional additional used to rename and compress movies to an acceptable standard
     which still delivers quallity audio and video but reduces the file size
     dramatically.
 
-    Using a nice value of 15 by default, it runs HandBrake as a background task
+    Using a nice value of 15 by default, it runs HandBrake (or FFmpeg) as a background task
     that allows other critical tasks to complete first.
 
 Extras
@@ -28,7 +27,7 @@ Released under the MIT license
 Copyright (c) 2014, Jason Millward
 
 @category   misc
-@version    $Id: 1.6, 2014-07-21 18:48:00 CST $;
+@version    $Id: 1.6.1, 2014-08-18 10:42:00 CST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 
@@ -43,7 +42,7 @@ Options:
     --version       Show version.
     --debug         Output debug.
     --rip           Rip disc using makeMKV.
-    --compress      Compress using HandBrake.
+    --compress      Compress using HandBrake or FFmpeg.
     --extra         Lookup, rename and/or download extras.
     --all           Do everything
     --test          Tests config and requirements
@@ -53,10 +52,11 @@ Options:
 import os
 import sys
 import yaml
+import subprocess
 from classes import *
 from tendo import singleton
 
-__version__ = "1.6"
+__version__ = "1.6.1"
 
 me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
@@ -198,7 +198,10 @@ def compress(config):
     """
     log = logger.logger("Compress", config['debug'])
 
-    hb = handbrake.handBrake(config['debug'])
+    if config['compress']['type'] == "ffmpeg":
+        comp = ffmpeg.ffmpeg(config['debug'])
+    else:
+        comp = handbrake.handBrake(config['debug']);
 
     log.debug("Compressing initialised")
     log.debug("Looking for movies to compress")
@@ -206,16 +209,16 @@ def compress(config):
     dbMovie = database.next_movie_to_compress()
 
     if dbMovie is not None:
-        if hb.check_exists(dbMovie) is not False:
+        if comp.check_exists(dbMovie) is not False:
 
             database.update_movie(dbMovie, 5)
 
             log.info("Compressing %s" % dbMovie.moviename)
 
             with stopwatch.stopwatch() as t:
-                status = hb.convert(
-                    args=config['handbrake']['com'],
-                    nice=int(config['handbrake']['nice']),
+                status = comp.compress(
+                    args=config['compress']['com'],
+                    nice=int(config['compress']['nice']),
                     dbMovie=dbMovie
                 )
 
@@ -228,7 +231,7 @@ def compress(config):
 
                 database.insert_history(
                     dbMovie,
-                    "HandBake Completed successfully"
+                    "Compression Completed successfully"
                 )
 
                 database.update_movie(
@@ -237,9 +240,9 @@ def compress(config):
             else:
                 database.update_movie(dbMovie, 5)
 
-                database.insert_history(dbMovie, "Handbrake failed", 4)
+                database.insert_history(dbMovie, "Compression failed", 4)
 
-                log.info("HandBrake did not complete successfully")
+                log.info("Compression did not complete successfully")
         else:
             database.update_movie(dbMovie, 2)
 
@@ -289,6 +292,15 @@ def extras(config):
                     database.update_movie(dbMovie, 8)
 
                 log.info("Completed work on %s" % dbMovie.moviename)
+
+                if config['commands'] is not None and len(config['commands']) > 0:
+                    for com in config['commands']:
+                        proc = subprocess.Popen(
+                            [com],
+                            stderr=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            shell=True
+                        )
 
             else:
                 log.info("Not grabbing subtitles")
