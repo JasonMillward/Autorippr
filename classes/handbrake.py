@@ -20,6 +20,7 @@ class handBrake(object):
 
     def __init__(self, debug):
         self.log = logger.logger("HandBrake", debug)
+        self.handbrakecliPath = config['handbrake']['handbrakecliPath']
 
     def _cleanUp(self, cFile):
         """
@@ -87,7 +88,7 @@ class handBrake(object):
                 'nice',
                 '-n',
                 str(nice),
-                'HandBrakeCLI',
+                '%sHandBrakeCLI' %s self.handbrakecliPath,
                 '--verbose',
                 str(1),
                 '-i',
