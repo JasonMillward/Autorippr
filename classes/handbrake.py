@@ -20,9 +20,9 @@ from compression import compression
 
 class handBrake(compression):
 
-    def __init__(self, debug):
+    def __init__(self, debug, compressionPath):
         self.log = logger.logger("HandBrake", debug)
-        self.handbrakecliPath = config['handbrake']['handbrakecliPath']
+        self.compressionPath = compressionPath
 
     def compress(self, nice, args, dbMovie):
         """
@@ -48,11 +48,12 @@ class handBrake(compression):
         inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
         outMovie = "%s/%s" % (dbMovie.path, moviename)
 
-        command = 'nice -n {0} HandBrakeCLI --verbose -i "{1}" -o "{2}" {3}'.format(
+        command = 'nice -n {0} {4}HandBrakeCLI --verbose -i "{1}" -o "{2}" {3}'.format(
             nice, 
             inMovie, 
             outMovie, 
-            ' '.join(args)
+            ' '.join(args),
+            self.compressionPath
         )
  
         proc = subprocess.Popen(
