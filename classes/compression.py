@@ -25,7 +25,7 @@ def create(config):
     if config['type'] == "ffmpeg":
         return ffmpeg.ffmpeg(config['debug'])
     else:
-        return handbrake.handBrake(config['debug']);
+        return handbrake.handBrake(config['debug'], config['compression']['compressionPath']);
 
 class compression(object):
 
