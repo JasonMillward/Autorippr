@@ -279,16 +279,21 @@ class makeMKV(object):
                 self.log.error(errors)
                 return False
 
-        self.log.debug("MakeMKV found {} titles".format( len( self._read_MKV_messages("TCOUNT") ) ) )
+        foundTitles = int( self._read_MKV_messages("TCOUNT")[0] )
 
-        for titleNo in set(self._read_MKV_messages("TINFO")):
-            self.log.debug("Title number: {}".format( titleNo ) )
-            self.log.debug(self._read_MKV_messages("CINFO", 2))
+        self.log.debug("MakeMKV found {} titles".format( foundTitles ))
 
-            self.log.debug( "MakeMKV title info: {}".format( self._read_MKV_messages("TINFO", titleNo, 27) ) )
+        if foundTitles > 0:
+            for titleNo in set(self._read_MKV_messages("TINFO")):
+                self.log.debug("Title number: {}".format( titleNo ) )
+                self.log.debug(self._read_MKV_messages("CINFO", 2))
 
-            self.saveFile = self._read_MKV_messages("TINFO", titleNo, 27)
-            self.saveFile = self.saveFile[0]
+                self.log.debug( "MakeMKV title info: {}".format( self._read_MKV_messages("TINFO", titleNo, 27) ) )
+
+                self.saveFile = self._read_MKV_messages("TINFO", titleNo, 27)
+                self.saveFile = self.saveFile[0]
+        else:
+           pass 
 
     def get_title(self):
         """
@@ -313,5 +318,4 @@ class makeMKV(object):
             Outputs:
                 movieName   (Str)
         """
-        self.log.debug("saveFile returned: '{}'".format(self.saveFile))
         return self.saveFile
