@@ -28,6 +28,7 @@ class makeMKV(object):
         self.minLength = int(config['makemkv']['minLength'])
         self.cacheSize = int(config['makemkv']['cache'])
         self.log = logger.logger("Makemkv", config['debug'])
+        self.makemkvconPath = config['makemkv']['makemkvconPath']
 
     def _clean_title(self):
         """
@@ -133,7 +134,7 @@ class makeMKV(object):
 
         proc = subprocess.Popen(
             [
-                'makemkvcon',
+                '%smakemkvcon' % self.makemkvconPath,
                 'mkv',
                 'disc:%d' % self.discIndex,
                 '0',
@@ -199,7 +200,7 @@ class makeMKV(object):
         """
         drives = []
         proc = subprocess.Popen(
-            ['makemkvcon', '-r', 'info', 'disc:-1'],
+            ['%smakemkvcon' % self.makemkvconPath, '-r', 'info', 'disc:-1'],
             stderr=subprocess.PIPE,
             stdout=subprocess.PIPE
         )
@@ -255,7 +256,7 @@ class makeMKV(object):
 
         proc = subprocess.Popen(
             [
-                'makemkvcon',
+                '%smakemkvcon' % self.makemkvconPath,
                 '-r',
                 'info',
                 'disc:%d' % self.discIndex,

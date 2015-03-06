@@ -201,7 +201,7 @@ def compress(config):
     if config['compress']['type'] == "ffmpeg":
         comp = ffmpeg.ffmpeg(config['debug'])
     else:
-        comp = handbrake.handBrake(config['debug']);
+        comp = handbrake.handBrake(config['debug'], config['compress']['compressionPath']);
 
     log.debug("Compressing initialised")
     log.debug("Looking for movies to compress")
