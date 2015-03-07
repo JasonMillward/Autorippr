@@ -15,7 +15,7 @@ import logging
 import sys
 
 
-class logger(object):
+class Logger(object):
 
     def __init__(self, name, debug):
         frmt = logging.Formatter(
@@ -24,20 +24,20 @@ class logger(object):
         )
 
         if debug:
-            logLevel = logging.DEBUG
+            loglevel = logging.DEBUG
         else:
-            logLevel = logging.INFO
+            loglevel = logging.INFO
 
         self.sh = logging.StreamHandler(sys.stdout)
-        self.sh.setLevel(logLevel)
+        self.sh.setLevel(loglevel)
         self.sh.setFormatter(frmt)
 
         self.fh = logging.FileHandler('autorippr.log')
-        self.fh.setLevel(logLevel)
+        self.fh.setLevel(loglevel)
         self.fh.setFormatter(frmt)
 
         self.log = logging.getLogger(name)
-        self.log.setLevel(logLevel)
+        self.log.setLevel(loglevel)
         self.log.addHandler(self.sh)
         self.log.addHandler(self.fh)
 

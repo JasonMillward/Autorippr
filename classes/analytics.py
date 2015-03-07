@@ -1,5 +1,5 @@
 """
-Basic analtics
+Basic analytics
 
 The purpose of this file is to simply send a 'ping' with a unique identifier
 and the script version once a day to give an indication of unique users
@@ -43,12 +43,12 @@ def ping(version):
             "version": version
         }
 
-        dateFile = "/tmp/%s" % time.strftime("%Y%m%d")
+        datefile = "/tmp/%s" % time.strftime("%Y%m%d")
 
-        if not os.path.isfile(dateFile):
+        if not os.path.isfile(datefile):
 
-            with open(dateFile, 'w'):
-                os.utime(dateFile, None)
+            with open(datefile, 'w'):
+                os.utime(datefile, None)
 
             requests.post(
                 'http://api.jcode.me/autorippr/stats',

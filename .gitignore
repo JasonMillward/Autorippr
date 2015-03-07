@@ -35,3 +35,6 @@ settings.cfg
 
 # Log files
 *.log
+
+
+.idea

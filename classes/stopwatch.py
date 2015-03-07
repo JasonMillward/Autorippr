@@ -1,5 +1,5 @@
 """
-Simple timer class
+Simple StopWatch
 
 
 Released under the MIT license
@@ -14,13 +14,13 @@ Copyright (c) 2012, Jason Millward
 import datetime
 
 
-class stopwatch(object):
+class StopWatch(object):
 
     def __enter__(self):
         self.startTime = datetime.datetime.now()
         return self
 
     def __exit__(self, *args):
-        endTime = datetime.datetime.now()
-        totalTime = endTime - self.startTime
-        self.minutes = totalTime.seconds / 60
+        endtime = datetime.datetime.now()
+        totaltime = endtime - self.startTime
+        self.minutes = totaltime.seconds / 60

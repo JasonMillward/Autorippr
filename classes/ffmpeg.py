@@ -15,14 +15,14 @@ import os
 import subprocess
 import logger
 
-from compression import compression
+from compression import Compression
 
-class ffmpeg(compression):
+class FFmpeg(Compression):
 
     def __init__(self, debug):
-        self.log = logger.logger("FFmpeg", debug)
+        self.log = logger.Logger("FFmpeg", debug)
 
-    def compress(self, nice, args, dbMovie):
+    def compress(self, nice, args, dbmovie):
         """
             Passes the nessesary parameters to FFmpeg to start an encoding
             Assigns a nice value to allow give normal system tasks priority
@@ -41,15 +41,15 @@ class ffmpeg(compression):
                 Bool    Was convertion successful
         """
 
-        moviename = "%s.mkv" % dbMovie.moviename
-        inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
-        outMovie = "%s/%s" % (dbMovie.path, moviename)
+        moviename = "%s.mkv" % dbmovie.moviename
+        inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
+        outmovie = "%s/%s" % (dbmovie.path, moviename)
 
         command = 'nice -n {0} ffmpeg -i "{1}" {2} "{3}"'.format(
             nice,
-            inMovie,
+            inmovie,
             ' '.join(args),
-            outMovie
+            outmovie
         )
 
         proc = subprocess.Popen(

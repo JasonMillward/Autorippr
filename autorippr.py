@@ -14,7 +14,7 @@ Ripping
 
 Compressing
     An optional additional used to rename and compress movies to an acceptable standard
-    which still delivers quallity audio and video but reduces the file size
+    which still delivers quality audio and video but reduces the file size
     dramatically.
 
     Using a nice value of 15 by default, it runs HandBrake (or FFmpeg) as a background task
@@ -127,7 +127,7 @@ def rip(config):
 
     log.debug("%d DVDs found" % len(dvds))
 
-    if (len(dvds) > 0):
+    if len(dvds) > 0:
         # Best naming convention ever
         for dvd in dvds:
             mkv_api.set_title(dvd["discTitle"])
@@ -139,25 +139,25 @@ def rip(config):
             if not os.path.exists(movie_path):
                 os.makedirs(movie_path)
 
-                dbMovie = database.insert_movie(
+                dbmovie = database.insert_movie(
                     movie_title,
                     movie_path,
                     config['filebot']['enable']
                 )
 
                 database.insert_history(
-                    dbMovie,
+                    dbmovie,
                     "Movie added to database"
                 )
 
                 mkv_api.get_disc_info()
 
                 if len( mkv_api.get_savefile() ) != 0:
-                    database.update_movie(dbMovie, 3, mkv_api.get_savefile())
+                    database.update_movie(dbmovie, 3, mkv_api.get_savefile())
 
                     with stopwatch.stopwatch() as t:
                         database.insert_history(
-                            dbMovie,
+                            dbmovie,
                             "Movie submitted to MakeMKV"
                         )
                         status = mkv_api.rip_disc(mkv_save_path)
@@ -170,7 +170,7 @@ def rip(config):
                                 (t.minutes, movie_title)
                                 )
 
-                        database.update_movie(dbMovie, 4)
+                        database.update_movie(dbmovie, 4)
 
                     else:
                         log.info("MakeMKV did not did not complete successfully")
@@ -178,11 +178,11 @@ def rip(config):
                         log.debug("Movie title: %s" % movie_title)
 
                         database.insert_history(
-                            dbMovie,
+                            dbmovie,
                             "MakeMKV failed to rip movie"
                         )
 
-                        database.update_movie(dbMovie, 2)
+                        database.update_movie(dbmovie, 2)
                 else:
                  log.info("No movie titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")
@@ -205,53 +205,53 @@ def compress(config):
     if config['compress']['type'] == "ffmpeg":
         comp = ffmpeg.ffmpeg(config['debug'])
     else:
-        comp = handbrake.handBrake(config['debug'], config['compress']['compressionPath']);
+        comp = handbrake.handBrake(config['debug'], config['compress']['compressionPath'])
 
     log.debug("Compressing initialised")
     log.debug("Looking for movies to compress")
 
-    dbMovie = database.next_movie_to_compress()
+    dbmovie = database.next_movie_to_compress()
 
-    if dbMovie is not None:
-        if comp.check_exists(dbMovie) is not False:
+    if dbmovie is not None:
+        if comp.check_exists(dbmovie) is not False:
 
-            database.update_movie(dbMovie, 5)
+            database.update_movie(dbmovie, 5)
 
-            log.info("Compressing %s" % dbMovie.moviename)
+            log.info("Compressing %s" % dbmovie.moviename)
 
             with stopwatch.stopwatch() as t:
                 status = comp.compress(
                     args=config['compress']['com'],
                     nice=int(config['compress']['nice']),
-                    dbMovie=dbMovie
+                    dbMovie=dbmovie
                 )
 
             if status:
                 log.info("Movie was compressed and encoded successfully")
 
                 log.info(("It took %s minutes to compress %s" %
-                          (t.minutes, dbMovie.moviename))
+                          (t.minutes, dbmovie.moviename))
                          )
 
                 database.insert_history(
-                    dbMovie,
+                    dbmovie,
                     "Compression Completed successfully"
                 )
 
                 database.update_movie(
-                    dbMovie, 6, filename="%s.mkv" % dbMovie.moviename)
+                    dbmovie, 6, filename="%s.mkv" % dbmovie.moviename)
 
             else:
-                database.update_movie(dbMovie, 5)
+                database.update_movie(dbmovie, 5)
 
-                database.insert_history(dbMovie, "Compression failed", 4)
+                database.insert_history(dbmovie, "Compression failed", 4)
 
                 log.info("Compression did not complete successfully")
         else:
-            database.update_movie(dbMovie, 2)
+            database.update_movie(dbmovie, 2)
 
             database.insert_history(
-                dbMovie, "Input file no longer exists", 4
+                dbmovie, "Input file no longer exists", 4
             )
 
     else:
@@ -268,38 +268,38 @@ def extras(config):
 
     fb = filebot.filebot(config['debug'])
 
-    dbMovie = database.next_movie_to_filebot()
+    dbmovie = database.next_movie_to_filebot()
 
-    if dbMovie is not None:
+    if dbmovie is not None:
         log.info("Attempting movie rename")
 
-        database.update_movie(dbMovie, 7)
+        database.update_movie(dbmovie, 7)
 
-        status = fb.rename(dbMovie)
+        status = fb.rename(dbmovie)
 
         if status[0]:
             log.info("Rename success")
-            database.update_movie(dbMovie, 6, filename=status[1])
+            database.update_movie(dbmovie, 6, filename=status[1])
 
             if config['filebot']['subtitles']:
                 log.info("Grabbing subtitles")
 
                 status = fb.get_subtitles(
-                    dbMovie, config['filebot']['language'])
+                    dbmovie, config['filebot']['language'])
 
                 if status:
                     log.info("Subtitles downloaded")
-                    database.update_movie(dbMovie, 8)
+                    database.update_movie(dbmovie, 8)
 
                 else:
                     log.info("Subtitles not downloaded, no match")
-                    database.update_movie(dbMovie, 8)
+                    database.update_movie(dbmovie, 8)
 
-                log.info("Completed work on %s" % dbMovie.moviename)
+                log.info("Completed work on %s" % dbmovie.moviename)
 
                 if config['commands'] is not None and len(config['commands']) > 0:
                     for com in config['commands']:
-                        proc = subprocess.Popen(
+                        subprocess.Popen(
                             [com],
                             stderr=subprocess.PIPE,
                             stdout=subprocess.PIPE,
@@ -308,7 +308,7 @@ def extras(config):
 
             else:
                 log.info("Not grabbing subtitles")
-                database.update_movie(dbMovie, 8)
+                database.update_movie(dbmovie, 8)
 
         else:
             log.info("Rename failed")

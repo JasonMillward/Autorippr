@@ -75,7 +75,7 @@ def create_tables():
 
 
 def create_history_types():
-    historyTypes = [
+    historytypes = [
         [1, 'Info'],
         [2, 'Error'],
         [3, 'MakeMKV Error'],
@@ -86,13 +86,13 @@ def create_history_types():
     for z in Historytypes.select():
         c += 1
 
-    if c != len(historyTypes):
-        for hID, hType in historyTypes:
+    if c != len(historytypes):
+        for hID, hType in historytypes:
             Historytypes.create(historytypeid=hID, historytype=hType)
 
 
 def create_status_types():
-    statusTypes = [
+    statustypes = [
         [1, 'Added'],
         [2, 'Error'],
         [3, 'Submitted to makeMKV'],
@@ -107,8 +107,8 @@ def create_status_types():
     for z in Statustypes.select():
         c += 1
 
-    if c != len(statusTypes):
-        for sID, sType in statusTypes:
+    if c != len(statustypes):
+        for sID, sType in statustypes:
             Statustypes.create(statusid=sID, statustext=sType)
 
 
@@ -122,9 +122,9 @@ def next_movie_to_filebot():
         return movie
 
 
-def insert_history(dbMovie, text, typeid=1):
+def insert_history(dbmovie, text, typeid=1):
     return History.create(
-        movieid=dbMovie.movieid,
+        movieid=dbmovie.movieid,
         historytext=text,
         historydate=datetime.now(),
         historytypeid=typeid
@@ -142,14 +142,14 @@ def insert_movie(title, path, filebot):
     )
 
 
-def update_movie(movieOBJ, statusid, filename=None):
-    movieOBJ.statusid = statusid
-    movieOBJ.lastupdated = datetime.now()
+def update_movie(movieobj, statusid, filename=None):
+    movieobj.statusid = statusid
+    movieobj.lastupdated = datetime.now()
 
     if filename is not None:
-        movieOBJ.filename = filename
+        movieobj.filename = filename
 
-    movieOBJ.save()
+    movieobj.save()
 
 
 def db_integrity_check():

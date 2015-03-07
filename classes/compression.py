@@ -26,11 +26,11 @@ def create(config):
     if config['type'] == "ffmpeg":
         return ffmpeg.ffmpeg(config['debug'])
     else:
-        return handbrake.handBrake(config['debug'], config['compression']['compressionPath']);
+        return handbrake.handBrake(config['debug'], config['compression']['compressionPath'])
 
-class compression(object):
+class Compression(object):
 
-    def check_exists(self, dbMovie):
+    def check_exists(self, dbmovie):
         """
             Checks to see if the file still exists at the path set in the
                 database
@@ -42,17 +42,17 @@ class compression(object):
                 Bool    Does file exist
 
         """
-        inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
+        inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
 
-        if os.path.isfile(inMovie):
+        if os.path.isfile(inmovie):
             return True
 
         else:
-            self.log.debug(inMovie)
+            self.log.debug(inmovie)
             self.log.error("Input file no longer exists")
             return False
 
-    def _cleanUp(self, cFile):
+    def _cleanup(self, cfile):
         """
             Deletes files once the compression has finished with them
 
@@ -63,6 +63,6 @@ class compression(object):
                 None
         """
         try:
-            os.remove(cFile)
+            os.remove(cfile)
         except:
-            self.log.error("Could not remove %s" % cFile)
+            self.log.error("Could not remove %s" % cfile)
