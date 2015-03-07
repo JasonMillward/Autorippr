@@ -29,6 +29,7 @@ class makeMKV(object):
         self.cacheSize = int(config['makemkv']['cache'])
         self.log = logger.logger("Makemkv", config['debug'])
         self.makemkvconPath = config['makemkv']['makemkvconPath']
+        self.saveFile = ""
 
     def _clean_title(self):
         """
@@ -278,15 +279,21 @@ class makeMKV(object):
                 self.log.error(errors)
                 return False
 
-        self.log.debug("MakeMKV found %d titles" %
-                       len(self._read_MKV_messages("TCOUNT")))
-        for titleNo in set(self._read_MKV_messages("TINFO")):
-            self.log.debug("Title number: %s" % titleNo)
+        foundTitles = int( self._read_MKV_messages("TCOUNT")[0] )
 
-            self.log.debug(self._read_MKV_messages("CINFO", 2))
+        self.log.debug("MakeMKV found {} titles".format( foundTitles ))
 
-            self.saveFile = self._read_MKV_messages("TINFO", titleNo, 27)
-            self.saveFile = self.saveFile[0]
+        if foundTitles > 0:
+            for titleNo in set(self._read_MKV_messages("TINFO")):
+                self.log.debug("Title number: {}".format( titleNo ) )
+                self.log.debug(self._read_MKV_messages("CINFO", 2))
+
+                self.log.debug( "MakeMKV title info: {}".format( self._read_MKV_messages("TINFO", titleNo, 27) ) )
+
+                self.saveFile = self._read_MKV_messages("TINFO", titleNo, 27)
+                self.saveFile = self.saveFile[0]
+        else:
+           pass 
 
     def get_title(self):
         """

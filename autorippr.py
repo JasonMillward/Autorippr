@@ -152,36 +152,40 @@ def rip(config):
 
                 mkv_api.get_disc_info()
 
-                database.update_movie(dbMovie, 3, mkv_api.get_savefile())
+                if len( mkv_api.get_savefile() ) != 0:
+                    database.update_movie(dbMovie, 3, mkv_api.get_savefile())
 
-                with stopwatch.stopwatch() as t:
-                    database.insert_history(
-                        dbMovie,
-                        "Movie submitted to MakeMKV"
-                    )
-                    status = mkv_api.rip_disc(mkv_save_path)
+                    with stopwatch.stopwatch() as t:
+                        database.insert_history(
+                            dbMovie,
+                            "Movie submitted to MakeMKV"
+                        )
+                        status = mkv_api.rip_disc(mkv_save_path)
 
-                if status:
-                    if config['makemkv']['eject']:
-                        eject(dvd['location'])
+                    if status:
+                        if config['makemkv']['eject']:
+                            eject(dvd['location'])
 
-                    log.info("It took %s minute(s) to complete the ripping of %s" %
-                             (t.minutes, movie_title)
-                             )
+                        log.info("It took %s minute(s) to complete the ripping of %s" %
+                                (t.minutes, movie_title)
+                                )
 
-                    database.update_movie(dbMovie, 4)
+                        database.update_movie(dbMovie, 4)
 
+                    else:
+                        log.info("MakeMKV did not did not complete successfully")
+                        log.info("See log for more details")
+                        log.debug("Movie title: %s" % movie_title)
+
+                        database.insert_history(
+                            dbMovie,
+                            "MakeMKV failed to rip movie"
+                        )
+
+                        database.update_movie(dbMovie, 2)
                 else:
-                    log.info("MakeMKV did not did not complete successfully")
-                    log.info("See log for more details")
-                    log.debug("Movie title: %s" % movie_title)
-
-                    database.insert_history(
-                        dbMovie,
-                        "MakeMKV failed to rip movie"
-                    )
-
-                    database.update_movie(dbMovie, 2)
+                 log.info("No movie titles found")
+                 log.info("Try decreasing 'minLength' in the config and try again")
 
             else:
                 log.info("Movie folder %s already exists" % movie_title)
