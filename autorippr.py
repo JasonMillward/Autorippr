@@ -68,7 +68,7 @@ def eject(drive):
         Ejects the DVD drive
         Not really worth its own class
     """
-    log = logger.logger("Eject", True)
+    log = logger.Logger("Eject", True)
 
     log.debug("Ejecting drive: " + drive)
     log.debug("Attempting OS detection")
@@ -115,12 +115,12 @@ def rip(config):
         Does everything
         Returns nothing
     """
-    log = logger.logger("Rip", config['debug'])
+    log = logger.Logger("Rip", config['debug'])
 
     mkv_save_path = config['makemkv']['savePath']
 
     log.debug("Ripping initialised")
-    mkv_api = makemkv.makeMKV(config)
+    mkv_api = makemkv.MakeMKV(config)
 
     log.debug("Checking for DVDs")
     dvds = mkv_api.find_disc()
@@ -155,7 +155,7 @@ def rip(config):
                 if len( mkv_api.get_savefile() ) != 0:
                     database.update_movie(dbmovie, 3, mkv_api.get_savefile())
 
-                    with stopwatch.stopwatch() as t:
+                    with stopwatch.StopWatch() as t:
                         database.insert_history(
                             dbmovie,
                             "Movie submitted to MakeMKV"
@@ -200,12 +200,12 @@ def compress(config):
         Does everything
         Returns nothing
     """
-    log = logger.logger("Compress", config['debug'])
+    log = logger.Logger("Compress", config['debug'])
 
     if config['compress']['type'] == "ffmpeg":
         comp = ffmpeg.ffmpeg(config['debug'])
     else:
-        comp = handbrake.handBrake(config['debug'], config['compress']['compressionPath'])
+        comp = handbrake.HandBrake(config['debug'], config['compress']['compressionPath'])
 
     log.debug("Compressing initialised")
     log.debug("Looking for movies to compress")
@@ -219,11 +219,11 @@ def compress(config):
 
             log.info("Compressing %s" % dbmovie.moviename)
 
-            with stopwatch.stopwatch() as t:
+            with stopwatch.StopWatch() as t:
                 status = comp.compress(
                     args=config['compress']['com'],
                     nice=int(config['compress']['nice']),
-                    dbMovie=dbmovie
+                    dbmovie=dbmovie
                 )
 
             if status:
@@ -264,9 +264,9 @@ def extras(config):
         Does everything
         Returns nothing
     """
-    log = logger.logger("Extras", config['debug'])
+    log = logger.Logger("Extras", config['debug'])
 
-    fb = filebot.filebot(config['debug'])
+    fb = filebot.Filebot(config['debug'])
 
     dbmovie = database.next_movie_to_filebot()
 

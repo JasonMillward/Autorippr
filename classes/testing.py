@@ -26,7 +26,7 @@ def perform_testing(config):
     }
 
     print "= Checking directory permissions"
-    print canwrite(config['makemkv']['savePath']), "makemkv savePath"
+    print canwrite(config['makemkv']['savePath']), "MakeMKV savePath"
 
     print ""
     print "= Checking requirements"
