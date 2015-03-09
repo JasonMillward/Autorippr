@@ -14,11 +14,8 @@ Copyright (c) 2012, Jason Millward
 import os
 import subprocess
 import logger
-import compression
 
-from compression import Compression
-
-class HandBrake(Compression):
+class HandBrake(object):
 
     def __init__(self, debug, compressionpath):
         self.log = logger.Logger("HandBrake", debug)
@@ -26,11 +23,8 @@ class HandBrake(Compression):
 
     def compress(self, nice, args, dbmovie):
         """
-            Passes the nessesary parameters to HandBrake to start an encoding
+            Passes the necessary parameters to HandBrake to start an encoding
             Assigns a nice value to allow give normal system tasks priority
-
-            Upon successful encode, clean up the output logs and remove the
-                input movie as they are no longer needed
 
             Inputs:
                 nice    (Int): Priority to assign to task (nice value)

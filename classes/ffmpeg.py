@@ -15,20 +15,16 @@ import os
 import subprocess
 import logger
 
-from compression import Compression
-
-class FFmpeg(Compression):
+class FFmpeg(object):
 
     def __init__(self, debug):
         self.log = logger.Logger("FFmpeg", debug)
 
     def compress(self, nice, args, dbmovie):
         """
-            Passes the nessesary parameters to FFmpeg to start an encoding
+            Passes the necessary parameters to FFmpeg to start an encoding
             Assigns a nice value to allow give normal system tasks priority
 
-            Upon successful encode, clean up the output logs and remove the
-                input movie as they are no longer needed
 
             Inputs:
                 nice    (Int): Priority to assign to task (nice value)
