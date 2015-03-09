@@ -63,12 +63,12 @@ DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG_FILE = "%s/settings.cfg" % DIR
 
 
-def eject(drive):
+def eject(config, drive):
     """
         Ejects the DVD drive
         Not really worth its own class
     """
-    log = logger.Logger("Eject", True)
+    log = logger.Logger("Eject", config['debug'], config['silent'])
 
     log.debug("Ejecting drive: " + drive)
     log.debug("Attempting OS detection")
@@ -115,7 +115,7 @@ def rip(config):
         Does everything
         Returns nothing
     """
-    log = logger.Logger("Rip", config['debug'])
+    log = logger.Logger("Rip", config['debug'], config['silent'])
 
     mkv_save_path = config['makemkv']['savePath']
 
@@ -164,7 +164,7 @@ def rip(config):
 
                     if status:
                         if config['makemkv']['eject']:
-                            eject(dvd['location'])
+                            eject(config, dvd['location'])
 
                         log.info("It took %s minute(s) to complete the ripping of %s" %
                                 (t.minutes, movie_title)
@@ -200,7 +200,7 @@ def compress(config):
         Does everything
         Returns nothing
     """
-    log = logger.Logger("Compress", config['debug'])
+    log = logger.Logger("Compress", config['debug'], config['silent'])
 
     comp = compression.Compression(config)
 
@@ -263,9 +263,9 @@ def extras(config):
         Does everything
         Returns nothing
     """
-    log = logger.Logger("Extras", config['debug'])
+    log = logger.Logger("Extras", config['debug'], config['silent'])
 
-    fb = filebot.FileBot(config['debug'])
+    fb = filebot.FileBot(config['debug'], config['silent'])
 
     dbmovie = database.next_movie_to_filebot()
 
@@ -321,6 +321,8 @@ if __name__ == '__main__':
     config = yaml.safe_load(open(CONFIG_FILE))
 
     config['debug'] = arguments['--debug']
+
+    config['silent'] = arguments['--silent']
 
     if bool(config['analytics']['enable']):
         analytics.ping(__version__)

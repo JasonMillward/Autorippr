@@ -18,7 +18,7 @@ import logger
 class FFmpeg(object):
 
     def __init__(self, debug):
-        self.log = logger.Logger("FFmpeg", debug)
+        self.log = logger.Logger("FFmpeg", debug, silent)
 
     def compress(self, nice, args, dbmovie):
         """

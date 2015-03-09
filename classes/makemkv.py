@@ -27,7 +27,7 @@ class MakeMKV(object):
         self.movieName = ""
         self.minLength = int(config['makemkv']['minLength'])
         self.cacheSize = int(config['makemkv']['cache'])
-        self.log = logger.Logger("Makemkv", config['debug'])
+        self.log = logger.Logger("Makemkv", config['debug'], config['silent'])
         self.makemkvconPath = config['makemkv']['makemkvconPath']
         self.saveFile = ""
 

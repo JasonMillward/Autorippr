@@ -18,7 +18,7 @@ import logger
 class HandBrake(object):
 
     def __init__(self, debug, compressionpath):
-        self.log = logger.Logger("HandBrake", debug)
+        self.log = logger.Logger("HandBrake", debug, silent)
         self.compressionPath = compressionpath
 
     def compress(self, nice, args, dbmovie):

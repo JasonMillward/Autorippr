@@ -17,32 +17,40 @@ import sys
 
 class Logger(object):
 
-    def __init__(self, name, debug):
+    def __init__(self, name, debug, silent):
         frmt = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             "%Y-%m-%d %H:%M:%S"
         )
+
+        self.silent = silent
 
         if debug:
             loglevel = logging.DEBUG
         else:
             loglevel = logging.INFO
 
-        self.sh = logging.StreamHandler(sys.stdout)
-        self.sh.setLevel(loglevel)
-        self.sh.setFormatter(frmt)
+        self.createhandlers( loglevel )
+
+    def createhandlers(self):
+        self.log = logging.getLogger(name)
+        self.log.setLevel(loglevel)
+
+        if not self.silent:
+            self.sh = logging.StreamHandler(sys.stdout)
+            self.sh.setLevel(loglevel)
+            self.sh.setFormatter(frmt)
+            self.log.addHandler(self.sh)
 
         self.fh = logging.FileHandler('autorippr.log')
         self.fh.setLevel(loglevel)
         self.fh.setFormatter(frmt)
-
-        self.log = logging.getLogger(name)
-        self.log.setLevel(loglevel)
-        self.log.addHandler(self.sh)
         self.log.addHandler(self.fh)
 
+
     def __del__(self):
-        self.log.removeHandler(self.sh)
+        if not self.silent:
+            self.log.removeHandler(self.sh)
         self.log.removeHandler(self.fh)
         self.log = None
 

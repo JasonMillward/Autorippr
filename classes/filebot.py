@@ -19,7 +19,7 @@ import logger
 class FileBot(object):
 
     def __init__(self, debug):
-        self.log = logger.Logger("Filebot", debug)
+        self.log = logger.Logger("Filebot", debug, silent)
 
     def rename(self, dbmovie):
         """
