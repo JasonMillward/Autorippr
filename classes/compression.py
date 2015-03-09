@@ -1,34 +1,40 @@
 """
-FFmpeg Wrapper
+Compression Wrapper
 
 
 Released under the MIT license
-Copyright (c) 2014, Ian Bird
+Copyright (c) 2014, Ian Bird, Jason Millward
 
 @category   misc
 @version    $Id: 1.6.2, 2014-12-03 20:12:25 ACDT $;
-@author     Ian Bird
+@authors    Ian Bird, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
 import os
 
-def create(config):
-    """
-        Creates the required compression instances
-
-        Inputs:
-            config    (??): The configuration
-
-        Outputs:
-            The compression instance
-    """
-    if config['type'] == "ffmpeg":
-        return ffmpeg.ffmpeg(config['debug'])
-    else:
-        return handbrake.handBrake(config['debug'], config['compression']['compressionPath'])
-
 class Compression(object):
+    def __init__(self, config):
+        """
+            Creates the required compression instances
+
+            Inputs:
+                config    (??): The configuration
+
+            Outputs:
+                The compression instance
+        """
+        self.log = logger.Logger("Compression", config['debug'])
+        self.method = self.which_method(config)
+
+    def which_method(self, config):
+        if config['type'] == "ffmpeg":
+            return ffmpeg.ffmpeg(config['debug'])
+        else:
+            return handbrake.handBrake(config['debug'], config['compression']['compressionPath'])
+
+    def compress(self, **args):
+        self.method.compress(**args)
 
     def check_exists(self, dbmovie):
         """
