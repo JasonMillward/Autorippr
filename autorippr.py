@@ -140,50 +140,69 @@ def rip(config):
             if not os.path.exists(movie_path):
                 os.makedirs(movie_path)
 
-                dbmovie = database.insert_movie(
-                    movie_title,
-                    movie_path,
-                    config['filebot']['enable']
-                )
-
-                database.insert_history(
-                    dbmovie,
-                    "Movie added to database"
-                )
-
                 mkv_api.get_disc_info()
 
-                if len( mkv_api.get_savefile() ) != 0:
-                    database.update_movie(dbmovie, 3, mkv_api.get_savefile())
+                saveFiles = mkv_api.get_savefile()
 
-                    with stopwatch.StopWatch() as t:
-                        database.insert_history(
-                            dbmovie,
-                            "Movie submitted to MakeMKV"
+                print saveFiles
+
+                if len( saveFiles ) != 0:
+
+                    # Force filebot disable for multiple titles
+                    if len( saveFiles ) > 1:
+                        forceDisableFB = true
+
+                    for dvdTitle in saveFiles:
+
+                        dbmovie = database.insert_movie(
+                            movie_title,
+                            movie_path,
+                            forceDisableFB
                         )
-                        status = mkv_api.rip_disc(mkv_save_path)
-
-                    if status:
-                        if config['makemkv']['eject']:
-                            eject(config, dvd['location'])
-
-                        log.info("It took %s minute(s) to complete the ripping of %s" %
-                                (t.minutes, movie_title)
-                                )
-
-                        database.update_movie(dbmovie, 4)
-
-                    else:
-                        log.info("MakeMKV did not did not complete successfully")
-                        log.info("See log for more details")
-                        log.debug("Movie title: %s" % movie_title)
 
                         database.insert_history(
                             dbmovie,
-                            "MakeMKV failed to rip movie"
+                            "Movie added to database"
                         )
 
-                        database.update_movie(dbmovie, 2)
+                        database.update_movie(
+                            dbmovie,
+                            3,
+                            dvdTitle.title
+                        )
+
+                        with stopwatch.StopWatch() as t:
+                            database.insert_history(
+                                dbmovie,
+                                "Movie submitted to MakeMKV"
+                            )
+                            status = mkv_api.rip_disc(mkv_save_path, dvdTitle.index)
+
+                        if status:
+                            if config['makemkv']['eject']:
+                                eject(config, dvd['location'])
+
+                            log.info("It took %s minute(s) to complete the ripping of %s" %
+                                    (t.minutes, movie_title)
+                                    )
+
+                            database.update_movie(dbmovie, 4)
+
+                        else:
+                            log.info("MakeMKV did not did not complete successfully")
+                            log.info("See log for more details")
+                            log.debug("Movie title: %s" % movie_title)
+
+                            database.insert_history(
+                                dbmovie,
+                                "MakeMKV failed to rip movie"
+                            )
+
+                            database.update_movie(dbmovie, 2)
+
+
+
+
                 else:
                  log.info("No movie titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")
