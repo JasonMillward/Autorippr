@@ -32,9 +32,9 @@ class Compression(object):
 
     def which_method(self, config):
         if config['compress']['type'] == "ffmpeg":
-            return ffmpeg.ffmpeg(config['debug'])
+            return ffmpeg.FFmpeg(config['debug'])
         else:
-            return handbrake.handBrake(config['debug'], config['compression']['compressionPath'])
+            return handbrake.HandBrake(config['debug'], config['compression']['compressionPath'])
 
     def compress(self, **args):
         self.method.compress(**args)
