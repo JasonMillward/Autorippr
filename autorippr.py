@@ -144,16 +144,12 @@ def rip(config):
 
                 saveFiles = mkv_api.get_savefiles()
 
-                print saveFiles
-
                 if len( saveFiles ) != 0:
 
                     # Force filebot disable for multiple titles
                     forceDisableFB = True if len( saveFiles ) > 1 else False
 
                     for dvdTitle in saveFiles:
- 
-                        print dvdTitle
 
                         dbmovie = database.insert_movie(
                             movie_title,
@@ -171,6 +167,11 @@ def rip(config):
                             3,
                             dvdTitle['title']
                         )
+
+                        log.debug("Attempting to rip {} from {}".format(
+                            dvdTitle['title'],
+                            movie_title
+                        ))
 
                         with stopwatch.StopWatch() as t:
                             database.insert_history(
@@ -191,14 +192,13 @@ def rip(config):
                         else:
                             log.info("MakeMKV did not did not complete successfully")
                             log.info("See log for more details")
-                            log.debug("Movie title: %s" % movie_title)
+
+                            database.update_movie(dbmovie, 2)
 
                             database.insert_history(
                                 dbmovie,
                                 "MakeMKV failed to rip movie"
                             )
-
-                            database.update_movie(dbmovie, 2)
 
                     if config['makemkv']['eject']:
                         eject(config, dvd['location'])
