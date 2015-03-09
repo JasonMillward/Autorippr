@@ -30,9 +30,9 @@ class Logger(object):
         else:
             loglevel = logging.INFO
 
-        self.createhandlers( loglevel )
+        self.createhandlers( frmt, name, loglevel )
 
-    def createhandlers(self, loglevel):
+    def createhandlers(self, frmt, name, loglevel):
         self.log = logging.getLogger(name)
         self.log.setLevel(loglevel)
 
