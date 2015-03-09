@@ -184,9 +184,11 @@ def rip(config):
                             if config['makemkv']['eject']:
                                 eject(config, dvd['location'])
 
-                            log.info("It took %s minute(s) to complete the ripping of %s" %
-                                    (t.minutes, movie_title)
-                                    )
+                            log.info("It took {} minute(s) to complete the ripping of {} from {}".format(
+                                t.minutes,
+                                dvdTitle['title'],
+                                movie_title
+                            ))
 
                             database.update_movie(dbmovie, 4)
 
