@@ -29,6 +29,7 @@ class Compression(object):
         """
         self.log = logger.Logger("Compression", config['debug'], config['silent'])
         self.method = self.which_method(config)
+        self.inmovie = ""
 
     def which_method(self, config):
         if config['compress']['type'] == "ffmpeg":
@@ -51,17 +52,17 @@ class Compression(object):
                 Bool    Does file exist
 
         """
-        inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
+        self.inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
 
-        if os.path.isfile(inmovie):
+        if os.path.isfile(self.inmovie):
             return True
 
         else:
-            self.log.debug(inmovie)
+            self.log.debug(self.inmovie)
             self.log.error("Input file no longer exists")
             return False
 
-    def cleanup(self, dbmovie):
+    def cleanup(self):
         """
             Deletes files once the compression has finished with them
 
@@ -71,9 +72,9 @@ class Compression(object):
             Outputs:
                 None
         """
-        inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
+        if self.inmovie is not "":
+            try:
+                os.remove(self.inmovie)
+            except:
+                self.log.error("Could not remove %s" % self.inmovie)
 
-        try:
-            os.remove(inmovie)
-        except:
-            self.log.error("Could not remove %s" % inmovie)

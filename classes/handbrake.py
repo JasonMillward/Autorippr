@@ -49,9 +49,6 @@ class HandBrake(object):
             ' '.join(args)
         )
 
-
-        print command
- 
         proc = subprocess.Popen(
             command,
             stdout=subprocess.PIPE,

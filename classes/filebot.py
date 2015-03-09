@@ -45,7 +45,7 @@ class FileBot(object):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-
+        
         (results, errors) = proc.communicate()
 
         if proc.returncode is not 0:
