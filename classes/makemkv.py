@@ -287,8 +287,8 @@ class MakeMKV(object):
             for titleNo in set(self._read_mkv_messages("TINFO")):
                 self.log.debug( "MakeMKV title info: Disc Title: {}, Title No.: {}, Title: {}, ".format(
                     self._read_mkv_messages("CINFO", 2),
-                    self._read_mkv_messages("TINFO", titleNo, 27),
-                    titleNo
+                    titleNo,
+                    self._read_mkv_messages("TINFO", titleNo, 27)
                 ))
 
                 title = self._read_mkv_messages("TINFO", titleNo, 27)[0]

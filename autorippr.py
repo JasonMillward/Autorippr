@@ -155,7 +155,6 @@ def rip(config):
  
                         print dvdTitle
 
-
                         dbmovie = database.insert_movie(
                             movie_title,
                             movie_path,
@@ -181,9 +180,6 @@ def rip(config):
                             status = mkv_api.rip_disc(mkv_save_path, dvdTitle['index'])
 
                         if status:
-                            if config['makemkv']['eject']:
-                                eject(config, dvd['location'])
-
                             log.info("It took {} minute(s) to complete the ripping of {} from {}".format(
                                 t.minutes,
                                 dvdTitle['title'],
@@ -203,6 +199,9 @@ def rip(config):
                             )
 
                             database.update_movie(dbmovie, 2)
+
+                    if config['makemkv']['eject']:
+                        eject(config, dvd['location'])
 
                 else:
                  log.info("No movie titles found")
