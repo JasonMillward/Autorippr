@@ -29,7 +29,7 @@ class MakeMKV(object):
         self.cacheSize = int(config['makemkv']['cache'])
         self.log = logger.Logger("Makemkv", config['debug'], config['silent'])
         self.makemkvconPath = config['makemkv']['makemkvconPath']
-        self.saveFile = ""
+        self.saveFiles = []
 
     def _clean_title(self):
         """
@@ -117,7 +117,7 @@ class MakeMKV(object):
         """
         self.discIndex = int(index)
 
-    def rip_disc(self, path):
+    def rip_disc(self, path, titleIndex):
         """
             Passes in all of the arguments to makemkvcon to start the ripping
                 of the currently inserted DVD or BD
@@ -138,7 +138,7 @@ class MakeMKV(object):
                 '%smakemkvcon' % self.makemkvconPath,
                 'mkv',
                 'disc:%d' % self.discIndex,
-                '0',
+                titleIndex,
                 fullpath,
                 '--cache=%d' % self.cacheSize,
                 '--noscan',
@@ -285,13 +285,18 @@ class MakeMKV(object):
 
         if foundtitles > 0:
             for titleNo in set(self._read_mkv_messages("TINFO")):
-                self.log.debug("Title number: {}".format( titleNo ) )
-                self.log.debug(self._read_mkv_messages("CINFO", 2))
+                self.log.debug( "MakeMKV title info: Disc Title: {}, Title No.: {}, Title: {}, ".format(
+                    self._read_mkv_messages("CINFO", 2),
+                    titleNo,
+                    self._read_mkv_messages("TINFO", titleNo, 27)
+                ))
 
-                self.log.debug( "MakeMKV title info: {}".format( self._read_mkv_messages("TINFO", titleNo, 27) ) )
+                title = self._read_mkv_messages("TINFO", titleNo, 27)[0]
 
-                self.saveFile = self._read_mkv_messages("TINFO", titleNo, 27)
-                self.saveFile = self.saveFile[0]
+                self.saveFiles.append({
+                    'index': titleNo,
+                    'title': title
+                })
         else:
            pass 
 
@@ -308,7 +313,7 @@ class MakeMKV(object):
         self._clean_title()
         return self.movieName
 
-    def get_savefile(self):
+    def get_savefiles(self):
         """
             Returns the current movies title
 
@@ -318,4 +323,4 @@ class MakeMKV(object):
             Outputs:
                 movieName   (Str)
         """
-        return self.saveFile
+        return self.saveFiles

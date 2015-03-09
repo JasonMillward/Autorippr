@@ -140,50 +140,69 @@ def rip(config):
             if not os.path.exists(movie_path):
                 os.makedirs(movie_path)
 
-                dbmovie = database.insert_movie(
-                    movie_title,
-                    movie_path,
-                    config['filebot']['enable']
-                )
-
-                database.insert_history(
-                    dbmovie,
-                    "Movie added to database"
-                )
-
                 mkv_api.get_disc_info()
 
-                if len( mkv_api.get_savefile() ) != 0:
-                    database.update_movie(dbmovie, 3, mkv_api.get_savefile())
+                saveFiles = mkv_api.get_savefiles()
 
-                    with stopwatch.StopWatch() as t:
-                        database.insert_history(
-                            dbmovie,
-                            "Movie submitted to MakeMKV"
+                if len( saveFiles ) != 0:
+
+                    # Force filebot disable for multiple titles
+                    forceDisableFB = True if len( saveFiles ) > 1 else False
+
+                    for dvdTitle in saveFiles:
+
+                        dbmovie = database.insert_movie(
+                            movie_title,
+                            movie_path,
+                            forceDisableFB
                         )
-                        status = mkv_api.rip_disc(mkv_save_path)
-
-                    if status:
-                        if config['makemkv']['eject']:
-                            eject(config, dvd['location'])
-
-                        log.info("It took %s minute(s) to complete the ripping of %s" %
-                                (t.minutes, movie_title)
-                                )
-
-                        database.update_movie(dbmovie, 4)
-
-                    else:
-                        log.info("MakeMKV did not did not complete successfully")
-                        log.info("See log for more details")
-                        log.debug("Movie title: %s" % movie_title)
 
                         database.insert_history(
                             dbmovie,
-                            "MakeMKV failed to rip movie"
+                            "Movie added to database"
                         )
 
-                        database.update_movie(dbmovie, 2)
+                        database.update_movie(
+                            dbmovie,
+                            3,
+                            dvdTitle['title']
+                        )
+
+                        log.debug("Attempting to rip {} from {}".format(
+                            dvdTitle['title'],
+                            movie_title
+                        ))
+
+                        with stopwatch.StopWatch() as t:
+                            database.insert_history(
+                                dbmovie,
+                                "Movie submitted to MakeMKV"
+                            )
+                            status = mkv_api.rip_disc(mkv_save_path, dvdTitle['index'])
+
+                        if status:
+                            log.info("It took {} minute(s) to complete the ripping of {} from {}".format(
+                                t.minutes,
+                                dvdTitle['title'],
+                                movie_title
+                            ))
+
+                            database.update_movie(dbmovie, 4)
+
+                        else:
+                            log.info("MakeMKV did not did not complete successfully")
+                            log.info("See log for more details")
+
+                            database.update_movie(dbmovie, 2)
+
+                            database.insert_history(
+                                dbmovie,
+                                "MakeMKV failed to rip movie"
+                            )
+
+                    if config['makemkv']['eject']:
+                        eject(config, dvd['location'])
+
                 else:
                  log.info("No movie titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")
