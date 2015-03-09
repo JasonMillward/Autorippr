@@ -27,7 +27,7 @@ class Compression(object):
             Outputs:
                 The compression instance
         """
-        self.log = logger.Logger("Compression", config['debug'])
+        self.log = logger.Logger("Compression", config['debug'], config['silent'])
         self.method = self.which_method(config)
 
     def which_method(self, config):
