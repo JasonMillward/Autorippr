@@ -17,7 +17,7 @@ import logger
 
 class HandBrake(object):
 
-    def __init__(self, debug, compressionpath):
+    def __init__(self, debug, compressionpath, silent):
         self.log = logger.Logger("HandBrake", debug, silent)
         self.compressionPath = compressionpath
 
@@ -41,14 +41,14 @@ class HandBrake(object):
         moviename = "%s.mkv" % dbmovie.moviename
         inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
         outmovie = "%s/%s" % (dbmovie.path, moviename)
-
-        command = 'nice -n {0} {4}HandBrakeCLI --verbose -i "{1}" -o "{2}" {3}'.format(
-            nice, 
+        command = 'nice -n {0} {1}HandBrakeCLI --verbose -i "{2}" -o "{3}" {4}'.format(
+            nice,
+            self.compressionPath,
             inmovie,
             outmovie,
-            ' '.join(args),
-            self.compressionPath
+            ' '.join(args)
         )
+
 
         print command
  
