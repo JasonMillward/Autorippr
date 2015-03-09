@@ -142,7 +142,7 @@ def rip(config):
 
                 mkv_api.get_disc_info()
 
-                saveFiles = mkv_api.get_savefile()
+                saveFiles = mkv_api.get_savefiles()
 
                 print saveFiles
 
