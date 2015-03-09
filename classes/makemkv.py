@@ -6,7 +6,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.6.3, 2015-03-09 19:16:11 ACDT $;
+@version    $Id: 1.7-testing, 2015-03-09 21:25:58 ACDT $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """

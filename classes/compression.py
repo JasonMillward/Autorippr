@@ -6,7 +6,7 @@ Released under the MIT license
 Copyright (c) 2014, Ian Bird, Jason Millward
 
 @category   misc
-@version    $Id: 1.6.3, 2015-03-09 19:16:11 ACDT $;
+@version    $Id: 1.7-testing, 2015-03-09 21:25:58 ACDT $;
 @authors    Ian Bird, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
