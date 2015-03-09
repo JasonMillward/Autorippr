@@ -37,7 +37,7 @@ class Compression(object):
             return handbrake.HandBrake(config['debug'], config['compress']['compressionPath'])
 
     def compress(self, **args):
-        self.method.compress(**args)
+        return self.method.compress(**args)
 
     def check_exists(self, dbmovie):
         """
