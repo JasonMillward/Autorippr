@@ -149,10 +149,12 @@ def rip(config):
                 if len( saveFiles ) != 0:
 
                     # Force filebot disable for multiple titles
-                    if len( saveFiles ) > 1:
-                        forceDisableFB = true
+                    forceDisableFB = True if len( saveFiles ) > 1 else False
 
                     for dvdTitle in saveFiles:
+ 
+                        print dvdTitle
+
 
                         dbmovie = database.insert_movie(
                             movie_title,
@@ -168,7 +170,7 @@ def rip(config):
                         database.update_movie(
                             dbmovie,
                             3,
-                            dvdTitle.title
+                            dvdTitle['title']
                         )
 
                         with stopwatch.StopWatch() as t:
@@ -176,7 +178,7 @@ def rip(config):
                                 dbmovie,
                                 "Movie submitted to MakeMKV"
                             )
-                            status = mkv_api.rip_disc(mkv_save_path, dvdTitle.index)
+                            status = mkv_api.rip_disc(mkv_save_path, dvdTitle['index'])
 
                         if status:
                             if config['makemkv']['eject']:
