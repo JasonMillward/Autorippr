@@ -49,6 +49,8 @@ class HandBrake(object):
             ' '.join(args),
             self.compressionPath
         )
+
+        print command
  
         proc = subprocess.Popen(
             command,

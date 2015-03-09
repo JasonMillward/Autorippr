@@ -18,12 +18,12 @@ import sys
 class Logger(object):
 
     def __init__(self, name, debug, silent):
+        self.silent = silent
+
         frmt = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             "%Y-%m-%d %H:%M:%S"
         )
-
-        self.silent = silent
 
         if debug:
             loglevel = logging.DEBUG
