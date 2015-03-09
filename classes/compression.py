@@ -34,7 +34,7 @@ class Compression(object):
         if config['compress']['type'] == "ffmpeg":
             return ffmpeg.FFmpeg(config['debug'])
         else:
-            return handbrake.HandBrake(config['debug'], config['compression']['compressionPath'])
+            return handbrake.HandBrake(config['debug'], config['compress']['compressionPath'])
 
     def compress(self, **args):
         self.method.compress(**args)
