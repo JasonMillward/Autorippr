@@ -200,9 +200,6 @@ def rip(config):
 
                             database.update_movie(dbmovie, 2)
 
-
-
-
                 else:
                  log.info("No movie titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")

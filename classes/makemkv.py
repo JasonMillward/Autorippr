@@ -29,7 +29,7 @@ class MakeMKV(object):
         self.cacheSize = int(config['makemkv']['cache'])
         self.log = logger.Logger("Makemkv", config['debug'], config['silent'])
         self.makemkvconPath = config['makemkv']['makemkvconPath']
-        self.saveFiles = ""
+        self.saveFiles = []
 
     def _clean_title(self):
         """
