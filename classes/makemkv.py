@@ -285,11 +285,14 @@ class MakeMKV(object):
 
         if foundtitles > 0:
             for titleNo in set(self._read_mkv_messages("TINFO")):
-                self.log.debug("Title number: {}".format( titleNo ) )
-                self.log.debug(self._read_mkv_messages("CINFO", 2))
-                self.log.debug( "MakeMKV title info: {}".format( self._read_mkv_messages("TINFO", titleNo, 27) ) )
+                self.log.debug( "MakeMKV title info: Disc Title: {}, Title No.: {}, Title: {}, ".format(
+                    self._read_mkv_messages("CINFO", 2),
+                    self._read_mkv_messages("TINFO", titleNo, 27),
+                    titleNo
+                ))
 
                 title = self._read_mkv_messages("TINFO", titleNo, 27)[0]
+
                 self.saveFiles.append({
                     'index': titleNo,
                     'title': title
