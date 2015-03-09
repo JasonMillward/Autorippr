@@ -56,7 +56,7 @@ import subprocess
 from classes import *
 from tendo import singleton
 
-__version__ = "1.6.1"
+__version__ = "1.6.2"
 
 me = singleton.SingleInstance()
 DIR = os.path.dirname(os.path.realpath(__file__))
@@ -240,6 +240,8 @@ def compress(config):
 
                 database.update_movie(
                     dbmovie, 6, filename="%s.mkv" % dbmovie.moviename)
+
+                comp.cleanup(dbmovie)
 
             else:
                 database.update_movie(dbmovie, 5)

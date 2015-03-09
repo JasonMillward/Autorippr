@@ -89,7 +89,6 @@ class HandBrake(Compression):
 
         if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")
-            self._cleanup(cFile=inmovie)
 
             return True
         else:

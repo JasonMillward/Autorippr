@@ -52,7 +52,7 @@ class Compression(object):
             self.log.error("Input file no longer exists")
             return False
 
-    def _cleanup(self, cfile):
+    def cleanup(self, dbmovie):
         """
             Deletes files once the compression has finished with them
 
@@ -62,7 +62,9 @@ class Compression(object):
             Outputs:
                 None
         """
+        inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
+
         try:
-            os.remove(cfile)
+            os.remove(inmovie)
         except:
-            self.log.error("Could not remove %s" % cfile)
+            self.log.error("Could not remove %s" % inmovie)
