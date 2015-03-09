@@ -16,12 +16,12 @@ import subprocess
 import logger
 
 
-class filebot(object):
+class FileBot(object):
 
-    def __init__(self, debug):
-        self.log = logger.logger("Filebot", debug)
+    def __init__(self, debug, silent):
+        self.log = logger.Logger("Filebot", debug, silent)
 
-    def rename(self, dbMovie):
+    def rename(self, dbmovie):
         """
             Renames movie file upon successful database lookup
 
@@ -35,9 +35,9 @@ class filebot(object):
             [
                 'filebot',
                 '-rename',
-                "%s/%s" % (dbMovie.path, dbMovie.filename),
+                "%s/%s" % (dbmovie.path, dbmovie.filename),
                 '--q',
-                "\"%s\"" % dbMovie.moviename,
+                "\"%s\"" % dbmovie.moviename,
                 '-non-strict',
                 '--db',
                 'OpenSubtitles'
@@ -45,14 +45,14 @@ class filebot(object):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-
+        
         (results, errors) = proc.communicate()
 
         if proc.returncode is not 0:
             self.log.error(
                 "Filebot (rename) returned status code: %d" % proc.returncode)
 
-        renamedMovie = ""
+        renamedmovie = ""
         checks = 0
 
         if len(results) is not 0:
@@ -60,7 +60,7 @@ class filebot(object):
             for line in lines:
                 self.log.debug(line.strip())
                 if "MOVE" in line:
-                    renamedMovie = line.split("] to [", 1)[1].rstrip(']')
+                    renamedmovie = line.split("] to [", 1)[1].rstrip(']')
                     checks += 1
 
                 if "Processed" in line:
@@ -69,12 +69,12 @@ class filebot(object):
                 if "Done" in line:
                     checks += 1
 
-        if checks >= 3 and renamedMovie:
-            return [True, renamedMovie]
+        if checks >= 3 and renamedmovie:
+            return [True, renamedmovie]
         else:
             return [False]
 
-    def get_subtitles(self, dbMovie, lang):
+    def get_subtitles(self, dbmovie, lang):
         """
             Downloads subtitles of specified language
 
@@ -89,9 +89,9 @@ class filebot(object):
             [
                 'filebot',
                 '-get-subtitles',
-                dbMovie.path,
+                dbmovie.path,
                 '--q',
-                "\"%s\"" % dbMovie.moviename,
+                "\"%s\"" % dbmovie.moviename,
                 '--lang',
                 lang,
                 '--output',

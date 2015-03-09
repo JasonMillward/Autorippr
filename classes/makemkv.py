@@ -18,7 +18,7 @@ import csv
 import logger
 
 
-class makeMKV(object):
+class MakeMKV(object):
 
     def __init__(self, config):
         self.discIndex = 0
@@ -27,7 +27,7 @@ class makeMKV(object):
         self.movieName = ""
         self.minLength = int(config['makemkv']['minLength'])
         self.cacheSize = int(config['makemkv']['cache'])
-        self.log = logger.logger("Makemkv", config['debug'])
+        self.log = logger.Logger("Makemkv", config['debug'], config['silent'])
         self.makemkvconPath = config['makemkv']['makemkvconPath']
         self.saveFile = ""
 
@@ -41,22 +41,22 @@ class makeMKV(object):
             Outputs:
                 None
         """
-        tmpName = self.movieName
+        tmpname = self.movieName
 
-        tmpName = tmpName.title().replace("Extended_Edition", "")
+        tmpname = tmpname.title().replace("Extended_Edition", "")
 
-        tmpName = tmpName.replace("Special_Edition", "")
+        tmpname = tmpname.replace("Special_Edition", "")
 
-        tmpName = re.sub(r"Disc_(\d)", "", tmpName)
+        tmpname = re.sub(r"Disc_(\d)", "", tmpname)
 
-        tmpName = tmpName.replace("_t00", "")
+        tmpname = tmpname.replace("_t00", "")
 
-        tmpName = tmpName.replace("\"", "").replace("_", " ")
+        tmpname = tmpname.replace("\"", "").replace("_", " ")
 
         # Clean up the edges and remove whitespace
-        self.movieName = tmpName.strip()
+        self.movieName = tmpname.strip()
 
-    def _read_MKV_messages(self, stype, sid=None, scode=None):
+    def _read_mkv_messages(self, stype, sid=None, scode=None):
         """
             Returns a list of messages that match the search string
             Parses message output.
@@ -67,9 +67,9 @@ class makeMKV(object):
                 scode   (Int): Code of message
 
             Outputs:
-                toReturn    (List)
+                toreturn    (List)
         """
-        toReturn = []
+        toreturn = []
 
         with open('/tmp/makemkvMessages', 'r') as messages:
             for line in messages:
@@ -83,17 +83,17 @@ class makeMKV(object):
                             if int(row[0]) == int(sid):
                                 if scode is not None:
                                     if int(row[1]) == int(scode):
-                                        toReturn.append(row[3])
+                                        toreturn.append(row[3])
                                 else:
-                                    toReturn.append(row[2])
+                                    toreturn.append(row[2])
 
                     else:
                         for row in cr:
-                            toReturn.append(row[0])
+                            toreturn.append(row[0])
 
-        return toReturn
+        return toreturn
 
-    def set_title(self, movieName):
+    def set_title(self, moviename):
         """
             Sets local movie name
 
@@ -103,7 +103,7 @@ class makeMKV(object):
             Outputs:
                 None
         """
-        self.movieName = movieName
+        self.movieName = moviename
 
     def set_index(self, index):
         """
@@ -131,7 +131,7 @@ class makeMKV(object):
         """
         self.path = path
 
-        fullPath = '%s/%s' % (self.path, self.movieName)
+        fullpath = '%s/%s' % (self.path, self.movieName)
 
         proc = subprocess.Popen(
             [
@@ -139,7 +139,7 @@ class makeMKV(object):
                 'mkv',
                 'disc:%d' % self.discIndex,
                 '0',
-                fullPath,
+                fullpath,
                 '--cache=%d' % self.cacheSize,
                 '--noscan',
                 '--minlength=%d' % self.minLength
@@ -167,13 +167,13 @@ class makeMKV(object):
             if "skipped" in line:
                 continue
 
-            badStrings = [
+            badstrings = [
                 "failed",
                 "Fail",
                 "error"
             ]
 
-            if any(x in line.lower() for x in badStrings):
+            if any(x in line.lower() for x in badstrings):
                 self.log.error(line)
                 return False
 
@@ -279,18 +279,18 @@ class makeMKV(object):
                 self.log.error(errors)
                 return False
 
-        foundTitles = int( self._read_MKV_messages("TCOUNT")[0] )
+        foundtitles = int( self._read_mkv_messages("TCOUNT")[0] )
 
-        self.log.debug("MakeMKV found {} titles".format( foundTitles ))
+        self.log.debug("MakeMKV found {} titles".format( foundtitles ))
 
-        if foundTitles > 0:
-            for titleNo in set(self._read_MKV_messages("TINFO")):
+        if foundtitles > 0:
+            for titleNo in set(self._read_mkv_messages("TINFO")):
                 self.log.debug("Title number: {}".format( titleNo ) )
-                self.log.debug(self._read_MKV_messages("CINFO", 2))
+                self.log.debug(self._read_mkv_messages("CINFO", 2))
 
-                self.log.debug( "MakeMKV title info: {}".format( self._read_MKV_messages("TINFO", titleNo, 27) ) )
+                self.log.debug( "MakeMKV title info: {}".format( self._read_mkv_messages("TINFO", titleNo, 27) ) )
 
-                self.saveFile = self._read_MKV_messages("TINFO", titleNo, 27)
+                self.saveFile = self._read_mkv_messages("TINFO", titleNo, 27)
                 self.saveFile = self.saveFile[0]
         else:
            pass 

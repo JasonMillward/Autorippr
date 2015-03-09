@@ -14,23 +14,17 @@ Copyright (c) 2012, Jason Millward
 import os
 import subprocess
 import logger
-import compression
 
-from compression import compression
+class HandBrake(object):
 
-class handBrake(compression):
+    def __init__(self, debug, compressionpath, silent):
+        self.log = logger.Logger("HandBrake", debug, silent)
+        self.compressionPath = compressionpath
 
-    def __init__(self, debug, compressionPath):
-        self.log = logger.logger("HandBrake", debug)
-        self.compressionPath = compressionPath
-
-    def compress(self, nice, args, dbMovie):
+    def compress(self, nice, args, dbmovie):
         """
-            Passes the nessesary parameters to HandBrake to start an encoding
+            Passes the necessary parameters to HandBrake to start an encoding
             Assigns a nice value to allow give normal system tasks priority
-
-            Upon successful encode, clean up the output logs and remove the
-                input movie as they are no longer needed
 
             Inputs:
                 nice    (Int): Priority to assign to task (nice value)
@@ -44,18 +38,17 @@ class handBrake(compression):
         """
         checks = 0
 
-        moviename = "%s.mkv" % dbMovie.moviename
-        inMovie = "%s/%s" % (dbMovie.path, dbMovie.filename)
-        outMovie = "%s/%s" % (dbMovie.path, moviename)
-
-        command = 'nice -n {0} {4}HandBrakeCLI --verbose -i "{1}" -o "{2}" {3}'.format(
-            nice, 
-            inMovie, 
-            outMovie, 
-            ' '.join(args),
-            self.compressionPath
+        moviename = "%s.mkv" % dbmovie.moviename
+        inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
+        outmovie = "%s/%s" % (dbmovie.path, moviename)
+        command = 'nice -n {0} {1}HandBrakeCLI --verbose -i "{2}" -o "{3}" {4}'.format(
+            nice,
+            self.compressionPath,
+            inmovie,
+            outmovie,
+            ' '.join(args)
         )
- 
+
         proc = subprocess.Popen(
             command,
             stdout=subprocess.PIPE,
@@ -89,7 +82,6 @@ class handBrake(compression):
 
         if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")
-            self._cleanUp(cFile=inMovie)
 
             return True
         else:

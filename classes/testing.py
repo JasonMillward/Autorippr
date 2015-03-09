@@ -26,33 +26,33 @@ def perform_testing(config):
     }
 
     print "= Checking directory permissions"
-    print canWrite(config['makemkv']['savePath']), "makemkv savePath"
+    print canwrite(config['makemkv']['savePath']), "MakeMKV savePath"
 
     print ""
     print "= Checking requirements"
     for req in requirements:
-        print checkCommand(requirements[req]), req
+        print checkcommand(requirements[req]), req
 
     sys.exit(0)
 
 
-def canWrite(path):
+def canwrite(path):
     try:
-        ret = boolToStatus(os.access(path, os.W_OK | os.X_OK))
+        ret = booltostatus(os.access(path, os.W_OK | os.X_OK))
     except:
         ret = False
     finally:
         return ret
 
 
-def boolToStatus(inBool):
-    if inBool:
+def booltostatus(inbool):
+    if inbool:
         return "[  OK  ]"
     else:
         return "[ FAIL ]"
 
 
-def checkCommand(com):
+def checkcommand(com):
     proc = subprocess.Popen(
         [
             'which',
@@ -61,4 +61,4 @@ def checkCommand(com):
         stderr=subprocess.PIPE,
         stdout=subprocess.PIPE
     )
-    return boolToStatus(len(proc.stdout.read()) > 0)
+    return booltostatus(len(proc.stdout.read()) > 0)
