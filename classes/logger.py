@@ -32,7 +32,7 @@ class Logger(object):
 
         self.createhandlers( loglevel )
 
-    def createhandlers(self):
+    def createhandlers(self, loglevel):
         self.log = logging.getLogger(name)
         self.log.setLevel(loglevel)
 
