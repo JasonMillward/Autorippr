@@ -265,7 +265,7 @@ def extras(config):
     """
     log = logger.Logger("Extras", config['debug'])
 
-    fb = filebot.Filebot(config['debug'])
+    fb = filebot.FileBot(config['debug'])
 
     dbmovie = database.next_movie_to_filebot()
 
