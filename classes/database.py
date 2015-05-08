@@ -46,6 +46,8 @@ class Historytypes(BaseModel):
 class Movies(BaseModel):
     movieid = PrimaryKeyField(db_column='movieID')
     moviename = CharField()
+    multititle = BooleanField()
+    titleindex = CharField(db_column='titleIndex')
     path = CharField()
     filename = CharField(null=True)
     filebot = BooleanField()
@@ -131,9 +133,11 @@ def insert_history(dbmovie, text, typeid=1):
     )
 
 
-def insert_movie(title, path, filebot):
+def insert_movie(title, path, multititle, index, filebot):
     return Movies.create(
         moviename=title,
+        multititle=multititle,
+        titleindex=index,
         path=path,
         filename="None",
         filebot=filebot,

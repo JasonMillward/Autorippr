@@ -37,7 +37,11 @@ class FFmpeg(object):
                 Bool    Was convertion successful
         """
 
-        moviename = "%s.mkv" % dbmovie.moviename
+        if (dbmovie.multititle):
+            moviename = "%s-%s.mkv" % (dbmovie.moviename, dbmovie.titleindex)
+        else:
+            moviename = "%s.mkv" % dbmovie.moviename
+
         inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
         outmovie = "%s/%s" % (dbmovie.path, moviename)
 

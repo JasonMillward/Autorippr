@@ -148,12 +148,15 @@ def rip(config):
 
                     # Force filebot disable for multiple titles
                     forceDisableFB = True if len( saveFiles ) > 1 else False
+                    multiTitle = True if len( saveFiles ) > 1 else False
 
                     for dvdTitle in saveFiles:
 
                         dbmovie = database.insert_movie(
                             movie_title,
                             movie_path,
+                            multiTitle,
+                            dvdTitle['index'],
                             forceDisableFB
                         )
 
