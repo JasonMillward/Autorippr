@@ -120,7 +120,7 @@ def next_movie_to_compress():
 
 
 def next_movie_to_filebot():
-    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != "None") & (Movies.filebot == 1)):
+    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != "None") & (Movies.filebot == 1) & (Movies.multititle == False)):
         return movie
 
 
