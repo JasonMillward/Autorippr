@@ -38,7 +38,11 @@ class HandBrake(object):
         """
         checks = 0
 
-        moviename = "%s.mkv" % dbmovie.moviename
+        if (dbmovie.multititle):
+            moviename = "%s-%s.mkv" % (dbmovie.moviename, dbmovie.titleindex)
+        else:
+            moviename = "%s.mkv" % dbmovie.moviename
+            
         inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
         outmovie = "%s/%s" % (dbmovie.path, moviename)
         command = 'nice -n {0} {1}HandBrakeCLI --verbose -i "{2}" -o "{3}" {4}'.format(
