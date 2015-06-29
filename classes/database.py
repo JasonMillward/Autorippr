@@ -6,7 +6,7 @@ Released under the MIT license
 Copyright (c) 2012, Jason Millward
 
 @category   misc
-@version    $Id: 1.7-test1, 2015-03-09 21:31:51 ACDT $;
+@version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 """
@@ -46,6 +46,8 @@ class Historytypes(BaseModel):
 class Movies(BaseModel):
     movieid = PrimaryKeyField(db_column='movieID')
     moviename = CharField()
+    multititle = BooleanField()
+    titleindex = CharField(db_column='titleIndex')
     path = CharField()
     filename = CharField(null=True)
     filebot = BooleanField()
@@ -118,7 +120,7 @@ def next_movie_to_compress():
 
 
 def next_movie_to_filebot():
-    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != "None") & (Movies.filebot == 1)):
+    for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != "None") & (Movies.filebot == 1) & (Movies.multititle == False)):
         return movie
 
 
@@ -131,9 +133,11 @@ def insert_history(dbmovie, text, typeid=1):
     )
 
 
-def insert_movie(title, path, filebot):
+def insert_movie(title, path, multititle, index, filebot):
     return Movies.create(
         moviename=title,
+        multititle=multititle,
+        titleindex=index,
         path=path,
         filename="None",
         filebot=filebot,

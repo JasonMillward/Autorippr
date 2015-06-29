@@ -27,7 +27,7 @@ Released under the MIT license
 Copyright (c) 2014, Jason Millward
 
 @category   misc
-@version    $Id: 1.7-test1, 2015-03-09 21:31:51 ACDT $;
+@version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
 @author     Jason Millward <jason@jcode.me>
 @license    http://opensource.org/licenses/MIT
 
@@ -148,12 +148,15 @@ def rip(config):
 
                     # Force filebot disable for multiple titles
                     forceDisableFB = True if len( saveFiles ) > 1 else False
+                    multiTitle = True if len( saveFiles ) > 1 else False
 
                     for dvdTitle in saveFiles:
 
                         dbmovie = database.insert_movie(
                             movie_title,
                             movie_path,
+                            multiTitle,
+                            dvdTitle['index'],
                             forceDisableFB
                         )
 
