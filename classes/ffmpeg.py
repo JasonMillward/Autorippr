@@ -17,8 +17,9 @@ import logger
 
 class FFmpeg(object):
 
-    def __init__(self, debug, silent):
+    def __init__(self, debug, silent, vformat):
         self.log = logger.Logger("FFmpeg", debug, silent)
+        self.vformat = vformat
 
     def compress(self, nice, args, dbmovie):
         """
@@ -38,9 +39,9 @@ class FFmpeg(object):
         """
 
         if (dbmovie.multititle):
-            moviename = "%s-%s.mkv" % (dbmovie.moviename, dbmovie.titleindex)
+            moviename = "%s-%s.%s" % (dbmovie.moviename, dbmovie.titleindex, self.vformat)
         else:
-            moviename = "%s.mkv" % dbmovie.moviename
+            moviename = "%s.%s" % (dbmovie.moviename, self.vformat)
 
         inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
         outmovie = "%s/%s" % (dbmovie.path, moviename)
