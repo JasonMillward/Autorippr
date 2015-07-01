@@ -17,9 +17,10 @@ import logger
 
 class HandBrake(object):
 
-    def __init__(self, debug, compressionpath, silent):
+    def __init__(self, debug, compressionpath, vformat, silent):
         self.log = logger.Logger("HandBrake", debug, silent)
         self.compressionPath = compressionpath
+        self.vformat = vformat
 
     def compress(self, nice, args, dbmovie):
         """
@@ -39,9 +40,9 @@ class HandBrake(object):
         checks = 0
 
         if (dbmovie.multititle):
-            moviename = "%s-%s.mkv" % (dbmovie.moviename, dbmovie.titleindex)
+            moviename = "%s-%s.%s" % (dbmovie.moviename, dbmovie.titleindex, self.vformat)
         else:
-            moviename = "%s.mkv" % dbmovie.moviename
+            moviename = "%s.%" % (dbmovie.moviename, self.vformat)
             
         inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
         outmovie = "%s/%s" % (dbmovie.path, moviename)

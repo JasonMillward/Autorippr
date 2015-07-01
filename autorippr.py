@@ -259,7 +259,10 @@ def compress(config):
                 )
 
                 database.update_movie(
-                    dbmovie, 6, filename="%s.mkv" % dbmovie.moviename)
+                    dbmovie, 6, filename="%s.%s" % (
+                        dbmovie.moviename,
+                        config['compress']['format']
+                    ))
 
                 comp.cleanup()
 
