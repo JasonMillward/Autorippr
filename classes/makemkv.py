@@ -16,6 +16,8 @@ import os
 import re
 import csv
 import logger
+import datetime
+import time
 
 
 class MakeMKV(object):
@@ -24,8 +26,8 @@ class MakeMKV(object):
         self.discIndex = 0
         self.movieName = ""
         self.path = ""
-        self.movieName = ""
         self.minLength = int(config['makemkv']['minLength'])
+        self.maxLength = int(config['makemkv']['maxLength'])
         self.cacheSize = int(config['makemkv']['cache'])
         self.log = logger.Logger("Makemkv", config['debug'], config['silent'])
         self.makemkvconPath = config['makemkv']['makemkvconPath']
@@ -42,15 +44,14 @@ class MakeMKV(object):
                 None
         """
         tmpname = self.movieName
-
         tmpname = tmpname.title().replace("Extended_Edition", "")
-
         tmpname = tmpname.replace("Special_Edition", "")
-
-        tmpname = re.sub(r"Disc_(\d)", "", tmpname)
-
+        tmpname = re.sub(r"Disc_(\d)", r"D\1", tmpname)
+        tmpname = re.sub(r"Disc(\d)", r"D\1", tmpname)
+        tmpname = re.sub(r"Season_(\d)", r"S\1", tmpname)
+        tmpname = re.sub(r"Season(\d)", r"S\1", tmpname)
+        tmpname = re.sub(r"S(\d)_", r"S\1", tmpname)
         tmpname = tmpname.replace("_t00", "")
-
         tmpname = tmpname.replace("\"", "").replace("_", " ")
 
         # Clean up the edges and remove whitespace
@@ -285,6 +286,19 @@ class MakeMKV(object):
 
         if foundtitles > 0:
             for titleNo in set(self._read_mkv_messages("TINFO")):
+                durTemp = self._read_mkv_messages("TINFO", titleNo, 9)[0]
+                x = time.strptime(durTemp,'%H:%M:%S')
+                titleDur = datetime.timedelta(
+                    hours=x.tm_hour,
+                    minutes=x.tm_min,
+                    seconds=x.tm_sec
+                ).total_seconds()
+                if foundtitles > 1 and titleDur > self.maxLength:
+                    self.log.debug( "Excluding Title No.: {}, Title: {}. Exceeds maxLength".format(
+                        titleNo,
+                        self._read_mkv_messages("TINFO", titleNo, 27)
+                    ))                    
+                    continue
                 self.log.debug( "MakeMKV title info: Disc Title: {}, Title No.: {}, Title: {}, ".format(
                     self._read_mkv_messages("CINFO", 2),
                     titleNo,

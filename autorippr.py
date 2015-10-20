@@ -134,11 +134,11 @@ def rip(config):
             mkv_api.set_title(dvd["discTitle"])
             mkv_api.set_index(dvd["discIndex"])
 
-            movie_title = mkv_api.get_title()
+            disc_title = mkv_api.get_title()
 
-            movie_path = '%s/%s' % (mkv_save_path, movie_title)
-            if not os.path.exists(movie_path):
-                os.makedirs(movie_path)
+            disc_path = '%s/%s' % (mkv_save_path, disc_title)
+            if not os.path.exists(disc_path):
+                os.makedirs(disc_path)
 
                 mkv_api.get_disc_info()
 
@@ -153,8 +153,8 @@ def rip(config):
                     for dvdTitle in saveFiles:
 
                         dbmovie = database.insert_movie(
-                            movie_title,
-                            movie_path,
+                            disc_title,
+                            disc_path,
                             multiTitle,
                             dvdTitle['index'],
                             forceDisableFB
@@ -173,7 +173,7 @@ def rip(config):
 
                         log.debug("Attempting to rip {} from {}".format(
                             dvdTitle['title'],
-                            movie_title
+                            disc_title
                         ))
 
                         with stopwatch.StopWatch() as t:
@@ -187,7 +187,7 @@ def rip(config):
                             log.info("It took {} minute(s) to complete the ripping of {} from {}".format(
                                 t.minutes,
                                 dvdTitle['title'],
-                                movie_title
+                                disc_title
                             ))
 
                             database.update_movie(dbmovie, 4)
@@ -211,7 +211,7 @@ def rip(config):
                  log.info("Try decreasing 'minLength' in the config and try again")
 
             else:
-                log.info("Movie folder %s already exists" % movie_title)
+                log.info("Movie folder %s already exists" % disc_title)
 
     else:
         log.info("Could not find any DVDs in drive list")
