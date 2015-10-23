@@ -44,7 +44,7 @@ class Logger(object):
             self.log.addHandler(self.sh)
 
         DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.fh = logging.FileHandler('%s/autorippr.log') % DIR
+        self.fh = logging.FileHandler('%s/autorippr.log' % DIR)
         self.fh.setLevel(loglevel)
         self.fh.setFormatter(frmt)
         self.log.addHandler(self.fh)

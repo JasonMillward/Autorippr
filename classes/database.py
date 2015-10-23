@@ -16,7 +16,7 @@ from peewee import *
 from datetime import datetime
 
 DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-database = SqliteDatabase('%s/autorippr.sqlite', **{}) % DIR
+database = SqliteDatabase('%s/autorippr.sqlite' % DIR, **{})
 
 
 class BaseModel(Model):
