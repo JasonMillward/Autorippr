@@ -60,7 +60,7 @@ from tendo import singleton
 __version__ = "1.7-testing"
 
 me = singleton.SingleInstance()
-DIR = os.path.dirname(os.path.realpath(__file__))
+DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = "%s/settings.cfg" % DIR
 
 

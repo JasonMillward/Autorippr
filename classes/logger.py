@@ -12,6 +12,7 @@ Copyright (c) 2012, Jason Millward
 """
 
 import logging
+import os
 import sys
 
 
@@ -42,7 +43,8 @@ class Logger(object):
             self.sh.setFormatter(frmt)
             self.log.addHandler(self.sh)
 
-        self.fh = logging.FileHandler('autorippr.log')
+        DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.fh = logging.FileHandler('%s/autorippr.log') % DIR
         self.fh.setLevel(loglevel)
         self.fh.setFormatter(frmt)
         self.log.addHandler(self.fh)
