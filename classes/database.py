@@ -116,7 +116,7 @@ def create_status_types():
 
 
 def next_movie_to_compress():
-    for movie in Movies.select().where((Movies.statusid == 4) & (Movies.filename != "None")):
+    for movie in Movies.select().where((Movies.statusid == 4) & (Movies.filename != "None")).order_by(Movies.filename):
         return movie
 
 
@@ -124,6 +124,9 @@ def next_movie_to_filebot():
     for movie in Movies.select().where((Movies.statusid == 6) & (Movies.filename != "None") & (Movies.filebot == 1) & (Movies.multititle == False)):
         return movie
 
+def search_movie_name(inmovie):
+    movieqty = Movies.select().where(Movies.filename.startswith(inmovie)).count()
+    return movieqty
 
 def insert_history(dbmovie, text, typeid=1):
     return History.create(

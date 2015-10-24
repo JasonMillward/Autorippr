@@ -147,7 +147,8 @@ def rip(config):
                 if len( saveFiles ) != 0:
 
                     # Force filebot disable for multiple titles
-                    forceDisableFB = True if len( saveFiles ) > 1 else False
+                    #forceDisableFB = True if len( saveFiles ) > 1 else False
+                    forceDisableFB = False
                     multiTitle = True if len( saveFiles ) > 1 else False
 
                     for dvdTitle in saveFiles:
