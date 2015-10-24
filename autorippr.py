@@ -202,9 +202,9 @@ def rip(config):
                                 dbmovie,
                                 "MakeMKV failed to rip movie"
                             )
-
-                    if config['makemkv']['eject']:
-                        eject(config, dvd['location'])
+                            
+                        if config['makemkv']['eject']:
+                            eject(config, dvd['location'])
 
                 else:
                  log.info("No movie titles found")

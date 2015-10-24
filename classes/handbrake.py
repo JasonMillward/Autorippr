@@ -42,7 +42,7 @@ class HandBrake(object):
         if (dbmovie.multititle):
             moviename = "%s-%s.%s" % (dbmovie.moviename, dbmovie.titleindex, self.vformat)
         else:
-            moviename = "%s.%" % (dbmovie.moviename, self.vformat)
+            moviename = "%s.%s" % (dbmovie.moviename, self.vformat)
             
         inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
         outmovie = "%s/%s" % (dbmovie.path, moviename)
