@@ -30,7 +30,7 @@ class History(BaseModel):
     historydate = DateTimeField(db_column='historyDate')
     historytext = CharField(db_column='historyText')
     historytypeid = IntegerField(db_column='historyTypeID')
-    movieid = IntegerField(db_column='movieID')
+    vidid = IntegerField(db_column='vidID')
 
     class Meta:
         db_table = 'history'
@@ -44,9 +44,9 @@ class Historytypes(BaseModel):
         db_table = 'historyTypes'
 
 
-class Movies(BaseModel):
-    movieid = PrimaryKeyField(db_column='movieID')
-    moviename = CharField()
+class Videos(BaseModel):
+    vidid = PrimaryKeyField(db_column='vidID')
+    vidname = CharField()
     multititle = BooleanField()
     titleindex = CharField(db_column='titleIndex')
     path = CharField()
@@ -73,7 +73,7 @@ def create_tables():
     # Fail silently if tables exists
     History.create_table(True)
     Historytypes.create_table(True)
-    Movies.create_table(True)
+    Videos.create_table(True)
     Statustypes.create_table(True)
 
 
@@ -115,31 +115,31 @@ def create_status_types():
             Statustypes.create(statusid=sID, statustext=sType)
 
 
-def next_movie_to_compress():
-    movies = Movies.select().where((Movies.statusid == 4) & (Movies.filename != "None")).order_by(Movies.filename)
-    return movies
+def next_video_to_compress():
+    videos = Videos.select().where((Videos.statusid == 4) & (Videos.filename != "None")).order_by(Videos.filename)
+    return videos
 
 
-def next_movie_to_filebot():
-    movies = Movies.select().where((Movies.statusid == 6) & (Movies.filename != "None") & (Movies.filebot == 1))
-    return movies
+def next_video_to_filebot():
+    videos = Videos.select().where((Videos.statusid == 6) & (Videos.filename != "None") & (Videos.filebot == 1))
+    return videos
 
-def search_movie_name(inmovie):
-    movieqty = Movies.select().where(Movies.filename.startswith(inmovie)).count()
-    return movieqty
+def search_video_name(invid):
+    vidqty = Videos.select().where(Videos.filename.startswith(invid)).count()
+    return vidqty
 
-def insert_history(dbmovie, text, typeid=1):
+def insert_history(dbvideo, text, typeid=1):
     return History.create(
-        movieid=dbmovie.movieid,
+        vidid=dbvideo.vidid,
         historytext=text,
         historydate=datetime.now(),
         historytypeid=typeid
     )
 
 
-def insert_movie(title, path, multititle, index, filebot):
-    return Movies.create(
-        moviename=title,
+def insert_video(title, path, multititle, index, filebot):
+    return Videos.create(
+        vidname=title,
         multititle=multititle,
         titleindex=index,
         path=path,
@@ -150,14 +150,14 @@ def insert_movie(title, path, multititle, index, filebot):
     )
 
 
-def update_movie(movieobj, statusid, filename=None):
-    movieobj.statusid = statusid
-    movieobj.lastupdated = datetime.now()
+def update_video(vidobj, statusid, filename=None):
+    vidobj.statusid = statusid
+    vidobj.lastupdated = datetime.now()
 
     if filename is not None:
-        movieobj.filename = filename
+        vidobj.filename = filename
 
-    movieobj.save()
+    vidobj.save()
 
 
 def db_integrity_check():

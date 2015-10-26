@@ -2,18 +2,18 @@
 Autorippr
 
 Ripping
-    Uses MakeMKV to watch for movies inserted into DVD/BD Drives
+    Uses MakeMKV to watch for videos inserted into DVD/BD Drives
 
-    Automaticly checks for existing directory/movie and will NOT overwrite existing
+    Automaticly checks for existing directory/video and will NOT overwrite existing
     files or folders
 
-    Checks minimum length of video to ensure movie is ripped not previews or other
+    Checks minimum length of video to ensure video is ripped not previews or other
     junk that happens to be on the DVD
 
     DVD goes in > MakeMKV gets a proper DVD name > MakeMKV Rips
 
 Compressing
-    An optional additional used to rename and compress movies to an acceptable standard
+    An optional additional used to rename and compress videos to an acceptable standard
     which still delivers quality audio and video but reduces the file size
     dramatically.
 
@@ -145,15 +145,12 @@ def rip(config):
                 saveFiles = mkv_api.get_savefiles()
 
                 if len( saveFiles ) != 0:
-
-                    # Force filebot disable for multiple titles
-                    #filebot = True if len( saveFiles ) > 1 else False
                     filebot = config['filebot']['enable']
                     multiTitle = True if len( saveFiles ) > 1 else False
 
                     for dvdTitle in saveFiles:
 
-                        dbmovie = database.insert_movie(
+                        dbvideo = database.insert_video(
                             disc_title,
                             disc_path,
                             multiTitle,
@@ -162,12 +159,12 @@ def rip(config):
                         )
 
                         database.insert_history(
-                            dbmovie,
-                            "Movie added to database"
+                            dbvideo,
+                            "Video added to database"
                         )
 
-                        database.update_movie(
-                            dbmovie,
+                        database.update_video(
+                            dbvideo,
                             3,
                             dvdTitle['title']
                         )
@@ -179,8 +176,8 @@ def rip(config):
 
                         with stopwatch.StopWatch() as t:
                             database.insert_history(
-                                dbmovie,
-                                "Movie submitted to MakeMKV"
+                                dbvideo,
+                                "Video submitted to MakeMKV"
                             )
                             status = mkv_api.rip_disc(mkv_save_path, dvdTitle['index'])
 
@@ -191,28 +188,28 @@ def rip(config):
                                 disc_title
                             ))
 
-                            database.update_movie(dbmovie, 4)
+                            database.update_video(dbvideo, 4)
 
                         else:
                             log.info("MakeMKV did not did not complete successfully")
                             log.info("See log for more details")
 
-                            database.update_movie(dbmovie, 2)
+                            database.update_video(dbvideo, 2)
 
                             database.insert_history(
-                                dbmovie,
-                                "MakeMKV failed to rip movie"
+                                dbvideo,
+                                "MakeMKV failed to rip video"
                             )
                             
                         if config['makemkv']['eject']:
                             eject(config, dvd['location'])
 
                 else:
-                 log.info("No movie titles found")
+                 log.info("No video titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")
 
             else:
-                log.info("Movie folder %s already exists" % disc_title)
+                log.info("Video folder %s already exists" % disc_title)
 
     else:
         log.info("Could not find any DVDs in drive list")
@@ -229,49 +226,49 @@ def compress(config):
     comp = compression.Compression(config)
 
     log.debug("Compressing initialised")
-    log.debug("Looking for movies to compress")
+    log.debug("Looking for videos to compress")
 
-    dbmovies = database.next_movie_to_compress()
+    dbvideos = database.next_video_to_compress()
 
-    for dbmovie in dbmovies:
-        if comp.check_exists(dbmovie) is not False:
+    for dbvideo in dbvideos:
+        if comp.check_exists(dbvideo) is not False:
 
-            database.update_movie(dbmovie, 5)
+            database.update_video(dbvideo, 5)
 
-            log.info("Compressing %s from %s" % (dbmovie.filename, dbmovie.moviename))
+            log.info("Compressing %s from %s" % (dbvideo.filename, dbvideo.vidname))
 
             with stopwatch.StopWatch() as t:
                 status = comp.compress(
                     args=config['compress']['com'],
                     nice=int(config['compress']['nice']),
-                    dbmovie=dbmovie
+                    dbvideo=dbvideo
                 )
 
             if status:
-                log.info("Movie was compressed and encoded successfully")
+                log.info("Video was compressed and encoded successfully")
 
                 log.info(("It took %s minutes to compress %s" %
-                          (t.minutes, dbmovie.filename))
+                          (t.minutes, dbvideo.filename))
                          )
 
                 database.insert_history(
-                    dbmovie,
+                    dbvideo,
                     "Compression Completed successfully"
                 )
 
                 comp.cleanup()
 
             else:
-                database.update_movie(dbmovie, 5)
+                database.update_video(dbvideo, 5)
 
-                database.insert_history(dbmovie, "Compression failed", 4)
+                database.insert_history(dbvideo, "Compression failed", 4)
 
                 log.info("Compression did not complete successfully")
         else:
-            database.update_movie(dbmovie, 2)
+            database.update_video(dbvideo, 2)
 
             database.insert_history(
-                dbmovie, "Input file no longer exists", 4
+                dbvideo, "Input file no longer exists", 4
             )
 
     else:
@@ -288,42 +285,42 @@ def extras(config):
 
     fb = filebot.FileBot(config['debug'], config['silent'])
 
-    dbmovies = database.next_movie_to_filebot()
+    dbvideos = database.next_video_to_filebot()
 
-    for dbmovie in dbmovies:
-        log.info("Attempting movie rename")
+    for dbvideo in dbvideos:
+        log.info("Attempting video rename")
 
-        database.update_movie(dbmovie, 7)
+        database.update_video(dbvideo, 7)
         
-        movePath = ''
+        movePath = config['makemkv']['savePath']
         if config['filebot']['move']:
-            if dbmovie.multititle:
+            if dbvideo.multititle:
                 movePath = config['filebot']['tvPath']
             else:
                 movePath = config['filebot']['moviePath']
             
-        status = fb.rename(dbmovie, movePath)
+        status = fb.rename(dbvideo, movePath)
 
         if status[0]:
             log.info("Rename success")
-            #database.update_movie(dbmovie, 6, filename=status[1])
-            database.update_movie(dbmovie, 6)
+            #database.update_video(dbvideo, 6, filename=status[1])
+            database.update_video(dbvideo, 6)
 
             if config['filebot']['subtitles']:
                 log.info("Grabbing subtitles")
 
                 status = fb.get_subtitles(
-                    dbmovie, config['filebot']['language'])
+                    dbvideo, config['filebot']['language'])
 
                 if status:
                     log.info("Subtitles downloaded")
-                    database.update_movie(dbmovie, 8)
+                    database.update_video(dbvideo, 8)
 
                 else:
                     log.info("Subtitles not downloaded, no match")
-                    database.update_movie(dbmovie, 8)
+                    database.update_video(dbvideo, 8)
 
-                log.info("Completed work on %s" % dbmovie.moviename)
+                log.info("Completed work on %s" % dbvideo.vidname)
 
                 if config['commands'] is not None and len(config['commands']) > 0:
                     for com in config['commands']:
@@ -336,13 +333,13 @@ def extras(config):
 
             else:
                 log.info("Not grabbing subtitles")
-                database.update_movie(dbmovie, 8)
+                database.update_video(dbvideo, 8)
 
         else:
             log.info("Rename failed")
 
     else:
-        log.info("No movies ready for filebot")
+        log.info("No videos ready for filebot")
 
 
 if __name__ == '__main__':

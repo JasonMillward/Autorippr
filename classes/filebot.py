@@ -22,32 +22,32 @@ class FileBot(object):
     def __init__(self, debug, silent):
         self.log = logger.Logger("Filebot", debug, silent)
 
-    def rename(self, dbmovie, movePath):
+    def rename(self, dbvideo, movePath):
         """
             Renames movie file upon successful database lookup
 
             Inputs:
-                dbMovie (Obj): Movie database object
+                dbvideo (Obj): Video database object
 
             Outputs:
                 Bool    Was lookup successful
         """
         
-        if dbmovie.multititle is not None:
+        if dbvideo.multititle is not None:
             db = "TheTVDB"
         else:
             db = "TheMovieDB"
 
-        moviename = re.sub(r'S(\d)','',dbmovie.moviename)
-        moviename = re.sub(r'D(\d)','',moviename)
+        vidname = re.sub(r'S(\d)','',dbvideo.vidname)
+        vidname = re.sub(r'D(\d)','',vidname)
         
         proc = subprocess.Popen(
             [
                 'filebot',
                 '-rename',
-                "%s/%s" % (dbmovie.path, dbmovie.filename),
+                "%s/%s" % (dbvideo.path, dbvideo.filename),
                 '--q',
-                "\"%s\"" % moviename,
+                "\"%s\"" % vidname,
                 '-non-strict',
                 '--db',
                 '%s' % db,
@@ -86,12 +86,12 @@ class FileBot(object):
         else:
             return [False]
 
-    def get_subtitles(self, dbmovie, lang):
+    def get_subtitles(self, dbvideo, lang):
         """
             Downloads subtitles of specified language
 
             Inputs:
-                dbMovie (Obj): Movie database object
+                dbvideo (Obj): Movie database object
                 lang    (Str): Language of subtitles to download
 
             Outputs:
@@ -101,9 +101,9 @@ class FileBot(object):
             [
                 'filebot',
                 '-get-subtitles',
-                dbmovie.path,
+                dbvideo.path,
                 '--q',
-                "\"%s\"" % dbmovie.moviename,
+                "\"%s\"" % dbvideo.vidname,
                 '--lang',
                 lang,
                 '--output',
