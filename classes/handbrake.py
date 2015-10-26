@@ -12,6 +12,7 @@ Copyright (c) 2012, Jason Millward
 """
 
 import os
+import re
 import subprocess
 import logger
 import database
@@ -45,9 +46,9 @@ class HandBrake(object):
             moviename = re.sub(r'D(\d)','',dbmovie.moviename)
             movieqty = database.search_movie_name(moviename)
             if movieqty == 0:
-                moviename = "%sE01.%s" % (moviename, self.vformat)
+                moviename = "%sE1.%s" % (moviename, self.vformat)
             else:
-                moviename = "%sE%s.%s" % (moviename, dbmovie.titleindex + 1, self.vformat)
+                moviename = "%sE%s.%s" % (moviename, str(movieqty + 1), self.vformat)
         else:
             moviename = "%s.%s" % (dbmovie.moviename, self.vformat)
             
@@ -94,6 +95,11 @@ class HandBrake(object):
 
         if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")
+            
+            database.update_movie(
+                dbmovie, 6, filename="%s" % (
+                    moviename
+            ))
 
             return True
         else:

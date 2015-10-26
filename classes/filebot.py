@@ -12,6 +12,7 @@ Copyright (c) 2012, Jason Millward
 """
 
 import os
+import re
 import subprocess
 import logger
 
@@ -21,7 +22,7 @@ class FileBot(object):
     def __init__(self, debug, silent):
         self.log = logger.Logger("Filebot", debug, silent)
 
-    def rename(self, dbmovie):
+    def rename(self, dbmovie, movePath):
         """
             Renames movie file upon successful database lookup
 
@@ -31,16 +32,27 @@ class FileBot(object):
             Outputs:
                 Bool    Was lookup successful
         """
+        
+        if dbmovie.multititle is not None:
+            db = "TheTVDB"
+        else:
+            db = "TheMovieDB"
+
+        moviename = re.sub(r'S(\d)','',dbmovie.moviename)
+        moviename = re.sub(r'D(\d)','',moviename)
+        
         proc = subprocess.Popen(
             [
                 'filebot',
                 '-rename',
                 "%s/%s" % (dbmovie.path, dbmovie.filename),
                 '--q',
-                "\"%s\"" % dbmovie.moviename,
+                "\"%s\"" % moviename,
                 '-non-strict',
                 '--db',
-                'OpenSubtitles'
+                '%s' % db,
+                '--output',
+                "%s" % movePath
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE

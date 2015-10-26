@@ -147,8 +147,8 @@ def rip(config):
                 if len( saveFiles ) != 0:
 
                     # Force filebot disable for multiple titles
-                    #forceDisableFB = True if len( saveFiles ) > 1 else False
-                    forceDisableFB = False
+                    #filebot = True if len( saveFiles ) > 1 else False
+                    filebot = config['filebot']['enable']
                     multiTitle = True if len( saveFiles ) > 1 else False
 
                     for dvdTitle in saveFiles:
@@ -158,7 +158,7 @@ def rip(config):
                             disc_path,
                             multiTitle,
                             dvdTitle['index'],
-                            forceDisableFB
+                            filebot
                         )
 
                         database.insert_history(
@@ -231,14 +231,14 @@ def compress(config):
     log.debug("Compressing initialised")
     log.debug("Looking for movies to compress")
 
-    dbmovie = database.next_movie_to_compress()
+    dbmovies = database.next_movie_to_compress()
 
-    if dbmovie is not None:
+    for dbmovie in dbmovies:
         if comp.check_exists(dbmovie) is not False:
 
             database.update_movie(dbmovie, 5)
 
-            log.info("Compressing %s" % dbmovie.moviename)
+            log.info("Compressing %s from %s" % (dbmovie.filename, dbmovie.moviename))
 
             with stopwatch.StopWatch() as t:
                 status = comp.compress(
@@ -251,19 +251,13 @@ def compress(config):
                 log.info("Movie was compressed and encoded successfully")
 
                 log.info(("It took %s minutes to compress %s" %
-                          (t.minutes, dbmovie.moviename))
+                          (t.minutes, dbmovie.filename))
                          )
 
                 database.insert_history(
                     dbmovie,
                     "Compression Completed successfully"
                 )
-
-                database.update_movie(
-                    dbmovie, 6, filename="%s.%s" % (
-                        dbmovie.moviename,
-                        config['compress']['format']
-                    ))
 
                 comp.cleanup()
 
@@ -294,18 +288,26 @@ def extras(config):
 
     fb = filebot.FileBot(config['debug'], config['silent'])
 
-    dbmovie = database.next_movie_to_filebot()
+    dbmovies = database.next_movie_to_filebot()
 
-    if dbmovie is not None:
+    for dbmovie in dbmovies:
         log.info("Attempting movie rename")
 
         database.update_movie(dbmovie, 7)
-
-        status = fb.rename(dbmovie)
+        
+        movePath = ''
+        if config['filebot']['move']:
+            if dbmovie.multititle:
+                movePath = config['filebot']['tvPath']
+            else:
+                movePath = config['filebot']['moviePath']
+            
+        status = fb.rename(dbmovie, movePath)
 
         if status[0]:
             log.info("Rename success")
-            database.update_movie(dbmovie, 6, filename=status[1])
+            #database.update_movie(dbmovie, 6, filename=status[1])
+            database.update_movie(dbmovie, 6)
 
             if config['filebot']['subtitles']:
                 log.info("Grabbing subtitles")
