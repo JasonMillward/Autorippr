@@ -292,7 +292,7 @@ def extras(config):
 
         database.update_video(dbvideo, 7)
         
-        movePath = config['makemkv']['savePath']
+        movePath = dbvideo.path
         if config['filebot']['move']:
             if dbvideo.multititle:
                 movePath = config['filebot']['tvPath']
