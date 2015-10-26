@@ -12,8 +12,10 @@ Copyright (c) 2012, Jason Millward
 """
 
 import os
+import re
 import subprocess
 import logger
+import database
 
 class HandBrake(object):
 
@@ -22,7 +24,7 @@ class HandBrake(object):
         self.compressionPath = compressionpath
         self.vformat = vformat
 
-    def compress(self, nice, args, dbmovie):
+    def compress(self, nice, args, dbvideo):
         """
             Passes the necessary parameters to HandBrake to start an encoding
             Assigns a nice value to allow give normal system tasks priority
@@ -38,19 +40,25 @@ class HandBrake(object):
                 Bool    Was convertion successful
         """
         checks = 0
-
-        if (dbmovie.multititle):
-            moviename = "%s-%s.%s" % (dbmovie.moviename, dbmovie.titleindex, self.vformat)
+        
+        if (dbvideo.multititle):
+            # Query the SQLite database for similar titles (TV Shows)
+            vidname = re.sub(r'D(\d)','',dbvideo.vidname)
+            vidqty = database.search_video_name(vidname)
+            if vidqty == 0:
+                vidname = "%sE1.%s" % (vidname, self.vformat)
+            else:
+                vidname = "%sE%s.%s" % (vidname, str(vidqty + 1), self.vformat)
         else:
-            moviename = "%s.%" % (dbmovie.moviename, self.vformat)
+            vidname = "%s.%s" % (dbvideo.vidname, self.vformat)
             
-        inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
-        outmovie = "%s/%s" % (dbmovie.path, moviename)
+        invid = "%s/%s" % (dbvideo.path, dbvideo.filename)
+        outvid = "%s/%s" % (dbvideo.path, vidname)
         command = 'nice -n {0} {1}HandBrakeCLI --verbose -i "{2}" -o "{3}" {4}'.format(
             nice,
             self.compressionPath,
-            inmovie,
-            outmovie,
+            invid,
+            outvid,
             ' '.join(args)
         )
 
@@ -87,6 +95,11 @@ class HandBrake(object):
 
         if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")
+            
+            database.update_video(
+                dbvideo, 6, filename="%s" % (
+                    vidname
+            ))
 
             return True
         else:
