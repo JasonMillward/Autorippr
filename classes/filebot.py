@@ -24,7 +24,7 @@ class FileBot(object):
 
     def rename(self, dbvideo, movePath):
         """
-            Renames movie file upon successful database lookup
+            Renames video file upon successful database lookup
 
             Inputs:
                 dbvideo (Obj): Video database object
@@ -33,7 +33,7 @@ class FileBot(object):
                 Bool    Was lookup successful
         """
         
-        if dbvideo.multititle is not None:
+        if dbvideo.multititle:
             db = "TheTVDB"
         else:
             db = "TheMovieDB"
@@ -64,7 +64,7 @@ class FileBot(object):
             self.log.error(
                 "Filebot (rename) returned status code: %d" % proc.returncode)
 
-        renamedmovie = ""
+        renamedvideo = ""
         checks = 0
 
         if len(results) is not 0:
@@ -72,7 +72,7 @@ class FileBot(object):
             for line in lines:
                 self.log.debug(line.strip())
                 if "MOVE" in line:
-                    renamedmovie = line.split("] to [", 1)[1].rstrip(']')
+                    renamedvideo = line.split("] to [", 1)[1].rstrip(']')
                     checks += 1
 
                 if "Processed" in line:
@@ -81,8 +81,8 @@ class FileBot(object):
                 if "Done" in line:
                     checks += 1
 
-        if checks >= 3 and renamedmovie:
-            return [True, renamedmovie]
+        if checks >= 3 and renamedvideo:
+            return [True, renamedvideo]
         else:
             return [False]
 
@@ -91,7 +91,7 @@ class FileBot(object):
             Downloads subtitles of specified language
 
             Inputs:
-                dbvideo (Obj): Movie database object
+                dbvideo (Obj): Video database object
                 lang    (Str): Language of subtitles to download
 
             Outputs:
