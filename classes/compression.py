@@ -67,7 +67,7 @@ class Compression(object):
             Deletes files once the compression has finished with them
 
             Inputs:
-                cFile    (Str): File path of the movie to remove
+                cFile    (Str): File path of the video to remove
 
             Outputs:
                 None
