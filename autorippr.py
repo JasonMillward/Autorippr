@@ -117,6 +117,8 @@ def rip(config):
         Returns nothing
     """
     log = logger.Logger("Rip", config['debug'], config['silent'])
+    
+    notify = notification.Notification(config)
 
     mkv_save_path = config['makemkv']['savePath']
 
@@ -200,6 +202,9 @@ def rip(config):
                                 dbvideo,
                                 "MakeMKV failed to rip video"
                             )
+                        
+                        if config['notification']['enable']:
+                            notify.rip_complete(dbvideo)
                             
                         if config['makemkv']['eject']:
                             eject(config, dvd['location'])
