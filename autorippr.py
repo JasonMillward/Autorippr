@@ -202,20 +202,20 @@ def rip(config):
                                 dbvideo,
                                 "MakeMKV failed to rip video"
                             )
-                        
-                        if config['notification']['smtp_enable'] and 'rip' in config['notification']['smtp_state']:
-                            notify.rip_complete(dbvideo)
                             
-                        if config['makemkv']['eject']:
-                            eject(config, dvd['location'])
-
                 else:
                  log.info("No video titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")
-
+                 
             else:
                 log.info("Video folder %s already exists" % disc_title)
-
+                
+            if config['notification']['smtp_enable'] and 'rip' in config['notification']['smtp_state']:
+                notify.rip_complete(dbvideo)
+                            
+            if config['makemkv']['eject']:
+                eject(config, dvd['location'])
+                
     else:
         log.info("Could not find any DVDs in drive list")
 
