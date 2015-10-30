@@ -26,6 +26,7 @@ class MakeMKV(object):
         self.discIndex = 0
         self.vidName = ""
         self.path = ""
+        self.vidType = ""
         self.minLength = int(config['makemkv']['minLength'])
         self.maxLength = int(config['makemkv']['maxLength'])
         self.cacheSize = int(config['makemkv']['cache'])
@@ -293,7 +294,7 @@ class MakeMKV(object):
                     minutes=x.tm_min,
                     seconds=x.tm_sec
                 ).total_seconds()
-                if foundtitles > 1 and titleDur > self.maxLength:
+                if self.vidType == "tv" and titleDur > self.maxLength:
                     self.log.debug( "Excluding Title No.: {}, Title: {}. Exceeds maxLength".format(
                         titleNo,
                         self._read_mkv_messages("TINFO", titleNo, 27)
@@ -314,6 +315,26 @@ class MakeMKV(object):
         else:
            pass 
 
+    def get_type(self):
+        """
+            Returns the type of video (tv/movie)
+
+            Inputs:
+                None
+
+            Outputs:
+                vidType   (Str)
+        """
+        titlePattern = re.compile(
+            r'(DISC_(\d))|(DISC(\d))|(SEASON_(\d))|(SEASON(\d))'
+        )
+        
+        if titlePattern.search(self.vidName):
+            self.vidType = "tv"
+        else:
+            self.vidType = "movie"
+        return self.vidType
+            
     def get_title(self):
         """
             Returns the current videos title
