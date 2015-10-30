@@ -17,21 +17,21 @@ import logger
 
 class Notification(object):
 
-    def __init__(self, config, debug, silent):
-        self.log = logger.Logger("Notification", debug, silent)
-        self.server = config['smtp_server']
-        self.username = config['smtp_username']
-        self.password = config['smtp_password']
-        self.port = config['smtp_port']
-        self.to_address = config['destination_email']
-        self.from_email = config['source_email']
+    def __init__(self, config):
+        self.log = logger.Logger("notification", config['debug'], config['silent'])
+        self.server = config['notification']['smtp_server']
+        self.username = config['notification']['smtp_username']
+        self.password = config['notification']['smtp_password']
+        self.port = config['notification']['smtp_port']
+        self.to_address = config['notification']['destination_email']
+        self.from_address = config['notification']['source_email']
         
     def _send(self, status):
         import smtplib
         from email.MIMEMultipart import MIMEMultipart
         from email.MIMEText import MIMEText
         
-        if self.source_email == 'username@gmail.com':
+        if self.from_address == 'username@gmail.com':
             self.logging.error('Email address has not been set correctly, ignoring send request from: %s' % self.from_address)
             return
         
@@ -52,15 +52,15 @@ class Notification(object):
 
     def rip_complete(self,dbvideo):
         
-        status = 'Rip of %s complete' % dbvideo.vidtitle
+        status = 'Rip of %s complete' % dbvideo.vidname
         self._send(status)
 
     def compress_complete(self,dbvideo):
         
-        status = 'Compress of %s complete' % dbvideo.vidtitle
+        status = 'Compress of %s complete' % dbvideo.vidname
         self._send(status)
         
     def extra_complete(self,tracks,dbvideo):
         
-        status = 'Extra of %s complete' % dbvideo.vidtitle
+        status = 'Extra of %s complete' % dbvideo.vidname
         self._send(status)

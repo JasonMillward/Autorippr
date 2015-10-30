@@ -56,7 +56,7 @@ class Videos(BaseModel):
     lastupdated = DateTimeField(db_column='lastUpdated')
 
     class Meta:
-        db_table = 'movies'
+        db_table = 'videos'
 
 
 class Statustypes(BaseModel):

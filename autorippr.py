@@ -203,7 +203,7 @@ def rip(config):
                                 "MakeMKV failed to rip video"
                             )
                         
-                        if config['notification']['smtp_enable']:
+                        if config['notification']['smtp_enable'] and 'rip' in config['notification']['smtp_state']:
                             notify.rip_complete(dbvideo)
                             
                         if config['makemkv']['eject']:
@@ -263,7 +263,7 @@ def compress(config):
                     "Compression Completed successfully"
                 )
                 
-                if config['notification']['smtp_enable']:
+                if config['notification']['smtp_enable'] and 'compress' in config['notification']['smtp_state']:
                     notify.compress_complete(dbvideo)
                 
                 comp.cleanup()
@@ -347,7 +347,7 @@ def extras(config):
                 log.info("Not grabbing subtitles")
                 database.update_video(dbvideo, 8)
             
-            if config['notification']['smtp_enable']:
+            if config['notification']['smtp_enable'] and 'extra' in config['notification']['smtp_state']:
                 notify.extra_complete(dbvideo)
 
         else:
