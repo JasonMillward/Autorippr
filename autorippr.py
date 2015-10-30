@@ -201,16 +201,16 @@ def rip(config):
                                 "MakeMKV failed to rip video"
                             )
                             
-                        if config['makemkv']['eject']:
-                            eject(config, dvd['location'])
-
                 else:
                  log.info("No video titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")
 
             else:
                 log.info("Video folder %s already exists" % disc_title)
-
+                
+            if config['makemkv']['eject']:
+                eject(config, dvd['location'])
+                
     else:
         log.info("Could not find any DVDs in drive list")
 

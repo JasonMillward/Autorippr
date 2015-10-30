@@ -326,7 +326,7 @@ class MakeMKV(object):
                 vidType   (Str)
         """
         titlePattern = re.compile(
-            r'(DISC_(\d))|(DISC(\d))|(SEASON_(\d))|(SEASON(\d))'
+            r'(DISC_(\d))|(DISC(\d))|(D(\d))|(SEASON_(\d))|(SEASON(\d))|(S(\d))'
         )
         
         if titlePattern.search(self.vidName):
