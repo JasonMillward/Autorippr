@@ -8,6 +8,7 @@ __all__ = [
     'handbrake',
     'logger',
     'makemkv',
+    'notification',
     'stopwatch',
     'testing'
 ]
