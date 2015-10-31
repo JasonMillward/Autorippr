@@ -300,6 +300,12 @@ class MakeMKV(object):
                         self._read_mkv_messages("TINFO", titleNo, 27)
                     ))                    
                     continue
+                if self.vidType == "movie" and not re.search('00',self._read_mkv_messages("TINFO", titleNo, 27)[0]):
+                    self.log.debug( "Excluding Title No.: {}, Title: {}. Only want first title".format(
+                        titleNo,
+                        self._read_mkv_messages("TINFO", titleNo, 27)
+                    ))
+                    continue
                 self.log.debug( "MakeMKV title info: Disc Title: {}, Title No.: {}, Title: {}, ".format(
                     self._read_mkv_messages("CINFO", 2),
                     titleNo,
