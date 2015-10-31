@@ -117,6 +117,8 @@ def rip(config):
         Returns nothing
     """
     log = logger.Logger("Rip", config['debug'], config['silent'])
+    
+    notify = notification.Notification(config)
 
     mkv_save_path = config['makemkv']['savePath']
 
@@ -204,10 +206,13 @@ def rip(config):
                 else:
                  log.info("No video titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")
-
+                 
             else:
                 log.info("Video folder %s already exists" % disc_title)
                 
+            if config['notification']['smtp_enable'] and 'rip' in config['notification']['smtp_state']:
+                notify.rip_complete(dbvideo)
+                            
             if config['makemkv']['eject']:
                 eject(config, dvd['location'])
                 
@@ -222,6 +227,8 @@ def compress(config):
         Returns nothing
     """
     log = logger.Logger("Compress", config['debug'], config['silent'])
+    
+    notify = notification.Notification(config)
 
     comp = compression.Compression(config)
 
@@ -255,7 +262,10 @@ def compress(config):
                     dbvideo,
                     "Compression Completed successfully"
                 )
-
+                
+                if config['notification']['smtp_enable'] and 'compress' in config['notification']['smtp_state']:
+                    notify.compress_complete(dbvideo)
+                
                 comp.cleanup()
 
             else:
@@ -282,6 +292,8 @@ def extras(config):
         Returns nothing
     """
     log = logger.Logger("Extras", config['debug'], config['silent'])
+    
+    notify = notification.Notification(config)
 
     fb = filebot.FileBot(config['debug'], config['silent'])
 
@@ -334,6 +346,9 @@ def extras(config):
             else:
                 log.info("Not grabbing subtitles")
                 database.update_video(dbvideo, 8)
+            
+            if config['notification']['smtp_enable'] and 'extra' in config['notification']['smtp_state']:
+                notify.extra_complete(dbvideo)
 
         else:
             log.info("Rename failed")
