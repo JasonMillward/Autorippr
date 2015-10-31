@@ -306,7 +306,7 @@ def extras(config):
         
         movePath = dbvideo.path
         if config['filebot']['move']:
-            if dbvideo.multititle:
+            if dbvideo.vidtype == "tv":
                 movePath = config['filebot']['tvPath']
             else:
                 movePath = config['filebot']['moviePath']
