@@ -133,7 +133,8 @@ def rip(config):
         for dvd in dvds:
             mkv_api.set_title(dvd["discTitle"])
             mkv_api.set_index(dvd["discIndex"])
-
+            
+            disc_type = mkv_api.get_type()
             disc_title = mkv_api.get_title()
 
             disc_path = '%s/%s' % (mkv_save_path, disc_title)
@@ -146,14 +147,13 @@ def rip(config):
 
                 if len( saveFiles ) != 0:
                     filebot = config['filebot']['enable']
-                    multiTitle = True if len( saveFiles ) > 1 else False
 
                     for dvdTitle in saveFiles:
 
                         dbvideo = database.insert_video(
                             disc_title,
                             disc_path,
-                            multiTitle,
+                            disc_type,
                             dvdTitle['index'],
                             filebot
                         )
@@ -201,16 +201,16 @@ def rip(config):
                                 "MakeMKV failed to rip video"
                             )
                             
-                        if config['makemkv']['eject']:
-                            eject(config, dvd['location'])
-
                 else:
                  log.info("No video titles found")
                  log.info("Try decreasing 'minLength' in the config and try again")
 
             else:
                 log.info("Video folder %s already exists" % disc_title)
-
+                
+            if config['makemkv']['eject']:
+                eject(config, dvd['location'])
+                
     else:
         log.info("Could not find any DVDs in drive list")
 

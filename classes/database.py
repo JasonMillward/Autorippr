@@ -47,7 +47,7 @@ class Historytypes(BaseModel):
 class Videos(BaseModel):
     vidid = PrimaryKeyField(db_column='vidID')
     vidname = CharField()
-    multititle = BooleanField()
+    vidtype = CharField()
     titleindex = CharField(db_column='titleIndex')
     path = CharField()
     filename = CharField(null=True)
@@ -137,10 +137,10 @@ def insert_history(dbvideo, text, typeid=1):
     )
 
 
-def insert_video(title, path, multititle, index, filebot):
+def insert_video(title, path, vidtype, index, filebot):
     return Videos.create(
         vidname=title,
-        multititle=multititle,
+        vidtype=vidtype,
         titleindex=index,
         path=path,
         filename="None",

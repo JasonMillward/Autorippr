@@ -41,7 +41,7 @@ class HandBrake(object):
         """
         checks = 0
         
-        if (dbvideo.multititle):
+        if (dbvideo.vidtype == "tv"):
             # Query the SQLite database for similar titles (TV Shows)
             vidname = re.sub(r'D(\d)','',dbvideo.vidname)
             vidqty = database.search_video_name(vidname)

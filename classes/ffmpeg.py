@@ -38,19 +38,25 @@ class FFmpeg(object):
                 Bool    Was convertion successful
         """
 
-        if (dbmovie.multititle):
-            moviename = "%s-%s.%s" % (dbmovie.moviename, dbmovie.titleindex, self.vformat)
+        if (dbvideo.vidtype == "tv"):
+            # Query the SQLite database for similar titles (TV Shows)
+            vidname = re.sub(r'D(\d)','',dbvideo.vidname)
+            vidqty = database.search_video_name(vidname)
+            if vidqty == 0:
+                vidname = "%sE1.%s" % (vidname, self.vformat)
+            else:
+                vidname = "%sE%s.%s" % (vidname, str(vidqty + 1), self.vformat)
         else:
-            moviename = "%s.%s" % (dbmovie.moviename, self.vformat)
-
-        inmovie = "%s/%s" % (dbmovie.path, dbmovie.filename)
-        outmovie = "%s/%s" % (dbmovie.path, moviename)
+            vidname = "%s.%s" % (dbvideo.vidname, self.vformat)
+            
+        invid = "%s/%s" % (dbvideo.path, dbvideo.filename)
+        outvid = "%s/%s" % (dbvideo.path, vidname)
 
         command = 'nice -n {0} ffmpeg -i "{1}" {2} "{3}"'.format(
             nice,
-            inmovie,
+            invid,
             ' '.join(args),
-            outmovie
+            outvid
         )
 
         proc = subprocess.Popen(
