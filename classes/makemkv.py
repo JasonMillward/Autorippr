@@ -7,7 +7,7 @@ Copyright (c) 2012, Jason Millward
 
 @category   misc
 @version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
-@author     Jason Millward <jason@jcode.me>
+@author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
@@ -281,32 +281,32 @@ class MakeMKV(object):
                 self.log.error(errors)
                 return False
 
-        foundtitles = int( self._read_mkv_messages("TCOUNT")[0] )
+        foundtitles = int(self._read_mkv_messages("TCOUNT")[0])
 
-        self.log.debug("MakeMKV found {} titles".format( foundtitles ))
+        self.log.debug("MakeMKV found {} titles".format(foundtitles))
 
         if foundtitles > 0:
             for titleNo in set(self._read_mkv_messages("TINFO")):
                 durTemp = self._read_mkv_messages("TINFO", titleNo, 9)[0]
-                x = time.strptime(durTemp,'%H:%M:%S')
+                x = time.strptime(durTemp, '%H:%M:%S')
                 titleDur = datetime.timedelta(
                     hours=x.tm_hour,
                     minutes=x.tm_min,
                     seconds=x.tm_sec
                 ).total_seconds()
                 if self.vidType == "tv" and titleDur > self.maxLength:
-                    self.log.debug( "Excluding Title No.: {}, Title: {}. Exceeds maxLength".format(
-                        titleNo,
-                        self._read_mkv_messages("TINFO", titleNo, 27)
-                    ))                    
-                    continue
-                if self.vidType == "movie" and not re.search('00',self._read_mkv_messages("TINFO", titleNo, 27)[0]):
-                    self.log.debug( "Excluding Title No.: {}, Title: {}. Only want first title".format(
+                    self.log.debug("Excluding Title No.: {}, Title: {}. Exceeds maxLength".format(
                         titleNo,
                         self._read_mkv_messages("TINFO", titleNo, 27)
                     ))
                     continue
-                self.log.debug( "MakeMKV title info: Disc Title: {}, Title No.: {}, Title: {}, ".format(
+                if self.vidType == "movie" and not re.search('00', self._read_mkv_messages("TINFO", titleNo, 27)[0]):
+                    self.log.debug("Excluding Title No.: {}, Title: {}. Only want first title".format(
+                        titleNo,
+                        self._read_mkv_messages("TINFO", titleNo, 27)
+                    ))
+                    continue
+                self.log.debug("MakeMKV title info: Disc Title: {}, Title No.: {}, Title: {}, ".format(
                     self._read_mkv_messages("CINFO", 2),
                     titleNo,
                     self._read_mkv_messages("TINFO", titleNo, 27)
@@ -319,7 +319,7 @@ class MakeMKV(object):
                     'title': title
                 })
         else:
-           pass 
+            pass
 
     def get_type(self):
         """
@@ -334,13 +334,13 @@ class MakeMKV(object):
         titlePattern = re.compile(
             r'(DISC_(\d))|(DISC(\d))|(D(\d))|(SEASON_(\d))|(SEASON(\d))|(S(\d))'
         )
-        
+
         if titlePattern.search(self.vidName):
             self.vidType = "tv"
         else:
             self.vidType = "movie"
         return self.vidType
-            
+
     def get_title(self):
         """
             Returns the current videos title

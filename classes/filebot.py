@@ -7,7 +7,7 @@ Copyright (c) 2012, Jason Millward
 
 @category   misc
 @version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
-@author     Jason Millward <jason@jcode.me>
+@author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
@@ -32,15 +32,15 @@ class FileBot(object):
             Outputs:
                 Bool    Was lookup successful
         """
-        
+
         if dbvideo.vidtype == "tv":
             db = "TheTVDB"
         else:
             db = "TheMovieDB"
 
-        vidname = re.sub(r'S(\d)','',dbvideo.vidname)
-        vidname = re.sub(r'D(\d)','',vidname)
-        
+        vidname = re.sub(r'S(\d)', '', dbvideo.vidname)
+        vidname = re.sub(r'D(\d)', '', vidname)
+
         proc = subprocess.Popen(
             [
                 'filebot',
@@ -57,7 +57,7 @@ class FileBot(object):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
         )
-        
+
         (results, errors) = proc.communicate()
 
         if proc.returncode is not 0:

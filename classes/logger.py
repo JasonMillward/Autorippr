@@ -7,14 +7,13 @@ Copyright (c) 2012, Jason Millward
 
 @category   misc
 @version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
-@author     Jason Millward <jason@jcode.me>
+@author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
 import logging
 import os
 import sys
-
 
 class Logger(object):
 
@@ -31,7 +30,7 @@ class Logger(object):
         else:
             loglevel = logging.INFO
 
-        self.createhandlers( frmt, name, loglevel )
+        self.createhandlers(frmt, name, loglevel)
 
     def createhandlers(self, frmt, name, loglevel):
         self.log = logging.getLogger(name)
@@ -48,7 +47,6 @@ class Logger(object):
         self.fh.setLevel(loglevel)
         self.fh.setFormatter(frmt)
         self.log.addHandler(self.fh)
-
 
     def __del__(self):
         if not self.silent:

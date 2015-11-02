@@ -16,7 +16,9 @@ import logger
 import handbrake
 import ffmpeg
 
+
 class Compression(object):
+
     def __init__(self, config):
         """
             Creates the required compression instances
@@ -27,7 +29,8 @@ class Compression(object):
             Outputs:
                 The compression instance
         """
-        self.log = logger.Logger("Compression", config['debug'], config['silent'])
+        self.log = logger.Logger("Compression", config[
+                                 'debug'], config['silent'])
         self.method = self.which_method(config)
         self.invid = ""
 
@@ -77,4 +80,3 @@ class Compression(object):
                 os.remove(self.invid)
             except:
                 self.log.error("Could not remove %s" % self.invid)
-

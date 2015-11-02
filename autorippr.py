@@ -28,7 +28,7 @@ Copyright (c) 2014, Jason Millward
 
 @category   misc
 @version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
-@author     Jason Millward <jason@jcode.me>
+@author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 
 Usage:
@@ -60,8 +60,10 @@ from tendo import singleton
 __version__ = "1.7-testing"
 
 me = singleton.SingleInstance()
-DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_FILE = "%s/settings.cfg" % DIR
+CONFIG_FILE = "{}/settings.cfg".format(
+    os.path.dirname(os.path.abspath(__file__)))
+
+notify = None
 
 
 def eject(config, drive):
@@ -103,8 +105,8 @@ def eject(config, drive):
 
     except Exception as ex:
         log.error("Could not detect OS or eject CD tray")
-        log.ex("An exception of type %s occured." % type(ex).__name__)
-        log.ex("Args: \r\n %s" % ex.args)
+        log.ex("An exception of type {} occured.".format(type(ex).__name__))
+        log.ex("Args: \r\n {}".format(ex.args))
 
     finally:
         del log
@@ -117,8 +119,6 @@ def rip(config):
         Returns nothing
     """
     log = logger.Logger("Rip", config['debug'], config['silent'])
-    
-    notify = notification.Notification(config)
 
     mkv_save_path = config['makemkv']['savePath']
 
@@ -128,18 +128,18 @@ def rip(config):
     log.debug("Checking for DVDs")
     dvds = mkv_api.find_disc()
 
-    log.debug("%d DVDs found" % len(dvds))
+    log.debug("{} DVD(s) found".format(len(dvds)))
 
     if len(dvds) > 0:
         # Best naming convention ever
         for dvd in dvds:
             mkv_api.set_title(dvd["discTitle"])
             mkv_api.set_index(dvd["discIndex"])
-            
+
             disc_type = mkv_api.get_type()
             disc_title = mkv_api.get_title()
 
-            disc_path = '%s/%s' % (mkv_save_path, disc_title)
+            disc_path = '{}/{}'.format(mkv_save_path, disc_title)
             if not os.path.exists(disc_path):
                 os.makedirs(disc_path)
 
@@ -147,7 +147,7 @@ def rip(config):
 
                 saveFiles = mkv_api.get_savefiles()
 
-                if len( saveFiles ) != 0:
+                if len(saveFiles) != 0:
                     filebot = config['filebot']['enable']
 
                     for dvdTitle in saveFiles:
@@ -181,7 +181,8 @@ def rip(config):
                                 dbvideo,
                                 "Video submitted to MakeMKV"
                             )
-                            status = mkv_api.rip_disc(mkv_save_path, dvdTitle['index'])
+                            status = mkv_api.rip_disc(
+                                mkv_save_path, dvdTitle['index'])
 
                         if status:
                             log.info("It took {} minute(s) to complete the ripping of {} from {}".format(
@@ -193,7 +194,8 @@ def rip(config):
                             database.update_video(dbvideo, 4)
 
                         else:
-                            log.info("MakeMKV did not did not complete successfully")
+                            log.info(
+                                "MakeMKV did not did not complete successfully")
                             log.info("See log for more details")
 
                             database.update_video(dbvideo, 2)
@@ -202,20 +204,21 @@ def rip(config):
                                 dbvideo,
                                 "MakeMKV failed to rip video"
                             )
-                            
+
                 else:
-                 log.info("No video titles found")
-                 log.info("Try decreasing 'minLength' in the config and try again")
-                 
+                    log.info("No video titles found")
+                    log.info(
+                        "Try decreasing 'minLength' in the config and try again")
+
             else:
-                log.info("Video folder %s already exists" % disc_title)
-                
-            if config['notification']['smtp_enable'] and 'rip' in config['notification']['smtp_state']:
+                log.info("Video folder {} already exists".format(disc_title))
+
+            if 'rip' in config['notification']['notify_on_state']:
                 notify.rip_complete(dbvideo)
-                            
+
             if config['makemkv']['eject']:
                 eject(config, dvd['location'])
-                
+
     else:
         log.info("Could not find any DVDs in drive list")
 
@@ -227,8 +230,6 @@ def compress(config):
         Returns nothing
     """
     log = logger.Logger("Compress", config['debug'], config['silent'])
-    
-    notify = notification.Notification(config)
 
     comp = compression.Compression(config)
 
@@ -242,7 +243,8 @@ def compress(config):
 
             database.update_video(dbvideo, 5)
 
-            log.info("Compressing %s from %s" % (dbvideo.filename, dbvideo.vidname))
+            log.info("Compressing {} from {}" .format(
+                dbvideo.filename, dbvideo.vidname))
 
             with stopwatch.StopWatch() as t:
                 status = comp.compress(
@@ -254,18 +256,19 @@ def compress(config):
             if status:
                 log.info("Video was compressed and encoded successfully")
 
-                log.info(("It took %s minutes to compress %s" %
-                          (t.minutes, dbvideo.filename))
-                         )
+                log.info("It took {} minutes to compress {}".format(
+                    t.minutes, dbvideo.filename
+                )
+                )
 
                 database.insert_history(
                     dbvideo,
                     "Compression Completed successfully"
                 )
-                
-                if config['notification']['smtp_enable'] and 'compress' in config['notification']['smtp_state']:
+
+                if 'compress' in config['notification']['notify_on_state']:
                     notify.compress_complete(dbvideo)
-                
+
                 comp.cleanup()
 
             else:
@@ -292,8 +295,6 @@ def extras(config):
         Returns nothing
     """
     log = logger.Logger("Extras", config['debug'], config['silent'])
-    
-    notify = notification.Notification(config)
 
     fb = filebot.FileBot(config['debug'], config['silent'])
 
@@ -303,19 +304,19 @@ def extras(config):
         log.info("Attempting video rename")
 
         database.update_video(dbvideo, 7)
-        
+
         movePath = dbvideo.path
         if config['filebot']['move']:
             if dbvideo.vidtype == "tv":
                 movePath = config['filebot']['tvPath']
             else:
                 movePath = config['filebot']['moviePath']
-            
+
         status = fb.rename(dbvideo, movePath)
 
         if status[0]:
             log.info("Rename success")
-            #database.update_video(dbvideo, 6, filename=status[1])
+
             database.update_video(dbvideo, 6)
 
             if config['filebot']['subtitles']:
@@ -332,7 +333,7 @@ def extras(config):
                     log.info("Subtitles not downloaded, no match")
                     database.update_video(dbvideo, 8)
 
-                log.info("Completed work on %s" % dbvideo.vidname)
+                log.info("Completed work on {}".format(dbvideo.vidname))
 
                 if config['commands'] is not None and len(config['commands']) > 0:
                     for com in config['commands']:
@@ -346,8 +347,8 @@ def extras(config):
             else:
                 log.info("Not grabbing subtitles")
                 database.update_video(dbvideo, 8)
-            
-            if config['notification']['smtp_enable'] and 'extra' in config['notification']['smtp_state']:
+
+            if 'extra' in config['notification']['notify_on_state']:
                 notify.extra_complete(dbvideo)
 
         else:
@@ -364,6 +365,8 @@ if __name__ == '__main__':
     config['debug'] = arguments['--debug']
 
     config['silent'] = arguments['--silent']
+
+    notify = notification.Notification(config, config['debug'], config['silent'])
 
     if bool(config['analytics']['enable']):
         analytics.ping(__version__)

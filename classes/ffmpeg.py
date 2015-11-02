@@ -15,6 +15,7 @@ import os
 import subprocess
 import logger
 
+
 class FFmpeg(object):
 
     def __init__(self, debug, silent, vformat):
@@ -40,7 +41,7 @@ class FFmpeg(object):
 
         if (dbvideo.vidtype == "tv"):
             # Query the SQLite database for similar titles (TV Shows)
-            vidname = re.sub(r'D(\d)','',dbvideo.vidname)
+            vidname = re.sub(r'D(\d)', '', dbvideo.vidname)
             vidqty = database.search_video_name(vidname)
             if vidqty == 0:
                 vidname = "%sE1.%s" % (vidname, self.vformat)
@@ -48,7 +49,7 @@ class FFmpeg(object):
                 vidname = "%sE%s.%s" % (vidname, str(vidqty + 1), self.vformat)
         else:
             vidname = "%s.%s" % (dbvideo.vidname, self.vformat)
-            
+
         invid = "%s/%s" % (dbvideo.path, dbvideo.filename)
         outvid = "%s/%s" % (dbvideo.path, vidname)
 
@@ -68,7 +69,8 @@ class FFmpeg(object):
         (results, errors) = proc.communicate()
 
         if proc.returncode is not 0:
-            self.log.error("FFmpeg (compress) returned status code: %d" % proc.returncode)
+            self.log.error(
+                "FFmpeg (compress) returned status code: %d" % proc.returncode)
             return False
 
         return True

@@ -7,7 +7,7 @@ Copyright (c) 2012, Jason Millward
 
 @category   misc
 @version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
-@author     Jason Millward <jason@jcode.me>
+@author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
@@ -116,17 +116,21 @@ def create_status_types():
 
 
 def next_video_to_compress():
-    videos = Videos.select().where((Videos.statusid == 4) & (Videos.filename != "None")).order_by(Videos.filename)
+    videos = Videos.select().where((Videos.statusid == 4) & (
+        Videos.filename != "None")).order_by(Videos.filename)
     return videos
 
 
 def next_video_to_filebot():
-    videos = Videos.select().where((Videos.statusid == 6) & (Videos.filename != "None") & (Videos.filebot == 1))
+    videos = Videos.select().where((Videos.statusid == 6) & (
+        Videos.filename != "None") & (Videos.filebot == 1))
     return videos
+
 
 def search_video_name(invid):
     vidqty = Videos.select().where(Videos.filename.startswith(invid)).count()
     return vidqty
+
 
 def insert_history(dbvideo, text, typeid=1):
     return History.create(
