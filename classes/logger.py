@@ -15,7 +15,6 @@ import logging
 import os
 import sys
 
-
 class Logger(object):
 
     def __init__(self, name, debug, silent):

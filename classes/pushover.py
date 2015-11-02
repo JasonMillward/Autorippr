@@ -16,7 +16,8 @@ from chump import Application
 
 class Pushover(object):
 
-    def __init__(self, config):
+    def __init__(self, config, debug, silent):
+        self.log = logger.Logger("Pushover", debug, silent)
         self.config = config
 
     def send_notification(self, notification_message):
@@ -25,4 +26,6 @@ class Pushover(object):
         message = user.send_message(notification_message)
 
         if message.is_sent:
-            print "YAY"
+            self.log.info("Pushover message sent successfully")
+        else:
+            self.log.error("Pushover message not sent")

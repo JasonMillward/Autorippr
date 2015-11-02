@@ -366,7 +366,7 @@ if __name__ == '__main__':
 
     config['silent'] = arguments['--silent']
 
-    notify = notification.Notification(config)
+    notify = notification.Notification(config, config['debug'], config['silent'])
 
     if bool(config['analytics']['enable']):
         analytics.ping(__version__)

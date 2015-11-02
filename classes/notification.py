@@ -19,14 +19,17 @@ import pprint
 
 class Notification(object):
 
-    def __init__(self, config):
+    def __init__(self, config, debug, silent):
         self.config = config['notification']
+        self.debug = debug
+        self.silent = silent
+        self.log = logger.Logger("Notification", debug, silent)
         self._send("test")
 
     def import_from(self, module, name, config):
         module = __import__(module, fromlist=[name])
         class_ = getattr(module, name)
-        return class_(config)
+        return class_(config, self.debug, self.silent)
 
     def _send(self, status):
         for method in self.config['methods']:
@@ -37,7 +40,7 @@ class Notification(object):
                     method_class.send_notification(status)
                     del method_class
                 except ImportError:
-                    print "broke"
+                    self.log.error("Error loading notification class: {}".format(method))
 
     def rip_complete(self, dbvideo):
 
