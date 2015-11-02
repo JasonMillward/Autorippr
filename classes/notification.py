@@ -39,7 +39,8 @@ class Notification(object):
                     method_class.send_notification(status)
                     del method_class
                 except ImportError:
-                    self.log.error("Error loading notification class: {}".format(method))
+                    self.log.error(
+                        "Error loading notification class: {}".format(method))
 
     def rip_complete(self, dbvideo):
 

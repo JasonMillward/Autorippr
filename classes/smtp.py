@@ -31,7 +31,8 @@ class Smtp(object):
     def send_notification(self, notification_message):
 
         if self.from_address == 'username@gmail.com':
-            self.logging.error('Email address has not been set correctly, ignoring send request from: {}'.format(self.from_address))
+            self.logging.error(
+                'Email address has not been set correctly, ignoring send request from: {}'.format(self.from_address))
             return
 
         msg = MIMEMultipart()
