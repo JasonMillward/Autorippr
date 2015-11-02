@@ -62,6 +62,7 @@ __version__ = "1.7-testing"
 me = singleton.SingleInstance()
 CONFIG_FILE = "{}/settings.cfg".format(os.path.dirname(os.path.abspath(__file__)))
 
+notify = None
 
 def eject(config, drive):
     """
@@ -116,8 +117,6 @@ def rip(config):
         Returns nothing
     """
     log = logger.Logger("Rip", config['debug'], config['silent'])
-
-    notify = notification.Notification(config)
 
     mkv_save_path = config['makemkv']['savePath']
 
@@ -227,8 +226,6 @@ def compress(config):
     """
     log = logger.Logger("Compress", config['debug'], config['silent'])
 
-    notify = notification.Notification(config)
-
     comp = compression.Compression(config)
 
     log.debug("Compressing initialised")
@@ -292,8 +289,6 @@ def extras(config):
         Returns nothing
     """
     log = logger.Logger("Extras", config['debug'], config['silent'])
-
-    notify = notification.Notification(config)
 
     fb = filebot.FileBot(config['debug'], config['silent'])
 
@@ -364,6 +359,8 @@ if __name__ == '__main__':
     config['debug'] = arguments['--debug']
 
     config['silent'] = arguments['--silent']
+
+    notify = notification.Notification(config)
 
     if bool(config['analytics']['enable']):
         analytics.ping(__version__)
