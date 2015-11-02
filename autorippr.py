@@ -27,7 +27,7 @@ Released under the MIT license
 Copyright (c) 2014, Jason Millward
 
 @category   misc
-@version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
+@version    $Id: 1.7-test3, 2015-11-02 15:32:00 ACDT $;
 @author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 
