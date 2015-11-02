@@ -60,9 +60,11 @@ from tendo import singleton
 __version__ = "1.7-testing"
 
 me = singleton.SingleInstance()
-CONFIG_FILE = "{}/settings.cfg".format(os.path.dirname(os.path.abspath(__file__)))
+CONFIG_FILE = "{}/settings.cfg".format(
+    os.path.dirname(os.path.abspath(__file__)))
 
 notify = None
+
 
 def eject(config, drive):
     """
@@ -126,7 +128,7 @@ def rip(config):
     log.debug("Checking for DVDs")
     dvds = mkv_api.find_disc()
 
-    log.debug("{} DVD(s) found".format( len(dvds) ))
+    log.debug("{} DVD(s) found".format(len(dvds)))
 
     if len(dvds) > 0:
         # Best naming convention ever
@@ -145,7 +147,7 @@ def rip(config):
 
                 saveFiles = mkv_api.get_savefiles()
 
-                if len( saveFiles ) != 0:
+                if len(saveFiles) != 0:
                     filebot = config['filebot']['enable']
 
                     for dvdTitle in saveFiles:
@@ -179,7 +181,8 @@ def rip(config):
                                 dbvideo,
                                 "Video submitted to MakeMKV"
                             )
-                            status = mkv_api.rip_disc(mkv_save_path, dvdTitle['index'])
+                            status = mkv_api.rip_disc(
+                                mkv_save_path, dvdTitle['index'])
 
                         if status:
                             log.info("It took {} minute(s) to complete the ripping of {} from {}".format(
@@ -191,7 +194,8 @@ def rip(config):
                             database.update_video(dbvideo, 4)
 
                         else:
-                            log.info("MakeMKV did not did not complete successfully")
+                            log.info(
+                                "MakeMKV did not did not complete successfully")
                             log.info("See log for more details")
 
                             database.update_video(dbvideo, 2)
@@ -202,8 +206,9 @@ def rip(config):
                             )
 
                 else:
-                 log.info("No video titles found")
-                 log.info("Try decreasing 'minLength' in the config and try again")
+                    log.info("No video titles found")
+                    log.info(
+                        "Try decreasing 'minLength' in the config and try again")
 
             else:
                 log.info("Video folder {} already exists".format(disc_title))
@@ -238,7 +243,8 @@ def compress(config):
 
             database.update_video(dbvideo, 5)
 
-            log.info("Compressing {} from {}" .format( dbvideo.filename, dbvideo.vidname ))
+            log.info("Compressing {} from {}" .format(
+                dbvideo.filename, dbvideo.vidname))
 
             with stopwatch.StopWatch() as t:
                 status = comp.compress(
@@ -251,9 +257,9 @@ def compress(config):
                 log.info("Video was compressed and encoded successfully")
 
                 log.info("It took {} minutes to compress {}".format(
-                          t.minutes, dbvideo.filename
-                          )
-                         )
+                    t.minutes, dbvideo.filename
+                )
+                )
 
                 database.insert_history(
                     dbvideo,

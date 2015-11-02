@@ -13,14 +13,15 @@ Copyright (c) 2014, Jason Millward
 import logger
 from chump import Application
 
+
 class Pushover(object):
 
     def __init__(self, config):
         self.config = config
 
     def send_notification(self, notification_message):
-        app = Application( self.config['app_key'] )
-        user = app.get_user( self.config['user_key'] )
+        app = Application(self.config['app_key'])
+        user = app.get_user(self.config['user_key'])
         message = user.send_message(notification_message)
 
         if message.is_sent:

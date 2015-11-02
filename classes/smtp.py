@@ -15,6 +15,7 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 import smtplib
 
+
 class Smtp(object):
 
     def __init__(self, config):

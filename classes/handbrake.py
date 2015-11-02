@@ -17,6 +17,7 @@ import subprocess
 import logger
 import database
 
+
 class HandBrake(object):
 
     def __init__(self, debug, compressionpath, vformat, silent):
@@ -43,7 +44,7 @@ class HandBrake(object):
 
         if (dbvideo.vidtype == "tv"):
             # Query the SQLite database for similar titles (TV Shows)
-            vidname = re.sub(r'D(\d)','',dbvideo.vidname)
+            vidname = re.sub(r'D(\d)', '', dbvideo.vidname)
             vidqty = database.search_video_name(vidname)
             if vidqty == 0:
                 vidname = "%sE1.%s" % (vidname, self.vformat)
@@ -99,7 +100,7 @@ class HandBrake(object):
             database.update_video(
                 dbvideo, 6, filename="%s" % (
                     vidname
-            ))
+                ))
 
             return True
         else:

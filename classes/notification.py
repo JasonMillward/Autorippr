@@ -16,6 +16,7 @@ import logger
 import importlib
 import pprint
 
+
 class Notification(object):
 
     def __init__(self, config):
@@ -29,25 +30,26 @@ class Notification(object):
 
     def _send(self, status):
         for method in self.config['methods']:
-            if bool(self.config['methods'][ method ]['enable']):
+            if bool(self.config['methods'][method]['enable']):
                 try:
-                    method_class = self.import_from('classes.{}'.format(method), method.capitalize(), self.config['methods'][ method ])
+                    method_class = self.import_from('classes.{}'.format(
+                        method), method.capitalize(), self.config['methods'][method])
                     method_class.send_notification(status)
                     del method_class
                 except ImportError:
                     print "broke"
 
-    def rip_complete(self,dbvideo):
+    def rip_complete(self, dbvideo):
 
         status = 'Rip of %s complete' % dbvideo.vidname
         self._send(status)
 
-    def compress_complete(self,dbvideo):
+    def compress_complete(self, dbvideo):
 
         status = 'Compress of %s complete' % dbvideo.vidname
         self._send(status)
 
-    def extra_complete(self,tracks,dbvideo):
+    def extra_complete(self, tracks, dbvideo):
 
         status = 'Extra of %s complete' % dbvideo.vidname
         self._send(status)

@@ -38,8 +38,8 @@ class FileBot(object):
         else:
             db = "TheMovieDB"
 
-        vidname = re.sub(r'S(\d)','',dbvideo.vidname)
-        vidname = re.sub(r'D(\d)','',vidname)
+        vidname = re.sub(r'S(\d)', '', dbvideo.vidname)
+        vidname = re.sub(r'D(\d)', '', vidname)
 
         proc = subprocess.Popen(
             [

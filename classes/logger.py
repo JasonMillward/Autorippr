@@ -31,7 +31,7 @@ class Logger(object):
         else:
             loglevel = logging.INFO
 
-        self.createhandlers( frmt, name, loglevel )
+        self.createhandlers(frmt, name, loglevel)
 
     def createhandlers(self, frmt, name, loglevel):
         self.log = logging.getLogger(name)
@@ -48,7 +48,6 @@ class Logger(object):
         self.fh.setLevel(loglevel)
         self.fh.setFormatter(frmt)
         self.log.addHandler(self.fh)
-
 
     def __del__(self):
         if not self.silent:
