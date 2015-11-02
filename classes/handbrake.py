@@ -7,7 +7,7 @@ Copyright (c) 2012, Jason Millward
 
 @category   misc
 @version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
-@author     Jason Millward <jason@jcode.me>
+@author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
@@ -40,7 +40,7 @@ class HandBrake(object):
                 Bool    Was convertion successful
         """
         checks = 0
-        
+
         if (dbvideo.vidtype == "tv"):
             # Query the SQLite database for similar titles (TV Shows)
             vidname = re.sub(r'D(\d)','',dbvideo.vidname)
@@ -51,7 +51,7 @@ class HandBrake(object):
                 vidname = "%sE%s.%s" % (vidname, str(vidqty + 1), self.vformat)
         else:
             vidname = "%s.%s" % (dbvideo.vidname, self.vformat)
-            
+
         invid = "%s/%s" % (dbvideo.path, dbvideo.filename)
         outvid = "%s/%s" % (dbvideo.path, vidname)
         command = 'nice -n {0} {1}HandBrakeCLI --verbose -i "{2}" -o "{3}" {4}'.format(
@@ -95,7 +95,7 @@ class HandBrake(object):
 
         if checks >= 2:
             self.log.debug("HandBrakeCLI Completed successfully")
-            
+
             database.update_video(
                 dbvideo, 6, filename="%s" % (
                     vidname

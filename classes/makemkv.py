@@ -7,7 +7,7 @@ Copyright (c) 2012, Jason Millward
 
 @category   misc
 @version    $Id: 1.7-test2, 2015-05-11 07:48:38 ACST $;
-@author     Jason Millward <jason@jcode.me>
+@author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
@@ -298,7 +298,7 @@ class MakeMKV(object):
                     self.log.debug( "Excluding Title No.: {}, Title: {}. Exceeds maxLength".format(
                         titleNo,
                         self._read_mkv_messages("TINFO", titleNo, 27)
-                    ))                    
+                    ))
                     continue
                 if self.vidType == "movie" and not re.search('00',self._read_mkv_messages("TINFO", titleNo, 27)[0]):
                     self.log.debug( "Excluding Title No.: {}, Title: {}. Only want first title".format(
@@ -319,7 +319,7 @@ class MakeMKV(object):
                     'title': title
                 })
         else:
-           pass 
+           pass
 
     def get_type(self):
         """
@@ -334,13 +334,13 @@ class MakeMKV(object):
         titlePattern = re.compile(
             r'(DISC_(\d))|(DISC(\d))|(D(\d))|(SEASON_(\d))|(SEASON(\d))|(S(\d))'
         )
-        
+
         if titlePattern.search(self.vidName):
             self.vidType = "tv"
         else:
             self.vidType = "movie"
         return self.vidType
-            
+
     def get_title(self):
         """
             Returns the current videos title
