@@ -315,7 +315,7 @@ def extras(config):
 
         if status[0]:
             log.info("Rename success")
-            #database.update_video(dbvideo, 6, filename=status[1])
+
             database.update_video(dbvideo, 6)
 
             if config['filebot']['subtitles']:
