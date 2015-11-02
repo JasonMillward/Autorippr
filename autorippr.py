@@ -139,7 +139,7 @@ def rip(config):
             disc_type = mkv_api.get_type()
             disc_title = mkv_api.get_title()
 
-            disc_path = '{}/{}}'.format(mkv_save_path, disc_title)
+            disc_path = '{}/{}'.format(mkv_save_path, disc_title)
             if not os.path.exists(disc_path):
                 os.makedirs(disc_path)
 
