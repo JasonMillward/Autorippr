@@ -24,7 +24,6 @@ class Notification(object):
         self.debug = debug
         self.silent = silent
         self.log = logger.Logger("Notification", debug, silent)
-        self._send("test")
 
     def import_from(self, module, name, config):
         module = __import__(module, fromlist=[name])
