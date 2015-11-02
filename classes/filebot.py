@@ -33,7 +33,7 @@ class FileBot(object):
                 Bool    Was lookup successful
         """
         
-        if dbvideo.multititle:
+        if dbvideo.vidtype == "tv":
             db = "TheTVDB"
         else:
             db = "TheMovieDB"
