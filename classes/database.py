@@ -117,7 +117,7 @@ def create_status_types():
 
 def next_video_to_compress():
     videos = Videos.select().where((Videos.statusid == 4) & (
-        Videos.filename != "None")).order_by(Videos.filename)
+        Videos.filename != "None")).order_by(Videos.vidname)
     return videos
 
 
