@@ -52,7 +52,7 @@ class Notification(object):
         status = 'Compress of %s complete' % dbvideo.vidname
         self._send(status)
 
-    def extra_complete(self, tracks, dbvideo):
+    def extra_complete(self, dbvideo):
 
         status = 'Extra of %s complete' % dbvideo.vidname
         self._send(status)
