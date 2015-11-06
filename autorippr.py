@@ -350,6 +350,13 @@ def extras(config):
 
             if 'extra' in config['notification']['notify_on_state']:
                 notify.extra_complete(dbvideo)
+                
+            log.debug("Attempting to delete %s" % dbvideo.path)
+            try:
+                os.rmdir(dbvideo.path)
+            except OSError as ex:
+                if ex.errno == errno.ENOTEMPTY:
+                    log.debug("Directory not empty")
 
         else:
             log.info("Rename failed")
