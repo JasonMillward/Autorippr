@@ -194,16 +194,17 @@ def rip(config):
                             database.update_video(dbvideo, 4)
 
                         else:
-                            log.info(
-                                "MakeMKV did not did not complete successfully")
-                            log.info("See log for more details")
-
                             database.update_video(dbvideo, 2)
 
                             database.insert_history(
                                 dbvideo,
                                 "MakeMKV failed to rip video"
                             )
+                            notify.rip_fail(dbvideo)
+
+                            log.info(
+                                "MakeMKV did not did not complete successfully")
+                            log.info("See log for more details")
 
                 else:
                     log.info("No video titles found")
@@ -275,6 +276,8 @@ def compress(config):
                 database.update_video(dbvideo, 5)
 
                 database.insert_history(dbvideo, "Compression failed", 4)
+                
+                notify.compress_fail(dbvideo)
 
                 log.info("Compression did not complete successfully")
         else:
@@ -350,6 +353,13 @@ def extras(config):
 
             if 'extra' in config['notification']['notify_on_state']:
                 notify.extra_complete(dbvideo)
+                
+            log.debug("Attempting to delete %s" % dbvideo.path)
+            try:
+                os.rmdir(dbvideo.path)
+            except OSError as ex:
+                if ex.errno == errno.ENOTEMPTY:
+                    log.debug("Directory not empty")
 
         else:
             log.info("Rename failed")
