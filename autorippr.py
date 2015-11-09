@@ -148,8 +148,6 @@ def rip(config):
 
                 saveFiles = mkv_api.get_savefiles()
 
-                print saveFiles
-
                 if len(saveFiles) != 0:
                     filebot = config['filebot']['enable']
 
@@ -358,6 +356,7 @@ def extras(config):
                 notify.extra_complete(dbvideo)
 
             log.debug("Attempting to delete %s" % dbvideo.path)
+
             try:
                 os.rmdir(dbvideo.path)
             except OSError as ex:

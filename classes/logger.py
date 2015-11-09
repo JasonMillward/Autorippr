@@ -33,6 +33,12 @@ class Logger(object):
 
         self.createhandlers(frmt, name, loglevel)
 
+    def __del__(self):
+        if not self.silent:
+            self.log.removeHandler(self.sh)
+        self.log.removeHandler(self.fh)
+        self.log = None
+
     def createhandlers(self, frmt, name, loglevel):
         self.log = logging.getLogger(name)
         self.log.setLevel(loglevel)
@@ -48,12 +54,6 @@ class Logger(object):
         self.fh.setLevel(loglevel)
         self.fh.setFormatter(frmt)
         self.log.addHandler(self.fh)
-
-    def __del__(self):
-        if not self.silent:
-            self.log.removeHandler(self.sh)
-        self.log.removeHandler(self.fh)
-        self.log = None
 
     def debug(self, msg):
         self.log.debug(msg)
