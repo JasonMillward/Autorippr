@@ -6,7 +6,7 @@ Released under the MIT license
 Copyright (c) 2014, Jacob Carrigan
 
 @category   misc
-@version    $Id: 1.7-test3, 2015-11-02 15:32:00 ACDT $;
+@version    $Id: 1.7-test4, 2015-11-09 12:30:44 ACDT $;
 @author     Jacob Carrigan
 @license    http://opensource.org/licenses/MIT
 """
