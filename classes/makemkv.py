@@ -58,6 +58,16 @@ class MakeMKV(object):
         # Clean up the edges and remove whitespace
         self.vidName = tmpname.strip()
 
+    def _remove_duplicates(self, title_list):
+        seen_titles = set()
+        new_list = []
+        for obj in title_list:
+            if obj['title'] not in seen_titles:
+                new_list.append(obj)
+                seen_titles.add(obj['title'])
+
+        return new_list
+
     def _read_mkv_messages(self, stype, sid=None, scode=None):
         """
             Returns a list of messages that match the search string
@@ -364,4 +374,4 @@ class MakeMKV(object):
             Outputs:
                 vidName   (Str)
         """
-        return self.saveFiles
+        return self._remove_duplicates(self.saveFiles)

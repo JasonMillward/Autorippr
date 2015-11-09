@@ -148,6 +148,8 @@ def rip(config):
 
                 saveFiles = mkv_api.get_savefiles()
 
+                print saveFiles
+
                 if len(saveFiles) != 0:
                     filebot = config['filebot']['enable']
 
@@ -194,6 +196,12 @@ def rip(config):
 
                             database.update_video(dbvideo, 4)
 
+                            if 'rip' in config['notification']['notify_on_state']:
+                                notify.rip_complete(dbvideo)
+
+                            if config['makemkv']['eject']:
+                                eject(config, dvd['location'])
+
                         else:
                             database.update_video(dbvideo, 2)
 
@@ -214,12 +222,6 @@ def rip(config):
 
             else:
                 log.info("Video folder {} already exists".format(disc_title))
-
-            if 'rip' in config['notification']['notify_on_state']:
-                notify.rip_complete(dbvideo)
-
-            if config['makemkv']['eject']:
-                eject(config, dvd['location'])
 
     else:
         log.info("Could not find any DVDs in drive list")
@@ -277,7 +279,7 @@ def compress(config):
                 database.update_video(dbvideo, 5)
 
                 database.insert_history(dbvideo, "Compression failed", 4)
-                
+
                 notify.compress_fail(dbvideo)
 
                 log.info("Compression did not complete successfully")
@@ -354,7 +356,7 @@ def extras(config):
 
             if 'extra' in config['notification']['notify_on_state']:
                 notify.extra_complete(dbvideo)
-                
+
             log.debug("Attempting to delete %s" % dbvideo.path)
             try:
                 os.rmdir(dbvideo.path)
