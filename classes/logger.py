@@ -34,8 +34,8 @@ class Logger(object):
         self.createhandlers(frmt, name, loglevel)
 
     def __del__(self):
-        if not self.silent:
-            self.log.removeHandler(self.sh)
+        #if not self.silent:
+        #    self.log.removeHandler(self.sh)
         self.log.removeHandler(self.fh)
         self.log = None
 

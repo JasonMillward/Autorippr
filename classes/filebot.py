@@ -14,7 +14,7 @@ Copyright (c) 2012, Jason Millward
 import os
 import re
 import subprocess
-import logger
+from . import logger
 
 
 class FileBot(object):

@@ -25,13 +25,13 @@ def perform_testing(config):
         "FFmpeg (optional)": "ffmpeg"
     }
 
-    print "= Checking directory permissions"
-    print canwrite(config['makemkv']['savePath']), "MakeMKV savePath"
+    print ("= Checking directory permissions")
+    print (canwrite(config['makemkv']['savePath']), "MakeMKV savePath")
 
-    print ""
-    print "= Checking requirements"
+    print ("")
+    print ("= Checking requirements")
     for req in requirements:
-        print checkcommand(requirements[req]), req
+        print (checkcommand(requirements[req]), req)
 
     sys.exit(0)
 

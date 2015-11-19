@@ -12,9 +12,9 @@ Copyright (c) 2014, Ian Bird, Jason Millward
 """
 
 import os
-import logger
-import handbrake
-import ffmpeg
+from . import logger
+from . import handbrake
+from . import ffmpeg
 
 
 class Compression(object):

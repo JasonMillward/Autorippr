@@ -1,0 +1,3 @@
+PyYAML==3.11
+lockfile==0.11.0
+peewee==2.2.5

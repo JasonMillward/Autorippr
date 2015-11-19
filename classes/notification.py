@@ -12,10 +12,9 @@ Copyright (c) 2014, Jason Millward
 """
 
 import os
-import logger
 import importlib
 import pprint
-
+from . import logger
 
 class Notification(object):
 

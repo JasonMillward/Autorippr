@@ -15,10 +15,9 @@ import subprocess
 import os
 import re
 import csv
-import logger
 import datetime
 import time
-
+from . import logger
 
 class MakeMKV(object):
 
@@ -161,6 +160,7 @@ class MakeMKV(object):
         )
 
         (results, errors) = proc.communicate()
+        results = results.decode()
 
         if proc.returncode is not 0:
             self.log.error(
@@ -219,6 +219,7 @@ class MakeMKV(object):
         )
 
         (results, errors) = proc.communicate()
+        results = results.decode()
 
         if proc.returncode is not 0:
             self.log.error(

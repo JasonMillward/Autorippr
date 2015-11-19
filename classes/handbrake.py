@@ -14,8 +14,8 @@ Copyright (c) 2012, Jason Millward
 import os
 import re
 import subprocess
-import logger
-import database
+from . import logger
+from . import database
 
 
 class HandBrake(object):

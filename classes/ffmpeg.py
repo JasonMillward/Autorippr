@@ -13,7 +13,7 @@ Copyright (c) 2014, Ian Bird
 
 import os
 import subprocess
-import logger
+from . import logger
 
 
 class FFmpeg(object):
