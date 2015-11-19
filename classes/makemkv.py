@@ -189,7 +189,7 @@ class MakeMKV(object):
             if any(x in line.lower() for x in badstrings):
                 if self.ignore_reigon and "RPC protection" in line:
                     self.log.warn(line)
-                else
+                else:
                     self.log.error(line)
                     return False
 
