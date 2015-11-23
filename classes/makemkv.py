@@ -30,6 +30,7 @@ class MakeMKV(object):
         self.minLength = int(config['makemkv']['minLength'])
         self.maxLength = int(config['makemkv']['maxLength'])
         self.cacheSize = int(config['makemkv']['cache'])
+        self.ignore_region = bool(config['makemkv']['ignore_region'])
         self.log = logger.Logger("Makemkv", config['debug'], config['silent'])
         self.makemkvconPath = config['makemkv']['makemkvconPath']
         self.saveFiles = []
@@ -186,8 +187,11 @@ class MakeMKV(object):
             ]
 
             if any(x in line.lower() for x in badstrings):
-                self.log.error(line)
-                return False
+                if self.ignore_region and "RPC protection" in line:
+                    self.log.warn(line)
+                else:
+                    self.log.error(line)
+                    return False
 
             if "Copy complete" in line:
                 checks += 1
