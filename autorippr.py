@@ -210,7 +210,6 @@ def rip(config):
                                 "MakeMKV did not did not complete successfully")
                             log.info("See log for more details")
 
-                    log.info('Ejecting maybe')
                     if config['makemkv']['eject']:
                         eject(config, dvd['location'])
 
