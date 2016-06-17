@@ -197,9 +197,6 @@ def rip(config):
                             if 'rip' in config['notification']['notify_on_state']:
                                 notify.rip_complete(dbvideo)
 
-                            if config['makemkv']['eject']:
-                                eject(config, dvd['location'])
-
                         else:
                             database.update_video(dbvideo, 2)
 
@@ -212,6 +209,10 @@ def rip(config):
                             log.info(
                                 "MakeMKV did not did not complete successfully")
                             log.info("See log for more details")
+
+                    log.info('Ejecting maybe')
+                    if config['makemkv']['eject']:
+                        eject(config, dvd['location'])
 
                 else:
                     log.info("No video titles found")
