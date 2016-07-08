@@ -87,7 +87,7 @@ class HandBrake(object):
                 if "Encode done!" in line:
                     checks += 1
 
-                if "ERROR" in line and "opening" not in line:
+                if "ERROR" in line and "opening" not in line and "udfread" not in line:
                     self.log.error(
                         "HandBrakeCLI encountered the following error: ")
                     self.log.error(line)
