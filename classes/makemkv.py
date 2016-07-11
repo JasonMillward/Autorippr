@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 MakeMKV CLI Wrapper
 
@@ -11,13 +12,13 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-import subprocess
-import os
-import re
 import csv
-import logger
 import datetime
+import re
+import subprocess
 import time
+
+import logger
 
 
 class MakeMKV(object):
@@ -182,12 +183,14 @@ class MakeMKV(object):
 
             badstrings = [
                 "failed",
-                "Fail",
+                "fail",
                 "error"
             ]
 
             if any(x in line.lower() for x in badstrings):
-                if self.ignore_region and "RPC protection" in line and "Failed to add angle" in line:
+                if self.ignore_region and "RPC protection" in line:
+                    self.log.warn(line)
+                elif "Failed to add angle" in line:
                     self.log.warn(line)
                 else:
                     self.log.error(line)

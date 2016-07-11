@@ -1,0 +1,19 @@
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: master
+    hooks:
+    -   id: trailing-whitespace
+    -   id: autopep8-wrapper
+    -   id: check-yaml
+        files: \.(yaml|yml)$
+    -   id: fix-encoding-pragma
+    -   id: flake8
+        args:
+          - --ignore=E501
+
+- repo: git://github.com/FalconSocial/pre-commit-python-sorter
+  sha: master
+  hooks:
+  - id: python-import-sorter
+    args:
+    - --silent-overwrite
+
