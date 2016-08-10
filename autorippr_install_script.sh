@@ -31,8 +31,8 @@ wget https://bootstrap.pypa.io/get-pip.py
 sudo python get-pip.py
 
 #Install Makemkv
-wget http://www.makemkv.com/download/makemkv-bin-1.10.0.tar.gz
-wget http://www.makemkv.com/download/makemkv-oss-1.10.0.tar.gz
+wget http://www.makemkv.com/download/makemkv-bin-1.10.1.tar.gz
+wget http://www.makemkv.com/download/makemkv-oss-1.10.1.tar.gz
 tar -zxmf makemkv-oss-1.10.0.tar.gz
 tar -zxmf makemkv-bin-1.10.0.tar.gz
 cd makemkv-oss-1.10.0
