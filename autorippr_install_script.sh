@@ -32,7 +32,7 @@ sudo make install
 sudo apt-get install handbrake-cli
 
 # Python update to enable next step
-sudo apt-get pthyon-dev
+sudo apt-get install pthyon-dev
 
 # Install Python Required Packages
 sudo pip install tendo pyyaml peewee
