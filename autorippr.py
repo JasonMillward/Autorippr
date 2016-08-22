@@ -28,7 +28,7 @@ Released under the MIT license
 Copyright (c) 2014, Jason Millward
 
 @category   misc
-@version    $Id: 1.7-test4, 2015-11-09 12:30:44 ACDT $;
+@version    $Id: 1.7.0, 2016-08-22 14:53:29 ACST $;
 @author     Jason Millward
 @license    http://opensource.org/licenses/MIT
 
@@ -61,7 +61,7 @@ import yaml
 from classes import *
 from tendo import singleton
 
-__version__ = "1.7-testing"
+__version__ = "1.7.0"
 
 me = singleton.SingleInstance()
 CONFIG_FILE = "{}/settings.cfg".format(
