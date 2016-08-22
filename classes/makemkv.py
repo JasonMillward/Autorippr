@@ -50,7 +50,7 @@ class MakeMKV(object):
         tmpname = tmpname.title().replace("Extended_Edition", "")
         tmpname = tmpname.replace("Special_Edition", "")
         tmpname = re.sub(r"Disc_(\d)(.*)", r"D\1", tmpname)
-        tmpname = re.sub(r"Disc(\d)(.*)", r"D\1", tmpname)
+        tmpname = re.sub(r"Disc\s*(\d)(.*)", r"D\1", tmpname)
         tmpname = re.sub(r"Season_(\d)", r"S\1", tmpname)
         tmpname = re.sub(r"Season(\d)", r"S\1", tmpname)
         tmpname = re.sub(r"S(\d)_", r"S\1", tmpname)
@@ -356,8 +356,10 @@ class MakeMKV(object):
         )
 
         if titlePattern.search(self.vidName):
+            self.log.debug("Detected TV {}".format(self.vidName))
             self.vidType = "tv"
         else:
+            self.log.debug("Detected movie {}".format(self.vidName))
             self.vidType = "movie"
         return self.vidType
 

@@ -137,8 +137,8 @@ def rip(config):
             mkv_api.set_title(dvd["discTitle"])
             mkv_api.set_index(dvd["discIndex"])
 
-            disc_type = mkv_api.get_type()
             disc_title = mkv_api.get_title()
+            disc_type = mkv_api.get_type()
 
             disc_path = '{}/{}'.format(mkv_save_path, disc_title)
             if not os.path.exists(disc_path):
