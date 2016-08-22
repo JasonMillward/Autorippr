@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 HandBrake CLI Wrapper
 
@@ -11,11 +12,10 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-import os
 import re
 import subprocess
-import logger
 import database
+import logger
 
 
 class HandBrake(object):

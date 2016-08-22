@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Configuration and requirements testing
 
@@ -11,16 +12,16 @@ Copyright (c) 2012, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-import sys
 import os
 import subprocess
+import sys
 
 
 def perform_testing(config):
 
     requirements = {
-        "MakeMKV":   "makemkvcon",
-        "Filebot":   "filebot",
+        "MakeMKV": "makemkvcon",
+        "Filebot": "filebot",
         "HandBrake": "HandBrakeCLI",
         "FFmpeg (optional)": "ffmpeg"
     }

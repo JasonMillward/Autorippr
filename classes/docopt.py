@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Pythonic command-line interface parser that will make you smile.
 
  * http://docopt.org
@@ -6,9 +7,8 @@
  * Copyright (c) 2013 Vladimir Keleshev, vladimir@keleshev.com
 
 """
-import sys
 import re
-
+import sys
 
 __all__ = ['docopt']
 __version__ = '0.6.1'

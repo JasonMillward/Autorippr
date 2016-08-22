@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 SQLite Database Helper
 
@@ -12,8 +13,9 @@ Copyright (c) 2012, Jason Millward
 """
 
 import os
-from peewee import *
 from datetime import datetime
+
+from peewee import *
 
 DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 database = SqliteDatabase('%s/autorippr.sqlite' % DIR, **{})

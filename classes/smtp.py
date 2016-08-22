@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 SMTP Class
 
@@ -12,9 +13,10 @@ Copyright (c) 2014, Jacob Carrigan
 """
 
 import smtplib
-import logger
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
+
+import logger
 
 
 class Smtp(object):

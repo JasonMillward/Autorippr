@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Autorippr
 
@@ -38,23 +39,25 @@ Usage:
     autorippr.py   --test
 
 Options:
-    -h --help       Show this screen.
-    --version       Show version.
-    --debug         Output debug.
-    --rip           Rip disc using makeMKV.
-    --compress      Compress using HandBrake or FFmpeg.
-    --extra         Lookup, rename and/or download extras.
-    --all           Do everything
-    --test          Tests config and requirements
-    --silent        Silent mode
+    -h --help           Show this screen.
+    --version           Show version.
+    --debug             Output debug.
+    --rip               Rip disc using makeMKV.
+    --compress          Compress using HandBrake or FFmpeg.
+    --extra             Lookup, rename and/or download extras.
+    --all               Do everything.
+    --test              Tests config and requirements.
+    --silent            Silent mode.
+    --skip-compress     Skip the compression step.
 
 """
 
-import os
-import sys
-import yaml
 import errno
+import os
 import subprocess
+import sys
+
+import yaml
 from classes import *
 from tendo import singleton
 
@@ -225,6 +228,26 @@ def rip(config):
         log.info("Could not find any DVDs in drive list")
 
 
+def skip_compress(config):
+    """
+        Main function for skipping compression
+        Does everything
+        Returns nothing
+    """
+    log = logger.Logger("Skip compress", config['debug'], config['silent'])
+
+    log.debug("Looking for videos to skip compression")
+
+    dbvideos = database.next_video_to_compress()
+    comp = compression.Compression(config)
+
+    for dbvideo in dbvideos:
+        if comp.check_exists(dbvideo) is not False:
+            database.update_video(dbvideo, 6)
+            log.info("Skipping compression for {} from {}" .format(
+                dbvideo.filename, dbvideo.vidname))
+
+
 def compress(config):
     """
         Main function for compressing
@@ -267,6 +290,8 @@ def compress(config):
                     dbvideo,
                     "Compression Completed successfully"
                 )
+
+                database.update_video(dbvideo, 6)
 
                 if 'compress' in config['notification']['notify_on_state']:
                     notify.compress_complete(dbvideo)
@@ -390,8 +415,11 @@ if __name__ == '__main__':
     if arguments['--rip'] or arguments['--all']:
         rip(config)
 
-    if arguments['--compress'] or arguments['--all']:
+    if (arguments['--compress'] or arguments['--all']) and not arguments['--skip-compress']:
         compress(config)
+
+    if arguments['--skip-compress']:
+        skip_compress(config)
 
     if arguments['--extra'] or arguments['--all']:
         extras(config)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 FFmpeg Wrapper
 
@@ -10,9 +11,10 @@ Copyright (c) 2014, Ian Bird
 @author     Ian Bird
 @license    http://opensource.org/licenses/MIT
 """
-
-import os
+import re
 import subprocess
+
+import database
 import logger
 
 
@@ -39,19 +41,19 @@ class FFmpeg(object):
                 Bool    Was convertion successful
         """
 
-        if (dbvideo.vidtype == "tv"):
+        if (dbmovie.vidtype == "tv"):
             # Query the SQLite database for similar titles (TV Shows)
-            vidname = re.sub(r'D(\d)', '', dbvideo.vidname)
+            vidname = re.sub(r'D(\d)', '', dbmovie.vidname)
             vidqty = database.search_video_name(vidname)
             if vidqty == 0:
                 vidname = "%sE1.%s" % (vidname, self.vformat)
             else:
                 vidname = "%sE%s.%s" % (vidname, str(vidqty + 1), self.vformat)
         else:
-            vidname = "%s.%s" % (dbvideo.vidname, self.vformat)
+            vidname = "%s.%s" % (dbmovie.vidname, self.vformat)
 
-        invid = "%s/%s" % (dbvideo.path, dbvideo.filename)
-        outvid = "%s/%s" % (dbvideo.path, vidname)
+        invid = "%s/%s" % (dbmovie.path, dbmovie.filename)
+        outvid = "%s/%s" % (dbmovie.path, vidname)
 
         command = 'nice -n {0} ffmpeg -i "{1}" {2} "{3}"'.format(
             nice,

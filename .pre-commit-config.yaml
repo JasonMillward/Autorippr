@@ -8,7 +8,7 @@
     -   id: fix-encoding-pragma
     -   id: flake8
         args:
-          - --ignore=E501
+          - --ignore=E501,F405,F403,F812
 
 - repo: git://github.com/FalconSocial/pre-commit-python-sorter
   sha: master

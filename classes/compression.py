@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Compression Wrapper
 
@@ -12,9 +13,10 @@ Copyright (c) 2014, Ian Bird, Jason Millward
 """
 
 import os
-import logger
-import handbrake
+
 import ffmpeg
+import handbrake
+import logger
 
 
 class Compression(object):

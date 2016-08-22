@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Notification Class
 
@@ -11,10 +12,7 @@ Copyright (c) 2014, Jason Millward
 @license    http://opensource.org/licenses/MIT
 """
 
-import os
 import logger
-import importlib
-import pprint
 
 
 class Notification(object):

@@ -3,7 +3,7 @@ Autorippr
 
 ## Warning
 
-Updating to 1.6.2 may result in a loss of existing queue functionality. 
+Updating to 1.6.2 may result in a loss of existing queue functionality.
 Only update once queue is empty.
 
 
