@@ -53,8 +53,12 @@ sudo apt-get install handbrake-cli
 # Python update to enable next step
 sudo apt-get install python-dev
 
+# Install Java prerequisite for Filebot
+sudo add-apt-repository -y ppa:webupd8team/java
+sudo apt-get update
+sudo apt-get install oracle-java8-installer
+
 # Install Filebot
-sudo apt-get --assume-yes install oracle-java8-installer
 if [ `uname -m` = "i686" ]
 then
    wget -O filebot-i386.deb 'http://filebot.sourceforge.net/download.php?type=deb&arch=i386'
