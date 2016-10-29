@@ -188,6 +188,8 @@ def rip(config):
                             status = mkv_api.rip_disc(
                                 mkv_save_path, dvdTitle['index'])
 
+                            # Master_and_Commander_De_l'autre_côté_du_monde_t00.mkv become
+                            # Master_and_Commander_De_l_autre_cote_du_monde_t00.mkv
                             log.debug('Rename {} to {}'.format(
                                 os.path.join(dbvideo.path, dvdTitle['title']),
                                 os.path.join(dbvideo.path, dvdTitle['rename_title'])
