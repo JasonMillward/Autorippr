@@ -31,18 +31,28 @@ class Compression(object):
             Outputs:
                 The compression instance
         """
-        self.log = logger.Logger("Compression", config[
-                                 'debug'], config['silent'])
+        self.log = logger.Logger("Compression", config['debug'], config['silent'])
         self.method = self.which_method(config)
         self.invid = ""
 
     def which_method(self, config):
         if config['compress']['type'] == "ffmpeg":
-            return ffmpeg.FFmpeg(config['debug'], config['silent'], config['compress']['format'])
+            return ffmpeg.FFmpeg(
+                config['debug'],
+                config['compress']['compressionPath'],
+                config['silent'],
+                config['compress']['format']
+            )
         else:
-            return handbrake.HandBrake(config['debug'], config['compress']['compressionPath'], config['compress']['format'], config['silent'])
+            return handbrake.HandBrake(
+                config['debug'],
+                config['compress']['compressionPath'],
+                config['compress']['format'],
+                config['silent']
+            )
 
     def compress(self, **args):
+        self.log.debug('FFmpeg args: {}'.format(args))
         return self.method.compress(**args)
 
     def check_exists(self, dbvideo):
@@ -64,7 +74,7 @@ class Compression(object):
 
         else:
             self.log.debug(self.invid)
-            self.log.error("Input file no longer exists")
+            self.log.error("Input file no longer exists, abording")
             return False
 
     def cleanup(self):
