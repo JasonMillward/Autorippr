@@ -11,5 +11,6 @@ __all__ = [
     'makemkv',
     'notification',
     'stopwatch',
-    'testing'
+    'testing',
+    'utils'
 ]

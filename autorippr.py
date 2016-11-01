@@ -188,6 +188,17 @@ def rip(config):
                             status = mkv_api.rip_disc(
                                 mkv_save_path, dvdTitle['index'])
 
+                            # Master_and_Commander_De_l'autre_côté_du_monde_t00.mkv become
+                            # Master_and_Commander_De_l_autre_cote_du_monde_t00.mkv
+                            log.debug('Rename {} to {}'.format(
+                                os.path.join(dbvideo.path, dvdTitle['title']),
+                                os.path.join(dbvideo.path, dvdTitle['rename_title'])
+                            ))
+                            os.rename(
+                                os.path.join(dbvideo.path, dvdTitle['title']),
+                                os.path.join(dbvideo.path, dvdTitle['rename_title'])
+                            )
+
                         if status:
                             log.info("It took {} minute(s) to complete the ripping of {} from {}".format(
                                 t.minutes,
@@ -264,6 +275,9 @@ def compress(config):
     dbvideos = database.next_video_to_compress()
 
     for dbvideo in dbvideos:
+        dbvideo.filename = utils.strip_accents(dbvideo.filename)
+        dbvideo.filename = utils.clean_special_chars(dbvideo.filename)
+
         if comp.check_exists(dbvideo) is not False:
 
             database.update_video(dbvideo, 5)

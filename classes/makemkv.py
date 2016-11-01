@@ -20,6 +20,8 @@ import time
 
 import logger
 
+import utils
+
 
 class MakeMKV(object):
 
@@ -333,13 +335,14 @@ class MakeMKV(object):
                 ))
 
                 title = self._read_mkv_messages("TINFO", titleNo, 27)[0]
+                rename_title = utils.strip_accents(title)
+                rename_title = utils.clean_special_chars(rename_title)
 
                 self.saveFiles.append({
                     'index': titleNo,
-                    'title': title
+                    'title': title,
+                    'rename_title': rename_title,
                 })
-        else:
-            pass
 
     def get_type(self):
         """
