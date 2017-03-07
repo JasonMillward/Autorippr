@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#*- coding: utf-8 -*-
 """
 FileBot class
 
@@ -41,6 +41,7 @@ class FileBot(object):
         vidname = re.sub(r'S(\d)', '', dbvideo.vidname)
         vidname = re.sub(r'D(\d)', '', vidname)
 
+
         proc = subprocess.Popen(
             [
                 'filebot',
@@ -69,8 +70,10 @@ class FileBot(object):
 
         if len(results) is not 0:
             lines = results.split("\n")
+            self.log.debug(results.split("\n"))
             for line in lines:
-                self.log.debug(line.strip())
+                if line:
+                    self.log.debug(line.strip())
                 if "MOVE" in line:
                     renamedvideo = line.split("] to [", 1)[1].rstrip(']')
                     checks += 1

@@ -49,6 +49,7 @@ Options:
     --test              Tests config and requirements.
     --silent            Silent mode.
     --skip-compress     Skip the compression step.
+    --force_db=(tv|movie)     Force use of the TheTVDB or TheMovieDB
 
 """
 
@@ -141,9 +142,13 @@ def rip(config):
             mkv_api.set_index(dvd["discIndex"])
 
             disc_title = mkv_api.get_title()
-            disc_type = mkv_api.get_type()
+            
+            if not config['force_db']:
+                disc_type = mkv_api.get_type()
+            else:
+                disc_type = config['force_db']
 
-            disc_path = '{}/{}'.format(mkv_save_path, disc_title)
+            disc_path = os.path.join(mkv_save_path, disc_title)
             if not os.path.exists(disc_path):
                 os.makedirs(disc_path)
 
@@ -333,7 +338,7 @@ def compress(config):
 
 def extras(config):
     """
-        Main function for filebotting
+        Main function for filebotting and flagging forced subs
         Does everything
         Returns nothing
     """
@@ -344,6 +349,22 @@ def extras(config):
     dbvideos = database.next_video_to_filebot()
 
     for dbvideo in dbvideos:
+        if config['ForcedSubs']['enable']:
+            forced = mediainfo.ForcedSubs(config)
+            log.info("Attempting to discover foreign subtitle for {}.".format(dbvideo.vidname))
+            track = forced.discover_forcedsubs(dbvideo)
+
+            if track is not None:
+                log.info("Found foreign subtitle for {}: track {}".format(dbvideo.vidname, track))
+                log.debug("Attempting to flag track for {}: track {}".format(dbvideo.vidname, track))
+                flagged = forced.flag_forced(dbvideo, track)
+                if flagged:
+                    log.info("Flagging success.")
+                else:
+                    log.debug("Flag failed")
+            else:
+                log.debug("Did not find foreign subtitle for {}.".format(dbvideo.vidname))
+                
         log.info("Attempting video rename")
 
         database.update_video(dbvideo, 7)
@@ -391,6 +412,8 @@ def extras(config):
                 log.info("Not grabbing subtitles")
                 database.update_video(dbvideo, 8)
 
+
+
             if 'extra' in config['notification']['notify_on_state']:
                 notify.extra_complete(dbvideo)
 
@@ -416,7 +439,12 @@ if __name__ == '__main__':
     config['debug'] = arguments['--debug']
 
     config['silent'] = arguments['--silent']
-
+    
+    if arguments['--force_db'] not in ['tv','movie', None]:
+        raise ValueError('{} is not a valid DB.'.format(arguments['--force_db']))
+    else:
+        config['force_db'] = arguments['--force_db']
+        
     notify = notification.Notification(
         config, config['debug'], config['silent'])
 

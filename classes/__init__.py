@@ -9,6 +9,7 @@ __all__ = [
     'handbrake',
     'logger',
     'makemkv',
+    'mediainfo',
     'notification',
     'stopwatch',
     'testing',
