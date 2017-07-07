@@ -158,6 +158,7 @@ class MakeMKV(object):
                 fullpath,
                 '--cache=%d' % self.cacheSize,
                 '--noscan',
+                '--decrypt',
                 '--minlength=%d' % self.minLength
             ],
             stderr=subprocess.PIPE,
@@ -282,6 +283,7 @@ class MakeMKV(object):
                 '-r',
                 'info',
                 'disc:%d' % self.discIndex,
+                '--decrypt',
                 '--minlength=%d' % self.minLength,
                 '--messages=/tmp/makemkvMessages'
             ],
