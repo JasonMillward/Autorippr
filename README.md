@@ -1,20 +1,11 @@
 Autorippr
 =========
 
-## Warning
+Autorippr is currently unmaintained. I am lacking in free time to work on this myself but am happy to accept pull requests or make someone a maintainer of the project. 
 
-Updating to 1.6.2 may result in a loss of existing queue functionality.
-Only update once queue is empty.
+That said it should still work for most cases.
 
-
-## Install
-
-See the [docs](http://docs.jcode.me/autorippr)
-
-## Issues?
-
-[Report them here](https://github.com/JasonMillward/Autorippr/issues)
 
 ## Copyright & License
 
-Copyright (c) 2012-2015 Jason Millward - Released under the [MIT license](LICENSE).
+Copyright (c) 2012 Jason Millward - Released under the [MIT license](LICENSE).
